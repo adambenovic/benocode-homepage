@@ -1,0 +1,258 @@
+{
+  "common": {
+    "welcome": "Vítejte",
+    "loading": "Načítání...",
+    "error": "Chyba",
+    "success": "Úspěch",
+    "save": "Uložit",
+    "cancel": "Zrušit",
+    "delete": "Smazat",
+    "edit": "Upravit",
+    "create": "Vytvořit",
+    "update": "Aktualizovat",
+    "back": "Zpět",
+    "next": "Další",
+    "previous": "Předchozí",
+    "search": "Hledat",
+    "filter": "Filtr",
+    "export": "Exportovat",
+    "actions": "Akce"
+  },
+  "nav": {
+    "home": "Domů",
+    "about": "O nás",
+    "services": "Služby",
+    "contact": "Kontakt"
+  },
+  "home": {
+    "title": "BenoCode - Softwarová řešení",
+    "subtitle": "Spolehlivé, Cenově dostupné, Individuální přístup",
+    "hero": {
+      "title": "Profesionální softwarová řešení",
+      "description": "Poskytujeme kvalitní softwarová řešení šitá na míru vašim potřebám",
+      "getStarted": "Začít",
+      "learnMore": "Zjistit více"
+    },
+    "services": {
+      "title": "Naše služby",
+      "description": "Co nabízíme",
+      "items": {
+        "customSoftware": {
+          "title": "Vývoj vlastního softwaru",
+          "description": "Softwarová řešení šitá na míru vašim obchodním potřebám"
+        },
+        "webApplications": {
+          "title": "Webové aplikace",
+          "description": "Moderní, responzivní webové aplikace postavené na nejnovějších technologiích"
+        },
+        "apiDevelopment": {
+          "title": "Vývoj API",
+          "description": "RESTful API a architektura mikroslužeb"
+        },
+        "consulting": {
+          "title": "Konzultace",
+          "description": "Odborné rady ohledně softwarové architektury a nejlepších postupů"
+        }
+      }
+    },
+    "testimonials": {
+      "title": "Co říkají naši klienti",
+      "description": "Reference od spokojených zákazníků"
+    },
+    "contact": {
+      "title": "Kontaktujte nás",
+      "description": "Kontaktujte nás pro bezplatnou konzultaci"
+    }
+  },
+  "contact": {
+    "form": {
+      "title": "Kontaktujte nás",
+      "name": "Jméno",
+      "email": "Email",
+      "phone": "Telefon",
+      "message": "Zpráva",
+      "submit": "Odeslat zprávu",
+      "success": "Děkujeme! Brzy se vám ozveme.",
+      "error": "Něco se pokazilo. Zkuste to znovu.",
+      "description": "Vyplňte formulář níže a brzy se vám ozveme."
+    }
+  },
+  "admin": {
+    "login": {
+      "title": "Přihlášení administrátora",
+      "email": "Email",
+      "password": "Heslo",
+      "submit": "Přihlásit se",
+      "error": "Neplatné přihlašovací údaje"
+    },
+    "dashboard": {
+      "title": "Nástěnka",
+      "stats": {
+        "leads": "Zájemci",
+        "meetings": "Schůzky",
+        "testimonials": "Reference",
+        "totalLeads": "Celkový počet zájemců",
+        "newLeads": "Noví zájemci"
+      },
+      "view": "Zobrazit"
+    },
+    "leads": {
+      "title": "Zájemci",
+      "list": "Seznam zájemců",
+      "export": "Exportovat do CSV",
+      "status": "Stav",
+      "new": "Nový",
+      "contacted": "Kontaktován",
+      "qualified": "Kvalifikován",
+      "closed": "Uzavřen",
+      "exportSuccess": "Zájemci byli úspěšně exportováni",
+      "updateSuccess": "Zájemce byl úspěšně aktualizován",
+      "deleteSuccess": "Zájemce byl úspěšně smazán",
+      "deleteConfirm": "Jste si jisti, že chcete smazat tohoto zájemce?",
+      "filterByStatus": "Filtrovat podle stavu",
+      "name": "Jméno",
+      "email": "Email",
+      "phone": "Telefon",
+      "created": "Vytvořeno",
+      "actions": "Akce",
+      "noLeads": "Nenalezeni žádní zájemci",
+      "page": "Stránka",
+      "of": "z"
+    },
+    "testimonials": {
+      "title": "Reference",
+      "list": "Seznam referencí",
+      "create": "Vytvořit referenci",
+      "edit": "Upravit referenci",
+      "status": "Stav",
+      "active": "Aktivní",
+      "inactive": "Neaktivní",
+      "noTestimonials": "Nenalezeny žádné reference",
+      "deleteSuccess": "Reference byla úspěšně smazána",
+      "deleteConfirm": "Jste si jisti, že chcete smazat tuto referenci?",
+      "order": "Pořadí",
+      "page": "Stránka",
+      "of": "z"
+    },
+    "meetings": {
+      "title": "Schůzky",
+      "list": "Seznam schůzek",
+      "availability": "Dostupnost",
+      "manageAvailability": "Spravovat dostupnost",
+      "name": "Jméno",
+      "email": "Email",
+      "scheduled": "Naplánováno",
+      "duration": "Délka",
+      "status": "Stav",
+      "actions": "Akce",
+      "noMeetings": "Nenalezeny žádné schůzky",
+      "cancel": "Zrušit",
+      "previous": "Předchozí",
+      "next": "Další",
+      "page": "Stránka",
+      "of": "z",
+      "updateSuccess": "Schůzka byla úspěšně aktualizována",
+      "cancelSuccess": "Schůzka byla úspěšně zrušena",
+      "cancelConfirm": "Jste si jisti, že chcete zrušit tuto schůzku?",
+      "statusPending": "Čekající",
+      "statusConfirmed": "Potvrzená",
+      "statusCancelled": "Zrušená",
+      "statusCompleted": "Dokončená",
+      "availabilityTitle": "Dostupnost schůzek",
+      "configureSlots": "Nastavit dostupné časové sloty",
+      "noSlotsConfigured": "Nejsou nakonfigurovány žádné časové sloty",
+      "slot": "Slot",
+      "remove": "Odstranit",
+      "dayOfWeek": "Den v týdnu",
+      "startTime": "Začátek",
+      "endTime": "Konec",
+      "active": "Aktivní",
+      "addTimeSlot": "Přidat časový slot",
+      "saveAvailability": "Uložit dostupnost",
+      "updateSuccessAvailability": "Dostupnost byla úspěšně aktualizována",
+      "updateErrorAvailability": "Nepodařilo se aktualizovat dostupnost",
+      "days": {
+        "sunday": "Neděle",
+        "monday": "Pondělí",
+        "tuesday": "Úterý",
+        "wednesday": "Středa",
+        "thursday": "Čtvrtek",
+        "friday": "Pátek",
+        "saturday": "Sobota"
+      }
+    },
+    "content": {
+      "title": "Správa obsahu",
+      "list": "Seznam obsahu",
+      "create": "Vytvořit obsah",
+      "edit": "Upravit obsah",
+      "noContent": "Nenalezen žádný obsah",
+      "contentKey": "Klíč obsahu",
+      "contentType": "Typ obsahu",
+      "contentValue": "Hodnota obsahu",
+      "translation": "Překlad",
+      "translations": "Překlady",
+      "languages": "jazyků",
+      "type": "Typ",
+      "createSuccess": "Obsah byl úspěšně vytvořen",
+      "updateSuccess": "Obsah byl úspěšně aktualizován",
+      "createError": "Nepodařilo se vytvořit obsah",
+      "updateError": "Nepodařilo se aktualizovat obsah",
+      "types": {
+        "text": "Text",
+        "richText": "Formátovaný text",
+        "html": "HTML",
+        "json": "JSON"
+      },
+      "order": "Pořadí",
+      "page": "Stránka",
+      "of": "z"
+    },
+    "uploadFile": "Nahrát soubor",
+    "upload": "Nahrát",
+    "uploading": "Nahrává se..."
+  },
+  "meeting": {
+    "title": "Rezervovat schůzku",
+    "description": "Naplánujte si konzultaci s námi",
+    "selectDateTime": "Vyberte datum a čas",
+    "name": "Vaše jméno",
+    "email": "Email",
+    "phone": "Telefon",
+    "duration": "Délka (minuty)",
+    "notes": "Poznámky",
+    "book": "Rezervovat schůzku",
+    "selected": "Vybráno",
+    "noSlots": "Momentálně nejsou k dispozici žádné časové sloty. Zkuste to znovu později nebo nás kontaktujte přímo.",
+    "success": "Schůzka byla úspěšně rezervována! Brzy obdržíte potvrzující email.",
+    "error": "Nepodařilo se rezervovat schůzku. Zkuste to znovu."
+  },
+  "footer": {
+    "tagline": "Softwarová řešení - Spolehlivé, Cenově dostupné, Individuální přístup",
+    "quickLinks": "Rychlé odkazy",
+    "legal": "Právní informace",
+    "allRightsReserved": "Všechna práva vyhrazena",
+    "contact": "Kontakt",
+    "address": "Adresa",
+    "phone": "Telefon",
+    "email": "Email",
+    "openingHours": "Otevírací doba",
+    "openingHoursValue": "Pondělí – Pátek : 8:00 – 19:00",
+    "followUs": "Sledujte nás",
+    "companyInfo": "Informace o společnosti",
+    "ico": "IČO",
+    "icDph": "IČ DPH"
+  },
+  "legal": {
+    "gdpr": {
+      "title": "GDPR"
+    },
+    "privacy": {
+      "title": "Zásady ochrany osobních údajů"
+    },
+    "terms": {
+      "title": "Obchodní podmínky"
+    }
+  }
+}
+

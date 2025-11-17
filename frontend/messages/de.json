@@ -1,0 +1,258 @@
+{
+  "common": {
+    "welcome": "Willkommen",
+    "loading": "Lädt...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "create": "Erstellen",
+    "update": "Aktualisieren",
+    "back": "Zurück",
+    "next": "Weiter",
+    "previous": "Vorherige",
+    "search": "Suchen",
+    "filter": "Filter",
+    "export": "Exportieren",
+    "actions": "Aktionen"
+  },
+  "nav": {
+    "home": "Startseite",
+    "about": "Über uns",
+    "services": "Dienstleistungen",
+    "contact": "Kontakt"
+  },
+  "home": {
+    "title": "BenoCode - Softwarelösungen",
+    "subtitle": "Zuverlässig, Erschwinglich, Individueller Ansatz",
+    "hero": {
+      "title": "Professionelle Softwarelösungen",
+      "description": "Wir liefern hochwertige Softwarelösungen, die auf Ihre Bedürfnisse zugeschnitten sind",
+      "getStarted": "Loslegen",
+      "learnMore": "Mehr erfahren"
+    },
+    "services": {
+      "title": "Unsere Dienstleistungen",
+      "description": "Was wir anbieten",
+      "items": {
+        "customSoftware": {
+          "title": "Individuelle Softwareentwicklung",
+          "description": "Maßgeschneiderte Softwarelösungen für Ihre Geschäftsanforderungen"
+        },
+        "webApplications": {
+          "title": "Webanwendungen",
+          "description": "Moderne, responsive Webanwendungen mit neuesten Technologien"
+        },
+        "apiDevelopment": {
+          "title": "API-Entwicklung",
+          "description": "RESTful APIs und Microservices-Architektur"
+        },
+        "consulting": {
+          "title": "Beratung",
+          "description": "Expertenberatung zu Softwarearchitektur und Best Practices"
+        }
+      }
+    },
+    "testimonials": {
+      "title": "Was unsere Kunden sagen",
+      "description": "Testimonials von zufriedenen Kunden"
+    },
+    "contact": {
+      "title": "Kontaktieren Sie uns",
+      "description": "Kontaktieren Sie uns für eine kostenlose Beratung"
+    }
+  },
+  "contact": {
+    "form": {
+      "title": "Kontaktieren Sie uns",
+      "description": "Füllen Sie das untenstehende Formular aus und wir werden uns so schnell wie möglich bei Ihnen melden.",
+      "name": "Name",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "message": "Nachricht",
+      "submit": "Nachricht senden",
+      "success": "Vielen Dank! Wir werden uns bald bei Ihnen melden.",
+      "error": "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut."
+    }
+  },
+  "admin": {
+    "login": {
+      "title": "Admin-Anmeldung",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "submit": "Anmelden",
+      "error": "Ungültige Anmeldedaten"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "stats": {
+        "leads": "Leads",
+        "meetings": "Termine",
+        "testimonials": "Testimonials",
+        "totalLeads": "Gesamt Leads",
+        "newLeads": "Neue Leads"
+      },
+      "view": "Ansehen"
+    },
+    "leads": {
+      "title": "Leads",
+      "list": "Lead-Liste",
+      "export": "Als CSV exportieren",
+      "status": "Status",
+      "new": "Neu",
+      "contacted": "Kontaktiert",
+      "qualified": "Qualifiziert",
+      "closed": "Geschlossen",
+      "exportSuccess": "Leads erfolgreich exportiert",
+      "updateSuccess": "Lead erfolgreich aktualisiert",
+      "deleteSuccess": "Lead erfolgreich gelöscht",
+      "deleteConfirm": "Sind Sie sicher, dass Sie diesen Lead löschen möchten?",
+      "filterByStatus": "Nach Status filtern",
+      "name": "Name",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "created": "Erstellt",
+      "actions": "Aktionen",
+      "noLeads": "Keine Leads gefunden",
+      "page": "Seite",
+      "of": "von"
+    },
+    "testimonials": {
+      "title": "Testimonials",
+      "list": "Testimonial-Liste",
+      "create": "Testimonial erstellen",
+      "edit": "Testimonial bearbeiten",
+      "status": "Status",
+      "active": "Aktiv",
+      "inactive": "Inaktiv",
+      "noTestimonials": "Keine Testimonials gefunden",
+      "deleteSuccess": "Testimonial erfolgreich gelöscht",
+      "deleteConfirm": "Sind Sie sicher, dass Sie dieses Testimonial löschen möchten?",
+      "order": "Reihenfolge",
+      "page": "Seite",
+      "of": "von"
+    },
+    "meetings": {
+      "title": "Termine",
+      "list": "Terminliste",
+      "availability": "Verfügbarkeit",
+      "manageAvailability": "Verfügbarkeit verwalten",
+      "name": "Name",
+      "email": "E-Mail",
+      "scheduled": "Geplant",
+      "duration": "Dauer",
+      "status": "Status",
+      "actions": "Aktionen",
+      "noMeetings": "Keine Termine gefunden",
+      "cancel": "Stornieren",
+      "previous": "Zurück",
+      "next": "Weiter",
+      "page": "Seite",
+      "of": "von",
+      "updateSuccess": "Termin erfolgreich aktualisiert",
+      "cancelSuccess": "Termin erfolgreich storniert",
+      "cancelConfirm": "Sind Sie sicher, dass Sie diesen Termin stornieren möchten?",
+      "statusPending": "Ausstehend",
+      "statusConfirmed": "Bestätigt",
+      "statusCancelled": "Storniert",
+      "statusCompleted": "Abgeschlossen",
+      "availabilityTitle": "Terminverfügbarkeit",
+      "configureSlots": "Verfügbare Zeitslots konfigurieren",
+      "noSlotsConfigured": "Keine Zeitslots konfiguriert",
+      "slot": "Slot",
+      "remove": "Entfernen",
+      "dayOfWeek": "Wochentag",
+      "startTime": "Startzeit",
+      "endTime": "Endzeit",
+      "active": "Aktiv",
+      "addTimeSlot": "Zeitslot hinzufügen",
+      "saveAvailability": "Verfügbarkeit speichern",
+      "updateSuccessAvailability": "Verfügbarkeit erfolgreich aktualisiert",
+      "updateErrorAvailability": "Verfügbarkeit konnte nicht aktualisiert werden",
+      "days": {
+        "sunday": "Sonntag",
+        "monday": "Montag",
+        "tuesday": "Dienstag",
+        "wednesday": "Mittwoch",
+        "thursday": "Donnerstag",
+        "friday": "Freitag",
+        "saturday": "Samstag"
+      }
+    },
+    "content": {
+      "title": "Content-Verwaltung",
+      "list": "Content-Liste",
+      "create": "Content erstellen",
+      "edit": "Content bearbeiten",
+      "noContent": "Kein Content gefunden",
+      "contentKey": "Content-Schlüssel",
+      "contentType": "Content-Typ",
+      "contentValue": "Content-Wert",
+      "translation": "Übersetzung",
+      "translations": "Übersetzungen",
+      "languages": "Sprachen",
+      "type": "Typ",
+      "createSuccess": "Content erfolgreich erstellt",
+      "updateSuccess": "Content erfolgreich aktualisiert",
+      "createError": "Content konnte nicht erstellt werden",
+      "updateError": "Content konnte nicht aktualisiert werden",
+      "types": {
+        "text": "Text",
+        "richText": "Formatierter Text",
+        "html": "HTML",
+        "json": "JSON"
+      },
+      "order": "Reihenfolge",
+      "page": "Seite",
+      "of": "von"
+    },
+    "uploadFile": "Datei hochladen",
+    "upload": "Hochladen",
+    "uploading": "Wird hochgeladen..."
+  },
+  "meeting": {
+    "title": "Termin buchen",
+    "description": "Vereinbaren Sie eine Beratung mit uns",
+    "selectDateTime": "Datum & Uhrzeit auswählen",
+    "name": "Ihr Name",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "duration": "Dauer (Minuten)",
+    "notes": "Notizen",
+    "book": "Termin buchen",
+    "selected": "Ausgewählt",
+    "noSlots": "Derzeit sind keine Zeitslots verfügbar. Bitte versuchen Sie es später erneut oder kontaktieren Sie uns direkt.",
+    "success": "Termin erfolgreich gebucht! Sie erhalten in Kürze eine Bestätigungs-E-Mail.",
+    "error": "Termin konnte nicht gebucht werden. Bitte versuchen Sie es erneut."
+  },
+  "footer": {
+    "tagline": "Softwarelösungen - Zuverlässig, Erschwinglich, Individueller Ansatz",
+    "quickLinks": "Schnelllinks",
+    "legal": "Rechtliches",
+    "allRightsReserved": "Alle Rechte vorbehalten",
+    "contact": "Kontakt",
+    "address": "Adresse",
+    "phone": "Telefon",
+    "email": "E-Mail",
+    "openingHours": "Öffnungszeiten",
+    "openingHoursValue": "Montag – Freitag : 8:00 – 19:00",
+    "followUs": "Folgen Sie uns",
+    "companyInfo": "Firmeninformationen",
+    "ico": "IČO",
+    "icDph": "IČ DPH"
+  },
+  "legal": {
+    "gdpr": {
+      "title": "DSGVO"
+    },
+    "privacy": {
+      "title": "Datenschutzerklärung"
+    },
+    "terms": {
+      "title": "Nutzungsbedingungen"
+    }
+  }
+}
+

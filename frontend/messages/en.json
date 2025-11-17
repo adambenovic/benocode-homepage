@@ -1,0 +1,258 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "update": "Update",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "actions": "Actions"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "contact": "Contact"
+  },
+  "home": {
+    "title": "BenoCode - Software Solutions",
+    "subtitle": "Reliable, Affordable, Individual Approach",
+    "hero": {
+      "title": "Professional Software Solutions",
+      "description": "We deliver high-quality software solutions tailored to your needs",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More"
+    },
+    "services": {
+      "title": "Our Services",
+      "description": "What we offer",
+      "items": {
+        "customSoftware": {
+          "title": "Custom Software Development",
+          "description": "Tailored software solutions for your business needs"
+        },
+        "webApplications": {
+          "title": "Web Applications",
+          "description": "Modern, responsive web applications built with latest technologies"
+        },
+        "apiDevelopment": {
+          "title": "API Development",
+          "description": "RESTful APIs and microservices architecture"
+        },
+        "consulting": {
+          "title": "Consulting",
+          "description": "Expert advice on software architecture and best practices"
+        }
+      }
+    },
+    "testimonials": {
+      "title": "What Our Clients Say",
+      "description": "Testimonials from satisfied customers"
+    },
+    "contact": {
+      "title": "Get In Touch",
+      "description": "Contact us for a free consultation"
+    }
+  },
+  "contact": {
+    "form": {
+      "title": "Contact Us",
+      "description": "Fill out the form below and we'll get back to you as soon as possible.",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "message": "Message",
+      "submit": "Send Message",
+      "success": "Thank you! We'll get back to you soon.",
+      "error": "Something went wrong. Please try again."
+    }
+  },
+  "admin": {
+    "login": {
+      "title": "Admin Login",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Login",
+      "error": "Invalid credentials"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "stats": {
+        "leads": "Leads",
+        "meetings": "Meetings",
+        "testimonials": "Testimonials",
+        "totalLeads": "Total Leads",
+        "newLeads": "New Leads"
+      },
+      "view": "View"
+    },
+    "leads": {
+      "title": "Leads",
+      "list": "Lead List",
+      "export": "Export to CSV",
+      "status": "Status",
+      "new": "New",
+      "contacted": "Contacted",
+      "qualified": "Qualified",
+      "closed": "Closed",
+      "exportSuccess": "Leads exported successfully",
+      "updateSuccess": "Lead updated successfully",
+      "deleteSuccess": "Lead deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this lead?",
+      "filterByStatus": "Filter by Status",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "created": "Created",
+      "actions": "Actions",
+      "noLeads": "No leads found",
+      "page": "Page",
+      "of": "of"
+    },
+    "testimonials": {
+      "title": "Testimonials",
+      "list": "Testimonial List",
+      "create": "Create Testimonial",
+      "edit": "Edit Testimonial",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "noTestimonials": "No testimonials found",
+      "deleteSuccess": "Testimonial deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this testimonial?",
+      "order": "Order",
+      "page": "Page",
+      "of": "of"
+    },
+    "meetings": {
+      "title": "Meetings",
+      "list": "Meeting List",
+      "availability": "Availability",
+      "manageAvailability": "Manage Availability",
+      "name": "Name",
+      "email": "Email",
+      "scheduled": "Scheduled",
+      "duration": "Duration",
+      "status": "Status",
+      "actions": "Actions",
+      "noMeetings": "No meetings found",
+      "cancel": "Cancel",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page",
+      "of": "of",
+      "updateSuccess": "Meeting updated successfully",
+      "cancelSuccess": "Meeting cancelled successfully",
+      "cancelConfirm": "Are you sure you want to cancel this meeting?",
+      "statusPending": "Pending",
+      "statusConfirmed": "Confirmed",
+      "statusCancelled": "Cancelled",
+      "statusCompleted": "Completed",
+      "availabilityTitle": "Meeting Availability",
+      "configureSlots": "Configure Available Time Slots",
+      "noSlotsConfigured": "No availability slots configured",
+      "slot": "Slot",
+      "remove": "Remove",
+      "dayOfWeek": "Day of Week",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "active": "Active",
+      "addTimeSlot": "Add Time Slot",
+      "saveAvailability": "Save Availability",
+      "updateSuccessAvailability": "Availability updated successfully",
+      "updateErrorAvailability": "Failed to update availability",
+      "days": {
+        "sunday": "Sunday",
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday"
+      }
+    },
+    "content": {
+      "title": "Content Management",
+      "list": "Content List",
+      "create": "Create Content",
+      "edit": "Edit Content",
+      "noContent": "No content found",
+      "contentKey": "Content Key",
+      "contentType": "Content Type",
+      "contentValue": "Content Value",
+      "translation": "Translation",
+      "translations": "Translations",
+      "languages": "languages",
+      "type": "Type",
+      "createSuccess": "Content created successfully",
+      "updateSuccess": "Content updated successfully",
+      "createError": "Failed to create content",
+      "updateError": "Failed to update content",
+      "types": {
+        "text": "Text",
+        "richText": "Rich Text",
+        "html": "HTML",
+        "json": "JSON"
+      },
+      "order": "Order",
+      "page": "Page",
+      "of": "of"
+    },
+    "uploadFile": "Upload File",
+    "upload": "Upload",
+    "uploading": "Uploading..."
+  },
+  "footer": {
+    "tagline": "Software Solutions - Reliable, Affordable, Individual Approach",
+    "quickLinks": "Quick Links",
+    "legal": "Legal",
+    "allRightsReserved": "All rights reserved",
+    "contact": "Contact",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "openingHours": "Opening Hours",
+    "openingHoursValue": "Monday – Friday : 8:00AM – 7:00 PM",
+    "followUs": "Follow Us",
+    "companyInfo": "Company Info",
+    "ico": "IČO",
+    "icDph": "IČ DPH"
+  },
+  "legal": {
+    "gdpr": {
+      "title": "GDPR"
+    },
+    "privacy": {
+      "title": "Privacy Policy"
+    },
+    "terms": {
+      "title": "Terms of Service"
+    }
+  },
+  "meeting": {
+    "title": "Book a Meeting",
+    "description": "Schedule a consultation with us",
+    "selectDateTime": "Select Date & Time",
+    "name": "Your Name",
+    "email": "Email",
+    "phone": "Phone",
+    "duration": "Duration (minutes)",
+    "notes": "Notes",
+    "book": "Book Meeting",
+    "selected": "Selected",
+    "noSlots": "No available time slots at the moment. Please check back later or contact us directly.",
+    "success": "Meeting booked successfully! You will receive a confirmation email shortly.",
+    "error": "Failed to book meeting. Please try again."
+  }
+}
+

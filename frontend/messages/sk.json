@@ -1,0 +1,258 @@
+{
+  "common": {
+    "welcome": "Vitajte",
+    "loading": "Načítava sa...",
+    "error": "Chyba",
+    "success": "Úspech",
+    "save": "Uložiť",
+    "cancel": "Zrušiť",
+    "delete": "Zmazať",
+    "edit": "Upraviť",
+    "create": "Vytvoriť",
+    "update": "Aktualizovať",
+    "back": "Späť",
+    "next": "Ďalej",
+    "previous": "Predchádzajúce",
+    "search": "Hľadať",
+    "filter": "Filter",
+    "export": "Exportovať",
+    "actions": "Akcie"
+  },
+  "nav": {
+    "home": "Domov",
+    "about": "O nás",
+    "services": "Služby",
+    "contact": "Kontakt"
+  },
+  "home": {
+    "title": "BenoCode - Softvérové riešenia",
+    "subtitle": "Spoľahlivé, Cenovo dostupné, Individuálny prístup",
+    "hero": {
+      "title": "Profesionálne softvérové riešenia",
+      "description": "Poskytujeme kvalitné softvérové riešenia šité na mieru vašim potrebám",
+      "getStarted": "Začať",
+      "learnMore": "Dozvedieť sa viac"
+    },
+    "services": {
+      "title": "Naše služby",
+      "description": "Čo ponúkame",
+      "items": {
+        "customSoftware": {
+          "title": "Vývoj vlastného softvéru",
+          "description": "Softvérové riešenia šité na mieru vašim obchodným potrebám"
+        },
+        "webApplications": {
+          "title": "Webové aplikácie",
+          "description": "Moderné, responzívne webové aplikácie postavené na najnovších technológiách"
+        },
+        "apiDevelopment": {
+          "title": "Vývoj API",
+          "description": "RESTful API a architektúra mikroslužieb"
+        },
+        "consulting": {
+          "title": "Konzultácie",
+          "description": "Odborné rady ohľadom softvérovej architektúry a najlepších postupov"
+        }
+      }
+    },
+    "testimonials": {
+      "title": "Čo hovoria naši klienti",
+      "description": "Referencie od spokojných zákazníkov"
+    },
+    "contact": {
+      "title": "Kontaktujte nás",
+      "description": "Kontaktujte nás pre bezplatnú konzultáciu"
+    }
+  },
+  "contact": {
+    "form": {
+      "title": "Kontaktujte nás",
+      "description": "Vyplňte formulár nižšie a čoskoro sa vám ozveme.",
+      "name": "Meno",
+      "email": "Email",
+      "phone": "Telefón",
+      "message": "Správa",
+      "submit": "Odoslať správu",
+      "success": "Ďakujeme! Čoskoro sa vám ozveme.",
+      "error": "Niečo sa pokazilo. Skúste to znova."
+    }
+  },
+  "admin": {
+    "login": {
+      "title": "Prihlásenie administrátora",
+      "email": "Email",
+      "password": "Heslo",
+      "submit": "Prihlásiť sa",
+      "error": "Neplatné prihlasovacie údaje"
+    },
+    "dashboard": {
+      "title": "Nástenka",
+      "stats": {
+        "leads": "Záujemcovia",
+        "meetings": "Stretnutia",
+        "testimonials": "Referencie",
+        "totalLeads": "Celkový počet záujemcov",
+        "newLeads": "Noví záujemcovia"
+      },
+      "view": "Zobraziť"
+    },
+    "leads": {
+      "title": "Záujemcovia",
+      "list": "Zoznam záujemcov",
+      "export": "Exportovať do CSV",
+      "status": "Stav",
+      "new": "Nový",
+      "contacted": "Kontaktovaný",
+      "qualified": "Kvalifikovaný",
+      "closed": "Uzavretý",
+      "exportSuccess": "Záujemcovia boli úspešne exportovaní",
+      "updateSuccess": "Záujemca bol úspešne aktualizovaný",
+      "deleteSuccess": "Záujemca bol úspešne zmazaný",
+      "deleteConfirm": "Ste si istí, že chcete zmazať tohto záujemcu?",
+      "filterByStatus": "Filtrovať podľa stavu",
+      "name": "Meno",
+      "email": "Email",
+      "phone": "Telefón",
+      "created": "Vytvorené",
+      "actions": "Akcie",
+      "noLeads": "Nenašli sa žiadni záujemcovia",
+      "page": "Strana",
+      "of": "z"
+    },
+    "testimonials": {
+      "title": "Referencie",
+      "list": "Zoznam referencií",
+      "create": "Vytvoriť referenciu",
+      "edit": "Upraviť referenciu",
+      "status": "Stav",
+      "active": "Aktívny",
+      "inactive": "Neaktívny",
+      "noTestimonials": "Nenašli sa žiadne referencie",
+      "deleteSuccess": "Referencia bola úspešne zmazaná",
+      "deleteConfirm": "Ste si istí, že chcete zmazať túto referenciu?",
+      "order": "Poradie",
+      "page": "Strana",
+      "of": "z"
+    },
+    "meetings": {
+      "title": "Stretnutia",
+      "list": "Zoznam stretnutí",
+      "availability": "Dostupnosť",
+      "manageAvailability": "Spravovať dostupnosť",
+      "name": "Meno",
+      "email": "Email",
+      "scheduled": "Naplánované",
+      "duration": "Trvanie",
+      "status": "Stav",
+      "actions": "Akcie",
+      "noMeetings": "Nenašli sa žiadne stretnutia",
+      "cancel": "Zrušiť",
+      "previous": "Predchádzajúce",
+      "next": "Ďalej",
+      "page": "Strana",
+      "of": "z",
+      "updateSuccess": "Stretnutie bolo úspešne aktualizované",
+      "cancelSuccess": "Stretnutie bolo úspešne zrušené",
+      "cancelConfirm": "Ste si istí, že chcete zrušiť toto stretnutie?",
+      "statusPending": "Čakajúce",
+      "statusConfirmed": "Potvrdené",
+      "statusCancelled": "Zrušené",
+      "statusCompleted": "Dokončené",
+      "availabilityTitle": "Dostupnosť stretnutí",
+      "configureSlots": "Nastaviť dostupné časové sloty",
+      "noSlotsConfigured": "Nie sú nakonfigurované žiadne časové sloty",
+      "slot": "Slot",
+      "remove": "Odstrániť",
+      "dayOfWeek": "Deň v týždni",
+      "startTime": "Začiatok",
+      "endTime": "Koniec",
+      "active": "Aktívny",
+      "addTimeSlot": "Pridať časový slot",
+      "saveAvailability": "Uložiť dostupnosť",
+      "updateSuccessAvailability": "Dostupnosť bola úspešne aktualizovaná",
+      "updateErrorAvailability": "Nepodarilo sa aktualizovať dostupnosť",
+      "days": {
+        "sunday": "Nedeľa",
+        "monday": "Pondelok",
+        "tuesday": "Utorok",
+        "wednesday": "Streda",
+        "thursday": "Štvrtok",
+        "friday": "Piatok",
+        "saturday": "Sobota"
+      }
+    },
+    "content": {
+      "title": "Správa obsahu",
+      "list": "Zoznam obsahu",
+      "create": "Vytvoriť obsah",
+      "edit": "Upraviť obsah",
+      "noContent": "Nenašiel sa žiadny obsah",
+      "contentKey": "Kľúč obsahu",
+      "contentType": "Typ obsahu",
+      "contentValue": "Hodnota obsahu",
+      "translation": "Preklad",
+      "translations": "Preklady",
+      "languages": "jazykov",
+      "type": "Typ",
+      "createSuccess": "Obsah bol úspešne vytvorený",
+      "updateSuccess": "Obsah bol úspešne aktualizovaný",
+      "createError": "Nepodarilo sa vytvoriť obsah",
+      "updateError": "Nepodarilo sa aktualizovať obsah",
+      "types": {
+        "text": "Text",
+        "richText": "Formátovaný text",
+        "html": "HTML",
+        "json": "JSON"
+      },
+      "order": "Poradie",
+      "page": "Strana",
+      "of": "z"
+    },
+    "uploadFile": "Nahrať súbor",
+    "upload": "Nahrať",
+    "uploading": "Nahráva sa..."
+  },
+  "meeting": {
+    "title": "Rezervovať stretnutie",
+    "description": "Naplánujte si konzultáciu s nami",
+    "selectDateTime": "Vyberte dátum a čas",
+    "name": "Vaše meno",
+    "email": "Email",
+    "phone": "Telefón",
+    "duration": "Trvanie (minúty)",
+    "notes": "Poznámky",
+    "book": "Rezervovať stretnutie",
+    "selected": "Vybraté",
+    "noSlots": "Momentálne nie sú k dispozícii žiadne časové sloty. Skúste to znova neskôr alebo nás kontaktujte priamo.",
+    "success": "Stretnutie bolo úspešne rezervované! Čoskoro dostanete potvrdzujúci email.",
+    "error": "Nepodarilo sa rezervovať stretnutie. Skúste to znova."
+  },
+  "footer": {
+    "tagline": "Softvérové riešenia - Spoľahlivé, Cenovo dostupné, Individuálny prístup",
+    "quickLinks": "Rýchle odkazy",
+    "legal": "Právne informácie",
+    "allRightsReserved": "Všetky práva vyhradené",
+    "contact": "Kontakt",
+    "address": "Adresa",
+    "phone": "Telefón",
+    "email": "Email",
+    "openingHours": "Otváracie hodiny",
+    "openingHoursValue": "Pondelok – Piatok : 8:00 – 19:00",
+    "followUs": "Sledujte nás",
+    "companyInfo": "Informácie o spoločnosti",
+    "ico": "IČO",
+    "icDph": "IČ DPH"
+  },
+  "legal": {
+    "gdpr": {
+      "title": "GDPR"
+    },
+    "privacy": {
+      "title": "Zásady ochrany súkromia"
+    },
+    "terms": {
+      "title": "Obchodné podmienky"
+    }
+  }
+}
+
