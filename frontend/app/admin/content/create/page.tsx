@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { contentApi } from '@/lib/api/content';
 import { useUIStore } from '@/stores/uiStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -37,6 +37,7 @@ const typeOptions = [
 
 export default function CreateContentPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const addNotification = useUIStore((state) => state.addNotification);
 
   const {
@@ -59,16 +60,31 @@ export default function CreateContentPage() {
   const mutation = useMutation({
     mutationFn: contentApi.create,
     onSuccess: () => {
+      // Invalidate queries so they refetch when the list page mounts
+      queryClient.invalidateQueries({ queryKey: ['content'] });
       addNotification({
         type: 'success',
         message: 'Content created successfully',
       });
       router.push('/admin/content');
     },
-    onError: () => {
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.error?.message || 'Failed to create content';
+      const details = error?.response?.data?.error?.details;
+      
+      let message = errorMessage;
+      if (details && typeof details === 'object') {
+        const fieldErrors = Object.entries(details)
+          .map(([field, errors]) => `${field}: ${Array.isArray(errors) ? errors.join(', ') : errors}`)
+          .join('; ');
+        if (fieldErrors) {
+          message = `${errorMessage} - ${fieldErrors}`;
+        }
+      }
+      
       addNotification({
         type: 'error',
-        message: 'Failed to create content',
+        message,
       });
     },
   });
@@ -99,7 +115,7 @@ export default function CreateContentPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-text mb-6">Create Content</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Create Content</h1>
       <Card>
         <CardHeader>
           <CardTitle>Content Details</CardTitle>
@@ -125,7 +141,7 @@ export default function CreateContentPage() {
             {translations.map((translation, index) => (
               <div key={index} className="border p-4 rounded-lg space-y-4">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-semibold text-text">Translation ({translation.locale})</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Translation ({translation.locale})</h3>
                   {translations.length > 1 && (
                     <Button type="button" variant="danger" size="sm" onClick={() => removeTranslation(index)}>
                       Remove

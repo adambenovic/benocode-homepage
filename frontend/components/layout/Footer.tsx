@@ -68,17 +68,17 @@ export const Footer: React.FC = () => {
             <h3 className="text-lg font-semibold mb-4">{tFooter('quickLinks')}</h3>
             <ul className="space-y-2">
               <li>
-                <Link href={`/${locale}`} className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/" className="text-gray-300 hover:text-white transition-colors">
                   {t('nav.home')}
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/#services`} className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/#services" className="text-gray-300 hover:text-white transition-colors">
                   {t('nav.services')}
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/#contact`} className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/#contact" className="text-gray-300 hover:text-white transition-colors">
                   {t('nav.contact')}
                 </Link>
               </li>
@@ -90,17 +90,17 @@ export const Footer: React.FC = () => {
             <h3 className="text-lg font-semibold mb-4">{tFooter('legal')}</h3>
             <ul className="space-y-2">
               <li>
-                <Link href={`/${locale}/gdpr`} className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/gdpr" className="text-gray-300 hover:text-white transition-colors">
                   {t('legal.gdpr.title')}
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/privacy`} className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/privacy" className="text-gray-300 hover:text-white transition-colors">
                   {t('legal.privacy.title')}
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/terms`} className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/terms" className="text-gray-300 hover:text-white transition-colors">
                   {t('legal.terms.title')}
                 </Link>
               </li>
@@ -119,7 +119,7 @@ export const Footer: React.FC = () => {
                   className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
                 >
                   <img
-                    src="https://finstat.sk/favicon.ico"
+                    src="/finstat-favicon.ico"
                     alt="FinStat Logo"
                     className="h-5 w-5 flex-shrink-0"
                   />
@@ -134,9 +134,9 @@ export const Footer: React.FC = () => {
                   className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
                 >
                   <img
-                    src="/logos/orsr-logo.gif"
+                    src="/orsr-favicon.ico"
                     alt="ORSR Logo"
-                    className="h-5 w-auto flex-shrink-0"
+                    className="h-5 w-5 flex-shrink-0"
                   />
                   <span>ORSR</span>
                 </a>

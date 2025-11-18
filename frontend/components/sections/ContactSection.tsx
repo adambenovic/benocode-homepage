@@ -58,11 +58,11 @@ export const ContactSection: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-20 bg-gray-50">
+    <section id="contact" className="py-20 bg-gray-50 dark:bg-gray-800 transition-colors">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-text mb-4">{t('title')}</h2>
-          <p className="text-lg text-text-light">{t('description')}</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-text dark:text-white mb-4">{t('title')}</h2>
+          <p className="text-lg text-text-light dark:text-gray-300">{t('description')}</p>
         </div>
         <div className="max-w-2xl mx-auto">
           <Card>

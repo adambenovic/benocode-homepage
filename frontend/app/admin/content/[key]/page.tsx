@@ -80,6 +80,7 @@ export default function EditContentPage() {
         translations: formData.translations.filter((t) => t.value),
       }),
     onSuccess: () => {
+      // Invalidate all related queries so they refetch when needed
       queryClient.invalidateQueries({ queryKey: ['content'] });
       queryClient.invalidateQueries({ queryKey: ['content', key] });
       addNotification({
@@ -127,7 +128,7 @@ export default function EditContentPage() {
   if (!data?.data) {
     return (
       <div>
-        <p className="text-text-light">Content not found</p>
+        <p className="text-gray-600 dark:text-gray-400">Content not found</p>
         <Button onClick={() => router.back()} className="mt-4">
           Back
         </Button>
@@ -137,7 +138,7 @@ export default function EditContentPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-text mb-6">Edit Content: {key}</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Edit Content: {key}</h1>
       <Card>
         <CardHeader>
           <CardTitle>Content Details</CardTitle>
@@ -145,7 +146,7 @@ export default function EditContentPage() {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-text mb-1">Content Key</label>
+              <label className="block text-sm font-medium text-gray-900 dark:text-white mb-1">Content Key</label>
               <Input value={key} disabled />
             </div>
 
@@ -160,7 +161,7 @@ export default function EditContentPage() {
             {translations.map((translation, index) => (
               <div key={index} className="border p-4 rounded-lg space-y-4">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-semibold text-text">Translation ({translation.locale})</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Translation ({translation.locale})</h3>
                   {translations.length > 1 && (
                     <Button type="button" variant="danger" size="sm" onClick={() => removeTranslation(index)}>
                       Remove

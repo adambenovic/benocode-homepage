@@ -10,6 +10,7 @@ import { Select } from '@/components/ui/Select';
 import { Spinner } from '@/components/ui/Spinner';
 import { useUIStore } from '@/stores/uiStore';
 import { LEAD_STATUS, PAGINATION_CONSTANTS } from '@/lib/constants';
+import Link from 'next/link';
 
 export default function AdminLeadsPage() {
   const [page, setPage] = useState(1);
@@ -90,7 +91,7 @@ export default function AdminLeadsPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-text">Leads</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Leads</h1>
         <Button onClick={handleExport} isLoading={exportMutation.isPending}>
           Export to CSV
         </Button>
@@ -111,41 +112,41 @@ export default function AdminLeadsPage() {
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-text-light uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                     Name
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-text-light uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                     Email
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-text-light uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                     Phone
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-text-light uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-text-light uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                     Created
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-text-light uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {filteredLeads.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-4 text-center text-text-light">
+                    <td colSpan={6} className="px-6 py-4 text-center text-gray-600 dark:text-gray-400">
                       No leads found
                     </td>
                   </tr>
                 ) : (
                   filteredLeads.map((lead) => (
                     <tr key={lead.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                         {lead.name}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-text-light">{lead.email}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-text-light">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">{lead.email}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                         {lead.phone || '-'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -156,11 +157,16 @@ export default function AdminLeadsPage() {
                           className="w-32"
                         />
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-text-light">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                         {new Date(lead.createdAt).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <div className="flex gap-2">
+                          <Link href={`/admin/leads/${lead.id}`}>
+                            <Button variant="outline" size="sm">
+                              View
+                            </Button>
+                          </Link>
                           <Button
                             variant="danger"
                             size="sm"
@@ -188,7 +194,7 @@ export default function AdminLeadsPage() {
           >
             Previous
           </Button>
-          <span className="px-4 py-2 text-sm text-text-light">
+          <span className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400">
             Page {page} of {data.meta.totalPages}
           </span>
           <Button

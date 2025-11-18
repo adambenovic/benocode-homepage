@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { legalApi } from '@/lib/api/legal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Spinner } from '@/components/ui/Spinner';
+import { MarkdownRenderer } from '@/components/ui/MarkdownRenderer';
 
 export default function GDPRPage() {
   const locale = useLocale();
@@ -36,11 +37,11 @@ export default function GDPRPage() {
         <CardHeader>
           <CardTitle className="text-3xl">{translation?.title || 'GDPR'}</CardTitle>
         </CardHeader>
-        <CardContent className="prose max-w-none">
+        <CardContent>
           {translation?.content ? (
-            <div dangerouslySetInnerHTML={{ __html: translation.content }} />
+            <MarkdownRenderer content={translation.content} />
           ) : (
-            <p className="text-text-light">
+            <p className="text-text-light dark:text-gray-400">
               GDPR content will be managed through the admin panel and displayed here.
             </p>
           )}

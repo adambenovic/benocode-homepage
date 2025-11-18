@@ -67,16 +67,16 @@ export default function AdminDashboardPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-text mb-6">Dashboard</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat) => (
           <Card key={stat.title}>
             <CardHeader>
-              <CardTitle className="text-sm font-medium text-text-light">{stat.title}</CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">{stat.title}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
-                <span className="text-3xl font-bold text-text">{stat.value}</span>
+                <span className="text-3xl font-bold text-gray-900 dark:text-white">{stat.value}</span>
                 <Link href={stat.href}>
                   <Button variant="outline" size="sm">
                     View

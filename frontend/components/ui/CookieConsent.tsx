@@ -51,7 +51,7 @@ export const CookieConsent: React.FC = () => {
             <p className="text-sm text-text">
               We use cookies to enhance your browsing experience and analyze site traffic. By clicking
               &quot;Accept&quot;, you consent to our use of cookies.{' '}
-              <Link href={`/${locale}/privacy`} className="text-primary hover:underline">
+              <Link href="/privacy" className="text-primary hover:underline">
                 Learn more
               </Link>
             </p>

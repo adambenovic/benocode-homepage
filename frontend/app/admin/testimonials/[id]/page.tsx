@@ -19,10 +19,10 @@ const testimonialSchema = z.object({
   translations: z.array(
     z.object({
       locale: z.enum(['EN', 'SK', 'DE', 'CZ']),
-      author: z.string().min(2, 'Author name is required'),
+      name: z.string().min(2, 'Name is required'),
       content: z.string().min(10, 'Content must be at least 10 characters'),
       company: z.string().optional(),
-      position: z.string().optional(),
+      role: z.string().optional(),
     })
   ).min(1, 'At least one translation is required'),
   isActive: z.boolean(),
@@ -58,10 +58,10 @@ export default function EditTestimonialPage() {
       reset({
         translations: data.data.translations.map((t) => ({
           locale: t.locale,
-          author: t.author,
+          name: t.name,
           content: t.content,
           company: t.company || '',
-          position: t.position || '',
+          role: t.role || '',
         })),
         isActive: data.data.isActive,
       });
@@ -73,10 +73,11 @@ export default function EditTestimonialPage() {
   const mutation = useMutation({
     mutationFn: (formData: TestimonialFormData) =>
       testimonialsApi.update(id, {
-        translations: formData.translations.filter((t) => t.author && t.content),
+        translations: formData.translations.filter((t) => t.name && t.content),
         isActive: formData.isActive,
       }),
     onSuccess: () => {
+      // Invalidate all related queries so they refetch when needed
       queryClient.invalidateQueries({ queryKey: ['testimonials'] });
       queryClient.invalidateQueries({ queryKey: ['testimonial', id] });
       addNotification({
@@ -85,10 +86,23 @@ export default function EditTestimonialPage() {
       });
       router.push('/admin/testimonials');
     },
-    onError: () => {
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.error?.message || 'Failed to update testimonial';
+      const details = error?.response?.data?.error?.details;
+      
+      let message = errorMessage;
+      if (details && typeof details === 'object') {
+        const fieldErrors = Object.entries(details)
+          .map(([field, errors]) => `${field}: ${Array.isArray(errors) ? errors.join(', ') : errors}`)
+          .join('; ');
+        if (fieldErrors) {
+          message = `${errorMessage} - ${fieldErrors}`;
+        }
+      }
+      
       addNotification({
         type: 'error',
-        message: 'Failed to update testimonial',
+        message,
       });
     },
   });
@@ -105,7 +119,7 @@ export default function EditTestimonialPage() {
     if (availableLocale) {
       setValue('translations', [
         ...translations,
-        { locale: availableLocale, author: '', content: '', company: '', position: '' },
+        { locale: availableLocale, name: '', content: '', company: '', role: '' },
       ]);
     }
   };
@@ -127,7 +141,7 @@ export default function EditTestimonialPage() {
   if (!data?.data) {
     return (
       <div>
-        <p className="text-text-light">Testimonial not found</p>
+        <p className="text-gray-600 dark:text-gray-400">Testimonial not found</p>
         <Button onClick={() => router.back()} className="mt-4">
           Back
         </Button>
@@ -137,7 +151,7 @@ export default function EditTestimonialPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-text mb-6">Edit Testimonial</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Edit Testimonial</h1>
       <Card>
         <CardHeader>
           <CardTitle>Testimonial Details</CardTitle>
@@ -147,7 +161,7 @@ export default function EditTestimonialPage() {
             {translations.map((translation, index) => (
               <div key={index} className="border p-4 rounded-lg space-y-4">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-semibold text-text">Translation ({translation.locale})</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Translation ({translation.locale})</h3>
                   {translations.length > 1 && (
                     <Button type="button" variant="danger" size="sm" onClick={() => removeTranslation(index)}>
                       Remove
@@ -155,9 +169,9 @@ export default function EditTestimonialPage() {
                   )}
                 </div>
                 <Input
-                  label="Author Name"
-                  {...register(`translations.${index}.author`)}
-                  error={errors.translations?.[index]?.author?.message}
+                  label="Name"
+                  {...register(`translations.${index}.name`)}
+                  error={errors.translations?.[index]?.name?.message}
                   required
                 />
                 <Textarea
@@ -173,9 +187,9 @@ export default function EditTestimonialPage() {
                   error={errors.translations?.[index]?.company?.message}
                 />
                 <Input
-                  label="Position (optional)"
-                  {...register(`translations.${index}.position`)}
-                  error={errors.translations?.[index]?.position?.message}
+                  label="Role (optional)"
+                  {...register(`translations.${index}.role`)}
+                  error={errors.translations?.[index]?.role?.message}
                 />
               </div>
             ))}
@@ -188,7 +202,7 @@ export default function EditTestimonialPage() {
 
             <div className="flex items-center gap-2">
               <input type="checkbox" id="isActive" {...register('isActive')} className="w-4 h-4" />
-              <label htmlFor="isActive" className="text-sm text-text">
+              <label htmlFor="isActive" className="text-sm text-gray-900 dark:text-white">
                 Active
               </label>
             </div>

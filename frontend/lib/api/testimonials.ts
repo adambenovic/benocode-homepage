@@ -3,10 +3,10 @@ import { apiClient } from './client';
 
 export interface TestimonialTranslation {
   locale: 'EN' | 'SK' | 'DE' | 'CZ';
-  author: string;
+  name: string;
   content: string;
   company?: string;
-  position?: string;
+  role?: string;
 }
 
 export interface Testimonial {
@@ -21,10 +21,10 @@ export interface Testimonial {
 export interface CreateTestimonialRequest {
   translations: Array<{
     locale: 'EN' | 'SK' | 'DE' | 'CZ';
-    author: string;
+    name: string;
     content: string;
     company?: string;
-    position?: string;
+    role?: string;
   }>;
   isActive?: boolean;
 }
@@ -32,10 +32,10 @@ export interface CreateTestimonialRequest {
 export interface UpdateTestimonialRequest {
   translations?: Array<{
     locale: 'EN' | 'SK' | 'DE' | 'CZ';
-    author: string;
+    name: string;
     content: string;
     company?: string;
-    position?: string;
+    role?: string;
   }>;
   isActive?: boolean;
 }

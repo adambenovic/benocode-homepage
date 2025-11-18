@@ -1,4 +1,6 @@
 // components/ui/Select.tsx
+'use client';
+
 import React from 'react';
 import { cn } from '@/lib/utils';
 
@@ -15,14 +17,15 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   placeholder?: string;
 }
 
-export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
+const SelectComponent = React.forwardRef<HTMLSelectElement, SelectProps>(
   ({ label, error, helperText, options, placeholder, className, id, ...props }, ref) => {
-    const selectId = id || `select-${Math.random().toString(36).substring(7)}`;
+    const generatedId = React.useId();
+    const selectId = id || generatedId;
 
     return (
       <div className="w-full">
         {label && (
-          <label htmlFor={selectId} className="block text-sm font-medium text-text mb-1">
+          <label htmlFor={selectId} className="block text-sm font-medium text-text dark:text-gray-200 mb-1">
             {label}
             {props.required && <span className="text-red-500 ml-1">*</span>}
           </label>
@@ -31,10 +34,11 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           id={selectId}
           ref={ref}
           className={cn(
-            'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors bg-white',
+            'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors',
+            'bg-white dark:bg-gray-700 text-text dark:text-white',
             error
               ? 'border-red-500 focus:ring-red-500'
-              : 'border-gray-300 focus:ring-primary',
+              : 'border-gray-300 dark:border-gray-600 focus:ring-primary',
             className
           )}
           aria-invalid={error ? 'true' : 'false'}
@@ -58,7 +62,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           </p>
         )}
         {helperText && !error && (
-          <p id={`${selectId}-helper`} className="mt-1 text-sm text-text-light">
+          <p id={`${selectId}-helper`} className="mt-1 text-sm text-text-light dark:text-gray-400">
             {helperText}
           </p>
         )}
@@ -67,5 +71,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   }
 );
 
-Select.displayName = 'Select';
+SelectComponent.displayName = 'Select';
+
+export const Select = SelectComponent;
 

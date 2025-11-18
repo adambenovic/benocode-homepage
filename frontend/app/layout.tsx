@@ -4,9 +4,9 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   icons: {
-    icon: 'https://benocode.sk/favicon.ico',
-    shortcut: 'https://benocode.sk/favicon.ico',
-    apple: 'https://benocode.sk/favicon.ico',
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
   },
 };
 
@@ -16,8 +16,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="flex flex-col min-h-screen">
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const savedMode = localStorage.getItem('darkMode');
+                  const isDark = savedMode === null ? true : savedMode === 'true';
+                  if (!isDark) {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="flex flex-col min-h-screen" suppressHydrationWarning>
         <QueryProvider>
           {children}
         </QueryProvider>

@@ -15,7 +15,7 @@ export const HeroSection: React.FC = () => {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">{t('title')}</h1>
           <p className="text-xl md:text-2xl mb-8 text-gray-100">{t('description')}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="#contact">
+            <a href="#book-meeting">
               <Button variant="secondary" size="lg">
                 {t('getStarted')}
               </Button>

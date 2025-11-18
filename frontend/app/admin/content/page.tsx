@@ -33,7 +33,7 @@ export default function AdminContentPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-text">Content Management</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Content Management</h1>
         <Link href="/admin/content/create">
           <Button>Create Content</Button>
         </Link>
@@ -42,7 +42,7 @@ export default function AdminContentPage() {
       <div className="grid grid-cols-1 gap-4">
         {contents.length === 0 ? (
           <Card>
-            <CardContent className="p-6 text-center text-text-light">
+            <CardContent className="p-6 text-center text-gray-600 dark:text-gray-400">
               No content found
             </CardContent>
           </Card>
@@ -58,11 +58,11 @@ export default function AdminContentPage() {
                 <CardContent className="p-6">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-text mb-2">{content.key}</h3>
-                      <p className="text-sm text-text-light mb-2">Type: {content.type}</p>
-                      <p className="text-text-light text-sm">{preview}</p>
+                      <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{content.key}</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Type: {content.type}</p>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm">{preview}</p>
                       <div className="mt-2">
-                        <span className="text-xs text-text-light">
+                        <span className="text-xs text-gray-600 dark:text-gray-400">
                           Translations: {content.translations.length} languages
                         </span>
                       </div>
@@ -87,7 +87,7 @@ export default function AdminContentPage() {
           <Button variant="outline" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>
             Previous
           </Button>
-          <span className="px-4 py-2 text-sm text-text-light">
+          <span className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400">
             Page {page} of {data.meta.totalPages}
           </span>
           <Button

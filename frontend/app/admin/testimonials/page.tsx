@@ -47,7 +47,7 @@ export default function AdminTestimonialsPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-text">Testimonials</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Testimonials</h1>
         <Link href="/admin/testimonials/create">
           <Button>Create Testimonial</Button>
         </Link>
@@ -56,7 +56,7 @@ export default function AdminTestimonialsPage() {
       <div className="grid grid-cols-1 gap-4">
         {testimonials.length === 0 ? (
           <Card>
-            <CardContent className="p-6 text-center text-text-light">
+            <CardContent className="p-6 text-center text-gray-600 dark:text-gray-400">
               No testimonials found
             </CardContent>
           </Card>
@@ -68,14 +68,14 @@ export default function AdminTestimonialsPage() {
                 <CardContent className="p-6">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <p className="text-text-light mb-2 italic">&quot;{enTranslation.content}&quot;</p>
-                      <p className="font-semibold text-text">{enTranslation.author}</p>
+                      <p className="text-gray-600 dark:text-gray-400 mb-2 italic">&quot;{enTranslation.content}&quot;</p>
+                      <p className="font-semibold text-gray-900 dark:text-white">{enTranslation.name}</p>
                       {enTranslation.company && (
-                        <p className="text-sm text-text-light">{enTranslation.company}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{enTranslation.company}</p>
                       )}
                       <div className="mt-2">
-                        <span className="text-xs text-text-light">Order: {testimonial.order}</span>
-                        <span className="ml-4 text-xs text-text-light">
+                        <span className="text-xs text-gray-600 dark:text-gray-400">Order: {testimonial.order}</span>
+                        <span className="ml-4 text-xs text-gray-600 dark:text-gray-400">
                           Status: {testimonial.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </div>
@@ -103,7 +103,7 @@ export default function AdminTestimonialsPage() {
           <Button variant="outline" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>
             Previous
           </Button>
-          <span className="px-4 py-2 text-sm text-text-light">
+          <span className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400">
             Page {page} of {data.meta.totalPages}
           </span>
           <Button

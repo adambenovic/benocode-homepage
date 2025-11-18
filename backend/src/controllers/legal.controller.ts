@@ -35,11 +35,30 @@ export class LegalController {
     }
   }
 
+  async create(req: Request, res: Response, next: NextFunction) {
+    try {
+      const legalPage = await this.legalService.create(req.body);
+      res.status(201).json({ data: legalPage });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { slug } = req.params;
       const legalPage = await this.legalService.update(slug, req.body);
       res.json({ data: legalPage });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { slug } = req.params;
+      await this.legalService.delete(slug);
+      res.status(204).send();
     } catch (error) {
       next(error);
     }

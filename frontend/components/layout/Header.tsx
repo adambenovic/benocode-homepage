@@ -5,57 +5,63 @@ import React from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Button } from '@/components/ui/Button';
+import { DarkModeToggle } from '@/components/ui/DarkModeToggle';
 
 export const Header: React.FC = () => {
   const t = useTranslations('nav');
-  const locale = useLocale();
   const pathname = usePathname();
 
   const isActive = (path: string) => {
-    return pathname === `/${locale}${path}` || pathname === `/${locale}${path}/`;
+    if (path === '') {
+      return pathname === '/' || pathname === '';
+    }
+    return pathname === path || pathname.startsWith(path);
   };
 
   return (
-    <header className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
+    <header className="bg-white dark:bg-gray-900 shadow-md fixed top-0 left-0 right-0 z-50 transition-colors">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link href={`/${locale}`} className="text-2xl font-bold text-primary">
+          <Link href="/" className="text-2xl font-bold text-primary dark:text-white">
             BenoCode
           </Link>
           <nav className="hidden md:flex items-center gap-6">
             <Link
-              href={`/${locale}`}
+              href="/"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive('') ? 'text-primary bg-primary/10' : 'text-text hover:text-primary'
+                isActive('') ? 'text-primary dark:text-white bg-primary/10 dark:bg-primary/20' : 'text-text dark:text-gray-300 hover:text-primary dark:hover:text-white'
               }`}
             >
               {t('home')}
             </Link>
             <Link
-              href={`/${locale}/#services`}
+              href="/#services"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive('/#services') ? 'text-primary bg-primary/10' : 'text-text hover:text-primary'
+                isActive('/#services') ? 'text-primary dark:text-white bg-primary/10 dark:bg-primary/20' : 'text-text dark:text-gray-300 hover:text-primary dark:hover:text-white'
               }`}
             >
               {t('services')}
             </Link>
             <Link
-              href={`/${locale}/#contact`}
+              href="/#book-meeting"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive('/#contact') ? 'text-primary bg-primary/10' : 'text-text hover:text-primary'
+                isActive('/#book-meeting') ? 'text-primary dark:text-white bg-primary/10 dark:bg-primary/20' : 'text-text dark:text-gray-300 hover:text-primary dark:hover:text-white'
+              }`}
+            >
+              {t('meet')}
+            </Link>
+            <Link
+              href="/#contact"
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                isActive('/#contact') ? 'text-primary dark:text-white bg-primary/10 dark:bg-primary/20' : 'text-text dark:text-gray-300 hover:text-primary dark:hover:text-white'
               }`}
             >
               {t('contact')}
             </Link>
           </nav>
           <div className="flex items-center gap-4">
+            <DarkModeToggle />
             <LanguageSwitcher />
-            <Link href="/admin/login">
-              <Button variant="outline" size="sm">
-                Admin
-              </Button>
-            </Link>
           </div>
         </div>
       </div>
@@ -74,26 +80,28 @@ const LanguageSwitcher: React.FC = () => {
     { code: 'de', label: 'DE' },
   ];
 
-  // Remove locale from pathname and add new locale
-  const getNewPath = (newLocale: string) => {
-    const pathWithoutLocale = pathname.replace(`/${locale}`, '') || '/';
-    return `/${newLocale}${pathWithoutLocale}`;
+  const handleLanguageChange = (newLocale: string) => {
+    // Set the locale cookie (next-intl middleware reads this)
+    // The cookie name used by next-intl middleware
+    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+    // Reload the page to apply the new locale
+    window.location.reload();
   };
 
   return (
     <div className="flex items-center gap-2">
       {languages.map((lang) => (
-        <Link
+        <button
           key={lang.code}
-          href={getNewPath(lang.code)}
+          onClick={() => handleLanguageChange(lang.code)}
           className={`px-2 py-1 rounded text-sm font-medium transition-colors ${
             locale === lang.code
               ? 'bg-primary text-white'
-              : 'text-text hover:bg-gray-100'
+              : 'text-text dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
           }`}
         >
           {lang.label}
-        </Link>
+        </button>
       ))}
     </div>
   );

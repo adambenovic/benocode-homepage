@@ -1,6 +1,6 @@
 // app/[locale]/layout.tsx
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import { getMessages, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { locales } from '@/i18n';
 import { QueryProvider } from '@/providers/QueryProvider';
@@ -14,10 +14,13 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'home' });
+
   return {
-    title: 'BenoCode - Software Solutions',
-    description: 'Reliable, Affordable, Individual Approach',
+    title: t('title'),
+    description: t('subtitle'),
   };
 }
 
@@ -34,17 +37,19 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  const messages = await getMessages();
+  const messages = await getMessages({ locale });
 
   return (
     <>
       <GoogleAnalytics />
       <NextIntlClientProvider messages={messages}>
-        <Header />
-        <main className="flex-1 pt-16">{children}</main>
-        <Footer />
-        <ToastContainer />
-        <CookieConsent />
+        <div className="bg-white dark:bg-gray-900 min-h-screen transition-colors">
+          <Header />
+          <main className="flex-1 pt-16">{children}</main>
+          <Footer />
+          <ToastContainer />
+          <CookieConsent />
+        </div>
       </NextIntlClientProvider>
     </>
   );

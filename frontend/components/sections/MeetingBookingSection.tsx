@@ -152,19 +152,18 @@ export const MeetingBookingSection: React.FC = () => {
     setValue('scheduledAt', '');
   };
 
-  const handleTimeSelect = (time: string) => {
-    setSelectedTime(time);
-    if (selectedDate) {
-      setValue('scheduledAt', `${selectedDate}T${time}`);
-    }
+  const handleTimeSelect = (timeString: string, fullDateTime: string) => {
+    setSelectedTime(timeString);
+    // Use the full ISO datetime string directly
+    setValue('scheduledAt', fullDateTime);
   };
 
   return (
-    <section id="book-meeting" className="py-20">
+    <section id="book-meeting" className="py-20 bg-gray-50 dark:bg-gray-800 transition-colors">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-text mb-4">{t('title')}</h2>
-          <p className="text-lg text-text-light">{t('description')}</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-text dark:text-white mb-4">{t('title')}</h2>
+          <p className="text-lg text-text-light dark:text-gray-300">{t('description')}</p>
         </div>
         <div className="max-w-4xl mx-auto">
           <Card>
@@ -177,9 +176,9 @@ export const MeetingBookingSection: React.FC = () => {
                   <Spinner size="lg" />
                 </div>
               ) : availabilityError ? (
-                <div className="text-center py-8 text-red-600">
+                <div className="text-center py-8 text-red-600 dark:text-red-400">
                   <p className="mb-2">{t('error')}</p>
-                  <p className="text-sm text-text-light">
+                  <p className="text-sm text-text-light dark:text-gray-400">
                     {availabilityErrorData instanceof Error 
                       ? availabilityErrorData.message 
                       : ERROR_MESSAGES.AVAILABILITY_LOAD_FAILED}
@@ -189,8 +188,8 @@ export const MeetingBookingSection: React.FC = () => {
                 <div className="mb-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     {Object.keys(slotsByDate).slice(0, MEETING_CONSTANTS.MAX_DISPLAYED_DATES).map((date) => (
-                      <div key={date} className="border rounded-lg p-4">
-                                <h3 className="font-semibold mb-2">
+                      <div key={date} className="border dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-700">
+                                <h3 className="font-semibold mb-2 text-text dark:text-white">
                                   {new Date(date).toLocaleDateString(locale, {
                                     weekday: 'short',
                                     month: 'short',
@@ -210,12 +209,12 @@ export const MeetingBookingSection: React.FC = () => {
                                 type="button"
                                 onClick={() => {
                                   handleDateSelect(date);
-                                  handleTimeSelect(slot.time);
+                                  handleTimeSelect(slot.timeString, slot.time);
                                 }}
-                                className={`px-3 py-1 text-sm rounded ${
-                                  selectedDate === date && selectedTime === slot.time
+                                className={`px-3 py-1 text-sm rounded transition-colors ${
+                                  selectedDate === date && selectedTime === slot.timeString
                                     ? 'bg-primary text-white'
-                                    : 'bg-gray-100 hover:bg-gray-200'
+                                    : 'bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-text dark:text-white'
                                 }`}
                               >
                                 {displayTime}
@@ -228,7 +227,7 @@ export const MeetingBookingSection: React.FC = () => {
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-8 text-text-light">
+                <div className="text-center py-8 text-text-light dark:text-gray-400">
                   <p>{t('noSlots')}</p>
                 </div>
               )}
@@ -260,9 +259,9 @@ export const MeetingBookingSection: React.FC = () => {
                   rows={4}
                 />
                         {selectedDate && selectedTime && (
-                          <div className="p-4 bg-gray-50 rounded-lg">
-                            <p className="text-sm text-text-light">
-                              {t('selected')}: {new Date(`${selectedDate}T${selectedTime}`).toLocaleString(locale)}
+                          <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <p className="text-sm text-text-light dark:text-gray-300">
+                              {t('selected')}: {new Date(selectedDate).toLocaleDateString(locale)} {selectedTime}
                             </p>
                           </div>
                         )}

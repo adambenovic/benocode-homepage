@@ -79,7 +79,9 @@ router.delete('/leads/:id', authMiddleware, authorize('ADMIN'), leadsController.
 const legalService = new LegalService(prisma);
 const legalController = new LegalController(legalService);
 router.get('/legal-pages', authMiddleware, authorize('ADMIN'), legalController.getAll.bind(legalController));
+router.post('/legal-pages', authMiddleware, authorize('ADMIN'), validate(createLegalPageSchema), legalController.create.bind(legalController));
 router.put('/legal-pages/:slug', authMiddleware, authorize('ADMIN'), validate(updateLegalPageSchema), legalController.update.bind(legalController));
+router.delete('/legal-pages/:slug', authMiddleware, authorize('ADMIN'), legalController.delete.bind(legalController));
 
 // Social Links admin routes
 const linksService = new LinksService(prisma);

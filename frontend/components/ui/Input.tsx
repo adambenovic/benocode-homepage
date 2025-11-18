@@ -1,4 +1,6 @@
 // components/ui/Input.tsx
+'use client';
+
 import React from 'react';
 import { cn } from '@/lib/utils';
 
@@ -8,14 +10,15 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   helperText?: string;
 }
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, helperText, className, id, ...props }, ref) => {
-    const inputId = id || `input-${Math.random().toString(36).substring(7)}`;
+    const generatedId = React.useId();
+    const inputId = id || generatedId;
 
     return (
       <div className="w-full">
         {label && (
-          <label htmlFor={inputId} className="block text-sm font-medium text-text mb-1">
+          <label htmlFor={inputId} className="block text-sm font-medium text-text dark:text-gray-200 mb-1">
             {label}
             {props.required && <span className="text-red-500 ml-1">*</span>}
           </label>
@@ -25,9 +28,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           className={cn(
             'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors',
+            'bg-white dark:bg-gray-700 text-text dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500',
             error
               ? 'border-red-500 focus:ring-red-500'
-              : 'border-gray-300 focus:ring-primary',
+              : 'border-gray-300 dark:border-gray-600 focus:ring-primary',
             className
           )}
           aria-invalid={error ? 'true' : 'false'}
@@ -40,7 +44,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           </p>
         )}
         {helperText && !error && (
-          <p id={`${inputId}-helper`} className="mt-1 text-sm text-text-light">
+          <p id={`${inputId}-helper`} className="mt-1 text-sm text-text-light dark:text-gray-400">
             {helperText}
           </p>
         )}
@@ -49,5 +53,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-Input.displayName = 'Input';
+InputComponent.displayName = 'Input';
+
+export const Input = InputComponent;
 

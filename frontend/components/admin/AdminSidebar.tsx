@@ -29,6 +29,7 @@ export const AdminSidebar: React.FC = () => {
     { href: '/admin/meetings', label: 'Meetings', icon: '📅' },
     { href: '/admin/meetings/availability', label: 'Availability', icon: '⏰' },
     { href: '/admin/content', label: 'Content', icon: '📝' },
+    { href: '/admin/legal-pages', label: 'Legal Pages', icon: '⚖️' },
   ];
 
   return (
@@ -53,8 +54,20 @@ export const AdminSidebar: React.FC = () => {
           </div>
           <nav className="flex-1 p-4 space-y-2">
             {navItems.map((item) => {
-              // Check if current path matches or starts with the item href (for nested routes)
-              const isActive = pathname === item.href || pathname?.startsWith(item.href + '/');
+              // Check if current path is an exact match
+              const isExactMatch = pathname === item.href;
+              
+              // Check if current path starts with item href (for nested routes)
+              // But exclude cases where there's a more specific nav item that matches
+              const isParentMatch = pathname?.startsWith(item.href + '/') && 
+                !navItems.some(navItem => 
+                  navItem.href !== item.href && 
+                  navItem.href.startsWith(item.href) && 
+                  pathname?.startsWith(navItem.href)
+                );
+              
+              const isActive = isExactMatch || isParentMatch;
+              
               return (
                 <Link
                   key={item.href}

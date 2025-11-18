@@ -1,6 +1,8 @@
 // prisma/seed.ts
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import * as path from 'path';
+import * as fs from 'fs';
 
 const SALT_ROUNDS = 12;
 
@@ -11,7 +13,7 @@ async function hashPassword(password: string): Promise<string> {
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Seeding database...');
+  console.log('🌱 Seeding database...\n');
 
   // Create admin user
   const adminEmail = process.env.ADMIN_EMAIL || 'admin@benocode.sk';
@@ -30,12 +32,39 @@ async function main() {
         role: 'ADMIN',
       },
     });
-    console.log(`Admin user created: ${adminEmail}`);
+    console.log(`✅ Admin user created: ${adminEmail}\n`);
   } else {
-    console.log(`Admin user already exists: ${adminEmail}`);
+    console.log(`ℹ️  Admin user already exists: ${adminEmail}\n`);
   }
 
-  console.log('Seeding completed!');
+  // Import legal documents if SEED_LEGAL=true or on first run (no legal pages exist)
+  const shouldSeedLegal = process.env.SEED_LEGAL === 'true';
+  const legalPagesCount = await prisma.legalPage.count();
+  
+  if (shouldSeedLegal || legalPagesCount === 0) {
+    console.log('📄 Checking for legal documents...');
+    
+    const markdownPath = path.join(__dirname, '../docs/legal-documents.md');
+    if (fs.existsSync(markdownPath)) {
+      console.log('   Found legal-documents.md, importing...\n');
+      
+      try {
+        // Import the legal documents script
+        const { default: importLegalDocuments } = await import('../scripts/import-legal-docs');
+        await importLegalDocuments();
+      } catch (error) {
+        console.error('⚠️  Failed to import legal documents:', error);
+        console.log('   You can manually import them later with: npm run import:legal\n');
+      }
+    } else {
+      console.log('   legal-documents.md not found, skipping legal import');
+      console.log('   Run "npm run import:legal" to import legal documents manually\n');
+    }
+  } else {
+    console.log('ℹ️  Legal documents already exist. To re-import, run: npm run import:legal\n');
+  }
+
+  console.log('✅ Seeding completed!\n');
 }
 
 main()

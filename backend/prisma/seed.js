@@ -56,15 +56,15 @@ async function main() {
     console.log(`Admin user already exists: ${adminEmail}`);
   }
 
-  // Create default meeting availability (Monday-Friday, 9 AM - 5 PM)
+  // Create default meeting availability (Monday-Friday, 9 AM - 6 PM)
   const existingAvailability = await prisma.meetingAvailability.findFirst();
   if (!existingAvailability) {
     const availability = [
-      { dayOfWeek: 1, startTime: '09:00', endTime: '17:00', isActive: true }, // Monday
-      { dayOfWeek: 2, startTime: '09:00', endTime: '17:00', isActive: true }, // Tuesday
-      { dayOfWeek: 3, startTime: '09:00', endTime: '17:00', isActive: true }, // Wednesday
-      { dayOfWeek: 4, startTime: '09:00', endTime: '17:00', isActive: true }, // Thursday
-      { dayOfWeek: 5, startTime: '09:00', endTime: '17:00', isActive: true }, // Friday
+      { dayOfWeek: 1, startTime: '09:00', endTime: '18:00', isActive: true }, // Monday
+      { dayOfWeek: 2, startTime: '09:00', endTime: '18:00', isActive: true }, // Tuesday
+      { dayOfWeek: 3, startTime: '09:00', endTime: '18:00', isActive: true }, // Wednesday
+      { dayOfWeek: 4, startTime: '09:00', endTime: '18:00', isActive: true }, // Thursday
+      { dayOfWeek: 5, startTime: '09:00', endTime: '18:00', isActive: true }, // Friday
     ];
 
     await prisma.meetingAvailability.createMany({

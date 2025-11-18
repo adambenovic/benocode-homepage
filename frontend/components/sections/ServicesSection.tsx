@@ -32,11 +32,11 @@ export const ServicesSection: React.FC = () => {
   ];
 
   return (
-    <section id="services" className="py-20 bg-gray-50">
+    <section id="services" className="py-20 bg-gray-50 dark:bg-gray-800 transition-colors">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-text mb-4">{t('title')}</h2>
-          <p className="text-lg text-text-light">{t('description')}</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-text dark:text-white mb-4">{t('title')}</h2>
+          <p className="text-lg text-text-light dark:text-gray-300">{t('description')}</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service, index) => (
@@ -46,7 +46,7 @@ export const ServicesSection: React.FC = () => {
                 <CardTitle>{service.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-text-light">{service.description}</p>
+                <p className="text-text-light dark:text-gray-300">{service.description}</p>
               </CardContent>
             </Card>
           ))}

@@ -113,7 +113,7 @@ export default function MeetingsAvailabilityPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-text mb-6">Meeting Availability</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Meeting Availability</h1>
       <Card>
         <CardHeader>
           <CardTitle>Configure Available Time Slots</CardTitle>
@@ -121,12 +121,12 @@ export default function MeetingsAvailabilityPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             {slots.length === 0 ? (
-              <p className="text-text-light text-center py-8">No availability slots configured</p>
+              <p className="text-gray-600 dark:text-gray-400 text-center py-8">No availability slots configured</p>
             ) : (
               slots.map((slot, index) => (
                 <div key={index} className="border p-4 rounded-lg space-y-4">
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-semibold text-text">Slot {index + 1}</h3>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Slot {index + 1}</h3>
                     <Button type="button" variant="danger" size="sm" onClick={() => removeSlot(index)}>
                       Remove
                     </Button>
@@ -160,7 +160,7 @@ export default function MeetingsAvailabilityPage() {
                         onChange={(e) => updateSlot(index, 'isActive', e.target.checked)}
                         className="w-4 h-4"
                       />
-                      <label htmlFor={`active-${index}`} className="text-sm text-text">
+                      <label htmlFor={`active-${index}`} className="text-sm text-gray-900 dark:text-white">
                         Active
                       </label>
                     </div>
