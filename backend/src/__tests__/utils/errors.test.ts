@@ -10,7 +10,7 @@ import {
 describe('Error classes', () => {
   describe('AppError', () => {
     it('should create error with message and status code', () => {
-      const error = new AppError('Test error', 400);
+      const error = new AppError(400, 'Test error');
       expect(error.message).toBe('Test error');
       expect(error.statusCode).toBe(400);
       expect(error).toBeInstanceOf(Error);
@@ -35,7 +35,7 @@ describe('Error classes', () => {
 
   describe('UnauthorizedError', () => {
     it('should create 401 error', () => {
-      const error = new UnauthorizedError('Unauthorized');
+      const error = new UnauthorizedError();
       expect(error.message).toBe('Unauthorized');
       expect(error.statusCode).toBe(401);
     });
@@ -43,7 +43,7 @@ describe('Error classes', () => {
 
   describe('ForbiddenError', () => {
     it('should create 403 error', () => {
-      const error = new ForbiddenError('Forbidden');
+      const error = new ForbiddenError();
       expect(error.message).toBe('Forbidden');
       expect(error.statusCode).toBe(403);
     });
