@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { meetingsApi, AvailableSlot } from '@/lib/api/meetings';
 import { useUIStore } from '@/stores/uiStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -47,18 +47,18 @@ export const MeetingBookingSection: React.FC = () => {
   const dateRange = useMemo(() => {
     const start = new Date();
     start.setHours(0, 0, 0, 0); // Round to start of day
-    
+
     const end = new Date(start);
     end.setDate(end.getDate() + MEETING_CONSTANTS.AVAILABILITY_DAYS);
-    
+
     return {
       start: start.toISOString(),
       end: end.toISOString(),
     };
   }, []); // Empty deps - only calculate once, stable across renders
 
-  const { 
-    data: availabilityData, 
+  const {
+    data: availabilityData,
     isLoading: availabilityLoading,
     isError: availabilityError,
     error: availabilityErrorData
@@ -89,6 +89,8 @@ export const MeetingBookingSection: React.FC = () => {
     },
   });
 
+  const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: meetingsApi.create,
     onSuccess: () => {
@@ -99,6 +101,9 @@ export const MeetingBookingSection: React.FC = () => {
       reset();
       setSelectedDate('');
       setSelectedTime('');
+
+      // Invalidate and refetch availability to remove the booked slot
+      queryClient.invalidateQueries({ queryKey: ['meetings', 'availability'] });
     },
     onError: (error: any) => {
       addNotification({
@@ -117,32 +122,40 @@ export const MeetingBookingSection: React.FC = () => {
       return;
     }
 
-    const scheduledAt = new Date(`${selectedDate}T${selectedTime}`).toISOString();
+    // The scheduledAt is already set in the form via handleTimeSelect
+    // data.scheduledAt contains the full ISO timestamp
     await mutation.mutateAsync({
       ...data,
       duration: 30, // Fixed 30-minute consultations only
-      scheduledAt,
+      locale: locale.toUpperCase(), // Include user's locale
     });
   };
 
   // Group available slots by date
-  // Backend returns { date: "YYYY-MM-DD", time: "HH:mm", available: boolean }
-  // We need to convert to ISO datetime strings for the frontend
+  // Backend now returns { date: "YYYY-MM-DD", time: "ISO_TIMESTAMP", available: boolean }
   const slotsByDate: Record<string, Array<{ time: string; date: string; timeString: string }>> = {};
   availabilityData?.data?.forEach((slot: any) => {
-    // Backend format: { date: "YYYY-MM-DD", time: "HH:mm", available: boolean }
-    // Convert to ISO datetime string
-    const dateStr = slot.date || new Date(slot.time).toISOString().split('T')[0];
-    const timeStr = slot.time || new Date(slot.time).toTimeString().split(' ')[0].slice(0, 5);
-    const isoDateTime = `${dateStr}T${timeStr}:00`;
-    
+    // Backend returns full ISO timestamps now: { date: "YYYY-MM-DD", time: "2025-11-26T17:30:00.000Z" }
+    const slotDate = new Date(slot.time);
+
+    // Get date in local timezone
+    const dateStr = slot.date;
+
+    // Format time in Europe/Bratislava timezone (user's local timezone)
+    const timeString = slotDate.toLocaleTimeString('sk-SK', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'Europe/Bratislava',
+    });
+
     if (!slotsByDate[dateStr]) {
       slotsByDate[dateStr] = [];
     }
     slotsByDate[dateStr].push({
-      time: isoDateTime,
+      time: slot.time, // Keep the full ISO timestamp for booking
       date: dateStr,
-      timeString: timeStr,
+      timeString: timeString, // Nicely formatted time for display
     });
   });
 
@@ -179,8 +192,8 @@ export const MeetingBookingSection: React.FC = () => {
                 <div className="text-center py-8 text-red-600 dark:text-red-400">
                   <p className="mb-2">{t('error')}</p>
                   <p className="text-sm text-text-light dark:text-gray-400">
-                    {availabilityErrorData instanceof Error 
-                      ? availabilityErrorData.message 
+                    {availabilityErrorData instanceof Error
+                      ? availabilityErrorData.message
                       : ERROR_MESSAGES.AVAILABILITY_LOAD_FAILED}
                   </p>
                 </div>
@@ -189,20 +202,16 @@ export const MeetingBookingSection: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     {Object.keys(slotsByDate).slice(0, MEETING_CONSTANTS.MAX_DISPLAYED_DATES).map((date) => (
                       <div key={date} className="border dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-700">
-                                <h3 className="font-semibold mb-2 text-text dark:text-white">
-                                  {new Date(date).toLocaleDateString(locale, {
-                                    weekday: 'short',
-                                    month: 'short',
-                                    day: 'numeric',
-                                  })}
-                                </h3>
-                                <div className="flex flex-wrap gap-2">
-                                  {slotsByDate[date].map((slot, idx) => {
-                                    // slot.time is ISO datetime string, slot.timeString is HH:mm format
-                                    const displayTime = slot.timeString || new Date(slot.time).toLocaleTimeString(locale, {
-                                      hour: '2-digit',
-                                      minute: '2-digit',
-                                    });
+                        <h3 className="font-semibold mb-2 text-text dark:text-white">
+                          {new Date(date).toLocaleDateString(locale, {
+                            weekday: 'short',
+                            month: 'short',
+                            day: 'numeric',
+                          })}
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          {slotsByDate[date].map((slot, idx) => {
+                            // slot.timeString is already nicely formatted (e.g., "15:00")
                             return (
                               <button
                                 key={idx}
@@ -211,13 +220,12 @@ export const MeetingBookingSection: React.FC = () => {
                                   handleDateSelect(date);
                                   handleTimeSelect(slot.timeString, slot.time);
                                 }}
-                                className={`px-3 py-1 text-sm rounded transition-colors ${
-                                  selectedDate === date && selectedTime === slot.timeString
-                                    ? 'bg-primary text-white'
-                                    : 'bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-text dark:text-white'
-                                }`}
+                                className={`px-3 py-1 text-sm rounded transition-colors ${selectedDate === date && selectedTime === slot.timeString
+                                  ? 'bg-primary text-white'
+                                  : 'bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-text dark:text-white'
+                                  }`}
                               >
-                                {displayTime}
+                                {slot.timeString}
                               </button>
                             );
                           })}
@@ -258,13 +266,13 @@ export const MeetingBookingSection: React.FC = () => {
                   error={errors.notes?.message}
                   rows={4}
                 />
-                        {selectedDate && selectedTime && (
-                          <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                            <p className="text-sm text-text-light dark:text-gray-300">
-                              {t('selected')}: {new Date(selectedDate).toLocaleDateString(locale)} {selectedTime}
-                            </p>
-                          </div>
-                        )}
+                {selectedDate && selectedTime && (
+                  <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <p className="text-sm text-text-light dark:text-gray-300">
+                      {t('selected')}: {new Date(selectedDate).toLocaleDateString(locale)} {selectedTime}
+                    </p>
+                  </div>
+                )}
                 <Button type="submit" isLoading={isSubmitting} className="w-full" disabled={!selectedDate || !selectedTime}>
                   {t('book')}
                 </Button>

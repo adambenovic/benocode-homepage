@@ -1,5 +1,5 @@
 // types/meetings.types.ts
-import { MeetingStatus } from '@prisma/client';
+import { MeetingStatus, Locale } from '@prisma/client';
 import { z } from 'zod';
 
 export interface CreateMeetingDto {
@@ -9,6 +9,7 @@ export interface CreateMeetingDto {
   scheduledAt: string; // ISO 8601 datetime string
   duration?: number; // minutes
   timezone?: string;
+  locale?: string; // User's language preference (EN, SK, DE, CZ)
   notes?: string;
 }
 
@@ -36,6 +37,7 @@ export interface MeetingResponse {
   scheduledAt: Date;
   duration: number;
   timezone: string;
+  locale: Locale;
   status: MeetingStatus;
   notes?: string;
   confirmationToken: string;
@@ -68,6 +70,7 @@ export const createMeetingSchema = z.object({
   scheduledAt: z.string().datetime('Invalid datetime format'),
   duration: z.number().int().min(15).max(120).default(30),
   timezone: z.string().default('UTC'),
+  locale: z.enum(['EN', 'SK', 'DE', 'CZ']).optional(),
   notes: z.string().optional(),
 });
 

@@ -96,6 +96,7 @@ model Lead {
   message   String   @db.Text
   status    LeadStatus @default(NEW)
   source    String   @default("contact_form")
+  locale    Locale   @default(EN) // User's language preference
   metadata  Json?    // Additional data (IP, user agent, etc.)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -122,6 +123,7 @@ model Meeting {
   scheduledAt   DateTime
   duration      Int           @default(30) // minutes
   timezone      String        @default("UTC")
+  locale        Locale        @default(EN) // User's language preference
   status        MeetingStatus @default(CONFIRMED)
   notes         String?       @db.Text
   confirmationToken String    @unique

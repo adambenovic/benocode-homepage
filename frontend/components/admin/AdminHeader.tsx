@@ -5,6 +5,7 @@ import React from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { Button } from '@/components/ui/Button';
+import { DarkModeToggle } from '@/components/ui/DarkModeToggle';
 
 export const AdminHeader: React.FC = () => {
   const { sidebarOpen, toggleSidebar } = useUIStore();
@@ -22,6 +23,7 @@ export const AdminHeader: React.FC = () => {
           <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Admin Panel</h1>
         </div>
         <div className="flex items-center gap-4">
+          <DarkModeToggle />
           <span className="text-sm text-gray-600 dark:text-gray-400">{user?.email}</span>
         </div>
       </div>

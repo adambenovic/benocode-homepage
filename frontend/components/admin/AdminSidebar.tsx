@@ -44,37 +44,37 @@ export const AdminSidebar: React.FC = () => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-primary-dark text-white z-50 transform transition-transform duration-300 lg:translate-x-0 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed top-0 left-0 h-full w-64 bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white z-50 transform transition-transform duration-300 lg:translate-x-0 shadow-lg border-r border-gray-200 dark:border-gray-700 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         <div className="flex flex-col h-full">
-          <div className="p-6 border-b border-primary-light">
-            <h2 className="text-xl font-bold">BenoCode Admin</h2>
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">BenoCode Admin</h2>
           </div>
-          <nav className="flex-1 p-4 space-y-2">
+          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
             {navItems.map((item) => {
               // Check if current path is an exact match
               const isExactMatch = pathname === item.href;
-              
+
               // Check if current path starts with item href (for nested routes)
               // But exclude cases where there's a more specific nav item that matches
-              const isParentMatch = pathname?.startsWith(item.href + '/') && 
-                !navItems.some(navItem => 
-                  navItem.href !== item.href && 
-                  navItem.href.startsWith(item.href) && 
+              const isParentMatch = pathname?.startsWith(item.href + '/') &&
+                !navItems.some(navItem =>
+                  navItem.href !== item.href &&
+                  navItem.href.startsWith(item.href) &&
                   pathname?.startsWith(navItem.href)
                 );
-              
+
               const isActive = isExactMatch || isParentMatch;
-              
+
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
-                    isActive ? 'bg-primary-light' : 'hover:bg-primary/50'
-                  }`}
+                  className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${isActive
+                      ? 'bg-primary text-white dark:bg-primary-light'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800'
+                    }`}
                   onClick={() => setSidebarOpen(false)}
                 >
                   <span>{item.icon}</span>
@@ -83,7 +83,7 @@ export const AdminSidebar: React.FC = () => {
               );
             })}
           </nav>
-          <div className="p-4 border-t border-primary-light">
+          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
             <Button variant="danger" size="sm" className="w-full" onClick={handleLogout}>
               Logout
             </Button>

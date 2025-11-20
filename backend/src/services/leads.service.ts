@@ -1,5 +1,5 @@
 // services/leads.service.ts
-import { PrismaClient, LeadStatus } from '@prisma/client';
+import { PrismaClient, LeadStatus, Locale } from '@prisma/client';
 import { NotFoundError } from '../utils/errors';
 import { CreateLeadDto, UpdateLeadDto, LeadResponse } from '../types/leads.types';
 import { EmailService } from './email.service';
@@ -8,7 +8,7 @@ export class LeadsService {
   constructor(
     private prisma: PrismaClient,
     private emailService: EmailService
-  ) {}
+  ) { }
 
   async create(dto: CreateLeadDto): Promise<LeadResponse> {
     const lead = await this.prisma.lead.create({
@@ -19,6 +19,7 @@ export class LeadsService {
         message: dto.message,
         source: dto.source ?? 'contact_form',
         status: 'NEW',
+        locale: (dto.locale as any) || 'EN', // Store user's language preference
         metadata: dto.metadata,
       },
     });
@@ -125,6 +126,7 @@ export class LeadsService {
     message: string;
     status: LeadStatus;
     source: string;
+    locale: Locale;
     metadata: any;
     createdAt: Date;
     updatedAt: Date;
@@ -137,6 +139,7 @@ export class LeadsService {
       message: lead.message,
       status: lead.status,
       source: lead.source,
+      locale: lead.locale,
       metadata: lead.metadata as Record<string, any> | undefined,
       createdAt: lead.createdAt,
       updatedAt: lead.updatedAt,

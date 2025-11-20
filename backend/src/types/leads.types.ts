@@ -1,5 +1,5 @@
 // types/leads.types.ts
-import { LeadStatus } from '@prisma/client';
+import { LeadStatus, Locale } from '@prisma/client';
 
 export interface CreateLeadDto {
   name: string;
@@ -7,6 +7,7 @@ export interface CreateLeadDto {
   phone?: string;
   message: string;
   source?: string;
+  locale?: string; // User's language preference (EN, SK, DE, CZ)
   metadata?: Record<string, any>;
 }
 
@@ -22,6 +23,7 @@ export interface LeadResponse {
   message: string;
   status: LeadStatus;
   source: string;
+  locale: Locale;
   metadata?: Record<string, any>;
   createdAt: Date;
   updatedAt: Date;

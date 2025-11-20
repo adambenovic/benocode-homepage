@@ -21,7 +21,7 @@ export const HeroSection: React.FC = () => {
               </Button>
             </a>
             <a href="#services">
-              <Button variant="outline" size="lg" className="bg-transparent border-white text-white hover:bg-white/10">
+              <Button variant="outline-light" size="lg">
                 {t('learnMore')}
               </Button>
             </a>

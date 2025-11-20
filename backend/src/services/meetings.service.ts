@@ -16,7 +16,7 @@ export class MeetingsService {
   constructor(
     private prisma: PrismaClient,
     private emailService: EmailService
-  ) {}
+  ) { }
 
   async create(dto: CreateMeetingDto): Promise<MeetingResponse> {
     const scheduledAt = new Date(dto.scheduledAt);
@@ -43,6 +43,7 @@ export class MeetingsService {
         scheduledAt,
         duration: dto.duration || 30,
         timezone: dto.timezone || 'UTC',
+        locale: (dto.locale as any) || 'EN', // Store user's language preference
         status: 'CONFIRMED',
         notes: dto.notes,
         confirmationToken,
@@ -74,6 +75,7 @@ export class MeetingsService {
       },
     });
 
+
     const slots: AvailableTimeSlot[] = [];
     const currentDate = new Date(startDate);
 
@@ -98,22 +100,32 @@ export class MeetingsService {
           slotEndTime.setMinutes(slotEndTime.getMinutes() + 30);
 
           // Check if slot conflicts with existing meetings
-          const hasConflict = existingMeetings.some((meeting) => {
+          // A slot conflicts if any part of it overlaps with a booked meeting
+          const hasConflict = existingMeetings.some((meeting: any) => {
             const meetingStart = new Date(meeting.scheduledAt);
             const meetingEnd = new Date(meetingStart);
             meetingEnd.setMinutes(meetingEnd.getMinutes() + meeting.duration);
 
-            return (
-              (currentSlot >= meetingStart && currentSlot < meetingEnd) ||
-              (slotEndTime > meetingStart && slotEndTime <= meetingEnd) ||
-              (currentSlot <= meetingStart && slotEndTime >= meetingEnd)
+            // Normalize to milliseconds for accurate comparison
+            const slotStartMs = currentSlot.getTime();
+            const slotEndMs = slotEndTime.getTime();
+            const meetingStartMs = meetingStart.getTime();
+            const meetingEndMs = meetingEnd.getTime();
+
+            const conflicts = (
+              (slotStartMs >= meetingStartMs && slotStartMs < meetingEndMs) ||
+              (slotEndMs > meetingStartMs && slotEndMs <= meetingEndMs) ||
+              (slotStartMs <= meetingStartMs && slotEndMs >= meetingEndMs) ||
+              (meetingStartMs <= slotStartMs && meetingEndMs >= slotEndMs)
             );
+
+            return conflicts;
           });
 
           if (!hasConflict && currentSlot >= new Date()) {
             slots.push({
               date: currentDate.toISOString().split('T')[0],
-              time: `${currentSlot.getHours().toString().padStart(2, '0')}:${currentSlot.getMinutes().toString().padStart(2, '0')}`,
+              time: currentSlot.toISOString(), // Return full ISO timestamp instead of just HH:mm
               available: true,
             });
           }
@@ -388,6 +400,7 @@ export class MeetingsService {
       scheduledAt: meeting.scheduledAt,
       duration: meeting.duration,
       timezone: meeting.timezone,
+      locale: meeting.locale,
       status: meeting.status,
       notes: meeting.notes ?? undefined,
       confirmationToken: meeting.confirmationToken,
