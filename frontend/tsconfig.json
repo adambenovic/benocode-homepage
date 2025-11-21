@@ -30,7 +30,11 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "types": [
+      "jest",
+      "node"
+    ]
   },
   "include": [
     "next-env.d.ts",
