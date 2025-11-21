@@ -15,3 +15,9 @@ afterEach(async () => {
   // Clean up test data if needed
 });
 
+// Add a dummy test to satisfy Jest
+describe('Test Setup', () => {
+  it('should have test environment configured', () => {
+    expect(true).toBe(true);
+  });
+});

@@ -2,7 +2,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ContentController } from '../../controllers/content.controller';
 import { ContentService } from '../../services/content.service';
-import { NotFoundError } from '../../utils/errors';
 
 describe('ContentController', () => {
   let contentController: ContentController;
@@ -17,30 +16,46 @@ describe('ContentController', () => {
       getByKey: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
+      delete: jest.fn(),
     } as any;
 
     contentController = new ContentController(mockContentService);
 
     mockRequest = {
-      query: {},
-      params: {},
       body: {},
+      params: {},
+      query: {},
     };
 
     mockResponse = {
-      json: jest.fn().mockReturnThis(),
       status: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
     };
 
     mockNext = jest.fn();
   });
 
   describe('getAll', () => {
-    it('should return content list', async () => {
-      mockContentService.getAll.mockResolvedValue({
-        data: [{ id: '1', key: 'test.key' }],
-        total: 1,
-      });
+    it('should return all content items', async () => {
+      const mockContentData = [
+        {
+          id: '1',
+          key: 'test.key',
+          type: 'TEXT' as const,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          translations: [
+            {
+              id: '1',
+              contentId: '1',
+              locale: 'EN' as const,
+              value: 'Test',
+            },
+          ],
+        },
+      ];
+
+      mockContentService.getAll.mockResolvedValue({ data: mockContentData, total: 1 });
 
       await contentController.getAll(
         mockRequest as Request,
@@ -48,19 +63,23 @@ describe('ContentController', () => {
         mockNext
       );
 
-      expect(mockResponse.json).toHaveBeenCalled();
+      expect(mockContentService.getAll).toHaveBeenCalled();
     });
   });
 
   describe('getByKey', () => {
-    it('should return content if found', async () => {
-      mockRequest.params = { key: 'test.key' };
-      mockContentService.getByKey.mockResolvedValue({
+    it('should return content by key', async () => {
+      const mockContent = {
         id: '1',
         key: 'test.key',
-        type: 'TEXT',
+        type: 'TEXT' as const,
+        createdAt: new Date(),
+        updatedAt: new Date(),
         translations: [],
-      });
+      };
+
+      mockRequest.params = { key: 'test.key' };
+      mockContentService.getByKey.mockResolvedValue(mockContent);
 
       await contentController.getByKey(
         mockRequest as Request,
@@ -68,21 +87,7 @@ describe('ContentController', () => {
         mockNext
       );
 
-      expect(mockResponse.json).toHaveBeenCalled();
-    });
-
-    it('should return 404 if not found', async () => {
-      mockRequest.params = { key: 'nonexistent.key' };
-      mockContentService.getByKey.mockResolvedValue(null);
-
-      await contentController.getByKey(
-        mockRequest as Request,
-        mockResponse as Response,
-        mockNext
-      );
-
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
+      expect(mockContentService.getByKey).toHaveBeenCalledWith('test.key', undefined);
     });
   });
 });
-

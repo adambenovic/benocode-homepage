@@ -5,13 +5,13 @@ import { AuthRequest } from '../middleware/auth.middleware';
 import { LoginDto } from '../types/auth.types';
 
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
       const dto: LoginDto = req.body;
       const result = await this.authService.login(dto);
-      
+
       // Set httpOnly cookies for tokens
       res.cookie('access_token', result.accessToken, {
         httpOnly: true,
@@ -19,17 +19,17 @@ export class AuthController {
         sameSite: 'strict',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
-      
+
       res.cookie('refresh_token', result.refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
       });
-      
+
       res.json({ data: result });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
@@ -41,7 +41,7 @@ export class AuthController {
       const user = await this.authService.getCurrentUser(req.user.userId);
       res.json({ data: user });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
@@ -53,16 +53,16 @@ export class AuthController {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
       });
-      
+
       res.clearCookie('refresh_token', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
       });
-      
+
       res.json({ data: { message: 'Logged out successfully' } });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
@@ -70,7 +70,7 @@ export class AuthController {
     try {
       // Try to get refresh token from cookie first, then body
       const refreshToken = req.cookies?.refresh_token || req.body.refreshToken;
-      
+
       if (!refreshToken) {
         return res.status(400).json({
           error: {
@@ -81,7 +81,7 @@ export class AuthController {
       }
 
       const result = await this.authService.refreshToken(refreshToken);
-      
+
       // Update httpOnly cookies
       res.cookie('access_token', result.accessToken, {
         httpOnly: true,
@@ -89,17 +89,17 @@ export class AuthController {
         sameSite: 'strict',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
-      
+
       res.cookie('refresh_token', result.refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
       });
-      
+
       res.json({ data: result });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 }

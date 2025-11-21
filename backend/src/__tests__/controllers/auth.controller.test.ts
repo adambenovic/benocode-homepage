@@ -27,6 +27,7 @@ describe('AuthController', () => {
     mockResponse = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),
+      cookie: jest.fn().mockReturnThis(),
     };
 
     mockNext = jest.fn();
@@ -37,6 +38,7 @@ describe('AuthController', () => {
       const mockTokens = {
         accessToken: 'access-token',
         refreshToken: 'refresh-token',
+        expiresIn: 604800,
         user: { id: '1', email: 'test@example.com', role: 'ADMIN' },
       };
 
@@ -45,8 +47,7 @@ describe('AuthController', () => {
 
       await authController.login(mockRequest as Request, mockResponse as Response, mockNext);
 
-      expect(mockAuthService.login).toHaveBeenCalledWith('test@example.com', 'password');
-      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(mockAuthService.login).toHaveBeenCalledWith({ email: 'test@example.com', password: 'password' });
       expect(mockResponse.json).toHaveBeenCalledWith({ data: mockTokens });
     });
 

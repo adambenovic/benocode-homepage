@@ -1,5 +1,5 @@
 // services/auth.service.ts
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { prisma } from '../config/database';
 import { hashPassword, verifyPassword } from '../utils/password';
 import { UnauthorizedError, NotFoundError } from '../utils/errors';
@@ -53,7 +53,7 @@ export class AuthService {
   async refreshToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string; expiresIn: number }> {
     try {
       const decoded = jwt.verify(refreshToken, env.JWT_SECRET) as JwtPayload;
-      
+
       // Verify user still exists
       const user = await prisma.user.findUnique({
         where: { id: decoded.userId },
@@ -103,9 +103,10 @@ export class AuthService {
   }
 
   private generateAccessToken(payload: JwtPayload): string {
-    return jwt.sign(payload, env.JWT_SECRET, {
-      expiresIn: env.JWT_EXPIRES_IN,
-    });
+    const options: SignOptions = {
+      expiresIn: env.JWT_EXPIRES_IN as any,
+    };
+    return jwt.sign(payload, env.JWT_SECRET, options);
   }
 
   private generateRefreshToken(payload: JwtPayload): string {

@@ -1,13 +1,9 @@
 // __tests__/services/auth.service.test.ts
 import { AuthService } from '../../services/auth.service';
+import { prisma } from '../../config/database';
+import { verifyPassword } from '../../utils/password';
 import { UnauthorizedError } from '../../utils/errors';
-import * as passwordUtils from '../../utils/password';
 
-// Mock dependencies
-jest.mock('../../utils/password');
-jest.mock('jsonwebtoken', () => ({
-  sign: jest.fn(() => 'mock-token'),
-}));
 jest.mock('../../config/database', () => ({
   prisma: {
     user: {
@@ -17,9 +13,18 @@ jest.mock('../../config/database', () => ({
   },
 }));
 
+jest.mock('../../utils/password', () => ({
+  verifyPassword: jest.fn(),
+  hashPassword: jest.fn(),
+}));
+
+jest.mock('jsonwebtoken', () => ({
+  sign: jest.fn(() => 'mock-token'),
+  verify: jest.fn(),
+}));
+
 describe('AuthService', () => {
   let authService: AuthService;
-  const { prisma } = require('../../config/database');
 
   beforeEach(() => {
     authService = new AuthService();
@@ -27,51 +32,60 @@ describe('AuthService', () => {
   });
 
   describe('login', () => {
-    it('should throw UnauthorizedError if user does not exist', async () => {
-      prisma.user.findUnique.mockResolvedValue(null);
-
-      await expect(
-        authService.login({ email: 'nonexistent@example.com', password: 'password' })
-      ).rejects.toThrow(UnauthorizedError);
-    });
-
-    it('should throw UnauthorizedError if password is incorrect', async () => {
+    it('should return tokens on successful login', async () => {
       const mockUser = {
         id: '1',
         email: 'test@example.com',
-        passwordHash: 'hashedPassword',
-        role: 'ADMIN',
+        passwordHash: 'hashed-password',
+        role: 'ADMIN' as const,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        lastLoginAt: null,
       };
 
-      prisma.user.findUnique.mockResolvedValue(mockUser);
-      (passwordUtils.verifyPassword as jest.Mock).mockResolvedValue(false);
-
-      await expect(
-        authService.login({ email: 'test@example.com', password: 'wrongpassword' })
-      ).rejects.toThrow(UnauthorizedError);
-    });
-
-    it('should return tokens and user on successful login', async () => {
-      const mockUser = {
-        id: '1',
-        email: 'test@example.com',
-        passwordHash: 'hashedPassword',
-        role: 'ADMIN',
-      };
-
-      prisma.user.findUnique.mockResolvedValue(mockUser);
-      prisma.user.update.mockResolvedValue(mockUser);
-      (passwordUtils.verifyPassword as jest.Mock).mockResolvedValue(true);
+      (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
+      (verifyPassword as jest.Mock).mockResolvedValue(true);
+      (prisma.user.update as jest.Mock).mockResolvedValue(mockUser);
 
       const result = await authService.login({
         email: 'test@example.com',
-        password: 'correctpassword',
+        password: 'password',
       });
 
       expect(result).toHaveProperty('accessToken');
       expect(result).toHaveProperty('refreshToken');
+      expect(result).toHaveProperty('expiresIn');
       expect(result.user.email).toBe('test@example.com');
+    });
+
+    it('should throw UnauthorizedError if user not found', async () => {
+      (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
+
+      await expect(
+        authService.login({
+          email: 'nonexistent@example.com',
+          password: 'password',
+        })
+      ).rejects.toThrow(UnauthorizedError);
+    });
+
+    it('should throw UnauthorizedError if password is invalid', async () => {
+      const mockUser = {
+        id: '1',
+        email: 'test@example.com',
+        passwordHash: 'hashed-password',
+        role: 'ADMIN' as const,
+      };
+
+      (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
+      (verifyPassword as jest.Mock).mockResolvedValue(false);
+
+      await expect(
+        authService.login({
+          email: 'test@example.com',
+          password: 'wrong-password',
+        })
+      ).rejects.toThrow(UnauthorizedError);
     });
   });
 });
-

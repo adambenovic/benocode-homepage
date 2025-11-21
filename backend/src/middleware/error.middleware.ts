@@ -31,35 +31,35 @@ export function errorHandler(
     return res.status(err.statusCode).json(errorResponse);
   }
 
-      // Log unexpected errors
-      logger.error('Unexpected error:', {
-        error: err.message,
-        stack: err.stack,
-        requestId,
-        path: req.path,
+  // Log unexpected errors
+  logger.error('Unexpected error:', {
+    error: err.message,
+    stack: err.stack,
+    requestId,
+    path: req.path,
+  });
+
+  // Send to Sentry in production
+  const Sentry = getSentry();
+  if (Sentry && process.env.NODE_ENV === 'production') {
+    try {
+      Sentry.captureException(err, {
+        tags: {
+          requestId,
+          path: req.path,
+        },
+        extra: {
+          method: req.method,
+          body: req.body,
+          query: req.query,
+        },
       });
+    } catch (sentryError) {
+      logger.warn('Failed to send error to Sentry', { sentryError });
+    }
+  }
 
-      // Send to Sentry in production
-      const Sentry = getSentry();
-      if (Sentry && process.env.NODE_ENV === 'production') {
-        try {
-          Sentry.captureException(err, {
-            tags: {
-              requestId,
-              path: req.path,
-            },
-            extra: {
-              method: req.method,
-              body: req.body,
-              query: req.query,
-            },
-          });
-        } catch (sentryError) {
-          logger.warn('Failed to send error to Sentry', { sentryError });
-        }
-      }
-
-  res.status(500).json({
+  return res.status(500).json({
     error: {
       message: 'Internal server error',
       statusCode: 500,

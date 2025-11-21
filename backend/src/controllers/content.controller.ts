@@ -5,7 +5,7 @@ import { CreateContentDto, UpdateContentDto } from '../types/content.types';
 import { invalidateCache } from '../middleware/cache.middleware';
 
 export class ContentController {
-  constructor(private contentService: ContentService) {}
+  constructor(private contentService: ContentService) { }
 
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
@@ -27,7 +27,7 @@ export class ContentController {
         res.json({ data: result.data });
       }
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
@@ -36,7 +36,7 @@ export class ContentController {
       const { key } = req.params;
       const { locale } = req.query;
       const content = await this.contentService.getByKey(key, locale as string | undefined);
-      
+
       if (!content) {
         return res.status(404).json({
           error: {
@@ -48,7 +48,7 @@ export class ContentController {
 
       res.json({ data: content });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
@@ -59,7 +59,7 @@ export class ContentController {
       await invalidateCache('/api/v1/content*');
       res.status(201).json({ data: content });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
@@ -71,7 +71,7 @@ export class ContentController {
       await invalidateCache('/api/v1/content*');
       res.json({ data: content });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 }
