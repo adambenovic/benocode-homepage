@@ -19,6 +19,11 @@ jest.mock('../../utils/password', () => ({
 }));
 
 jest.mock('jsonwebtoken', () => ({
+  __esModule: true,
+  default: {
+    sign: jest.fn(() => 'mock-token'),
+    verify: jest.fn(),
+  },
   sign: jest.fn(() => 'mock-token'),
   verify: jest.fn(),
 }));
