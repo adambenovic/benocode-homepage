@@ -30,9 +30,9 @@ test.describe('Meeting booking section', () => {
     expect(hasSlots || hasSpinner || hasMessage).toBe(true);
   });
 
-  test('shows validation errors when booking form is submitted empty', async () => {
-    await homePage.page.locator('#book-meeting button:has-text("Book")').click();
-    const errors = homePage.page.locator('#book-meeting [role="alert"], #book-meeting .text-red-500');
-    await expect(errors.first()).toBeVisible({ timeout: 5000 });
+  test('book button is disabled until a time slot is selected', async () => {
+    // The submit button should be disabled when no date/time slot is chosen
+    const button = homePage.page.locator('#book-meeting button:has-text("Book")').first();
+    await expect(button).toBeDisabled({ timeout: 8000 });
   });
 });
