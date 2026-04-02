@@ -45,12 +45,6 @@ jobs:
         working-directory: ./backend
         run: npm run prisma:generate
 
-      - name: Run migrations
-        working-directory: ./backend
-        env:
-          DATABASE_URL: postgresql://benocode:test_password@localhost:5432/benocode_test
-        run: npx prisma migrate deploy
-
       - name: Run unit tests
         working-directory: ./backend
         env:
