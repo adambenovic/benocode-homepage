@@ -8,6 +8,8 @@ import { useQuery } from '@tanstack/react-query';
 import { authApi } from '@/lib/api/auth';
 import { Spinner } from '@/components/ui/Spinner';
 import { ToastContainer } from '@/components/ui/Toast';
+import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import { AdminHeader } from '@/components/admin/AdminHeader';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, setUser } = useAuthStore();
@@ -56,10 +58,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <>
-      {children}
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-950">
+      <AdminSidebar />
+      <div className="flex-1 flex flex-col overflow-hidden lg:ml-64">
+        <AdminHeader />
+        <main className="flex-1 overflow-y-auto p-6">
+          {children}
+        </main>
+      </div>
       <ToastContainer />
-    </>
+    </div>
   );
 }
 
