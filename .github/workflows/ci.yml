@@ -148,35 +148,53 @@ jobs:
           npm run prisma:generate
         env:
           DATABASE_URL: postgresql://benocode:test_password@localhost:5432/benocode_test
-      
-      - name: Run migrations
+
+      - name: Apply database schema
         working-directory: ./backend
         env:
           DATABASE_URL: postgresql://benocode:test_password@localhost:5432/benocode_test
-        run: npm run prisma:migrate deploy
-      
-      - name: Start backend server
+        run: npx prisma db push --accept-data-loss
+
+      - name: Seed database
         working-directory: ./backend
         env:
           DATABASE_URL: postgresql://benocode:test_password@localhost:5432/benocode_test
-          NODE_ENV: test
+          ADMIN_EMAIL: admin@benocode.sk
+          ADMIN_PASSWORD: Admin123!@#
+        run: npx tsx prisma/seed.ts
+
+      - name: Build and start backend
+        working-directory: ./backend
+        env:
+          DATABASE_URL: postgresql://benocode:test_password@localhost:5432/benocode_test
+          NODE_ENV: production
           PORT: 3001
           JWT_SECRET: test-jwt-secret-min-32-characters-long-for-testing-!!
           CSRF_SECRET: test-csrf-secret-min-32-characters-long-for-testing!!
           BREVO_API_KEY: test-brevo-api-key
           BREVO_SENDER_EMAIL: test@example.com
-          ADMIN_EMAIL: admin@example.com
+          ADMIN_EMAIL: admin@benocode.sk
           CORS_ORIGIN: http://localhost:3000
-        run: npm run build && npm start &
-      
-      - name: Wait for backend
-        run: |
-          timeout 30 bash -c 'until curl -f http://localhost:3001/health; do sleep 1; done'
-      
-      - name: Run E2E tests
+        run: npm run build && node dist/index.js &
+
+      - name: Build and start frontend
         working-directory: ./frontend
         env:
           NEXT_PUBLIC_API_URL: http://localhost:3001/api/v1
+        run: npm run build && npm start &
+
+      - name: Wait for backend and frontend
+        run: |
+          timeout 60 bash -c 'until curl -sf http://localhost:3001/health; do sleep 1; done'
+          timeout 60 bash -c 'until curl -sf http://localhost:3000; do sleep 1; done'
+
+      - name: Run E2E tests
+        working-directory: ./frontend
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:3000
+          NEXT_PUBLIC_API_URL: http://localhost:3001/api/v1
+          E2E_ADMIN_EMAIL: admin@benocode.sk
+          E2E_ADMIN_PASSWORD: Admin123!@#
         run: npm run test:e2e
 
   build:

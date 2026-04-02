@@ -73,13 +73,15 @@ export default defineConfig({
     {
       command: 'cd backend && npm run dev',
       url: 'http://localhost:3001/health',
-      reuseExistingServer: !process.env.CI,
+      // Always reuse an already-running server; start via command only if not up.
+      // In CI the servers are started manually before playwright runs.
+      reuseExistingServer: true,
       timeout: 30000,
     },
     {
       command: 'cd frontend && npm run dev',
       url: 'http://localhost:3000',
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: true,
       timeout: 60000,
     },
   ],
