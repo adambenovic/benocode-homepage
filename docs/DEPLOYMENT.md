@@ -1,608 +1,488 @@
-# BenoCode Production Deployment Guide
+# Production Deployment Guide
 
-This guide covers deploying the BenoCode website to production using Docker.
+This guide walks through deploying BenoCode Homepage to a production server from scratch.
 
-## 📋 Prerequisites
+## Table of Contents
 
-### Local Machine Requirements
-- Docker installed (version 20.10+)
-- Docker Compose installed (version 2.0+)
-- SSH access to production server
-- Domain name configured (benocode.sk)
-
-### Production Server Requirements
-- Linux server (Ubuntu 22.04 LTS recommended)
-- Docker and Docker Compose installed
-- 2GB+ RAM minimum
-- 20GB+ disk space
-- Ports 80 and 443 open
-- SSL certificate (Let's Encrypt recommended)
-
----
-
-## 🔐 Step 1: Prepare Environment Variables
-
-### 1.1 Create Production Environment File
-
-```bash
-cp .env.production.example .env.production
-```
-
-### 1.2 Edit .env.production with Real Values
-
-**CRITICAL:** Replace all placeholder values!
-
-```bash
-# Generate secure passwords
-DB_PASSWORD=$(openssl rand -base64 32)
-JWT_SECRET=$(openssl rand -base64 48)
-
-# Edit the file
-nano .env.production
-```
-
-**Required Variables:**
-- `DB_PASSWORD` - Strong database password (32+ chars)
-- `JWT_SECRET` - Strong JWT secret (32+ chars)
-- `BREVO_API_KEY` - Your Brevo API key from https://app.brevo.com
-- `BREVO_SENDER_EMAIL` - noreply@benocode.sk
-- `ADMIN_EMAIL` - contact@benocode.sk
-- `CORS_ORIGIN` - https://benocode.sk
-- `NEXT_PUBLIC_API_URL` - https://benocode.sk/api/v1
-- `NEXT_PUBLIC_GA_ID` - Your Google Analytics ID (optional)
-- `SENTRY_DSN` - Your Sentry DSN (optional)
-
-### 1.3 Secure the File
-
-```bash
-chmod 600 .env.production
-```
-
-**⚠️ NEVER commit .env.production to git!**
+1. [Architecture overview](#1-architecture-overview)
+2. [Server requirements](#2-server-requirements)
+3. [Server setup](#3-server-setup)
+4. [Clone and configure](#4-clone-and-configure)
+5. [SSL certificates](#5-ssl-certificates)
+6. [Configure Nginx for HTTPS](#6-configure-nginx-for-https)
+7. [Build and start](#7-build-and-start)
+8. [First-run tasks](#8-first-run-tasks)
+9. [Verify the deployment](#9-verify-the-deployment)
+10. [SSL auto-renewal](#10-ssl-auto-renewal)
+11. [Backups](#11-backups)
+12. [Updating the application](#12-updating-the-application)
+13. [Monitoring and logs](#13-monitoring-and-logs)
+14. [Troubleshooting](#14-troubleshooting)
+15. [Security checklist](#15-security-checklist)
 
 ---
 
-## 🧪 Step 2: Test Production Setup Locally
+## 1. Architecture overview
 
-### 2.1 Run Test Script
-
-```bash
-chmod +x scripts/test-production.sh
-./scripts/test-production.sh
+```
+Internet
+  │
+  ▼
+Nginx (ports 80 / 443)    ← only public-facing container
+  │
+  ├── /        → frontend:3000   (Next.js)
+  ├── /api     → backend:3001    (Express)
+  └── /health  → backend:3001
+         │
+         ├── postgres:5432  (PostgreSQL 15)
+         └── redis:6379     (Redis 7)
 ```
 
-This script will:
-- ✓ Check environment variables
-- ✓ Build production Docker images
-- ✓ Start all services
-- ✓ Verify health of each service
-- ✓ Provide useful commands
-
-### 2.2 Manual Testing
-
-Once services are running:
-
-```bash
-# Check all services are running
-docker-compose -f docker-compose.prod.yml ps
-
-# Check logs
-docker-compose -f docker-compose.prod.yml logs -f
-
-# Test backend API
-curl http://localhost:3001/health
-
-# Test frontend
-curl http://localhost:3000
-
-# Access in browser
-open http://localhost:3000
-```
-
-### 2.3 Run Database Migrations
-
-```bash
-docker exec benocode-backend-prod npx prisma migrate deploy
-```
-
-### 2.4 Seed Initial Data (Optional)
-
-```bash
-docker exec benocode-backend-prod npm run seed
-```
-
-### 2.5 Stop Local Test
-
-```bash
-docker-compose -f docker-compose.prod.yml down
-```
+All containers share a private Docker network. Only Nginx is exposed to the
+internet. The backend automatically applies any pending database migrations at
+startup via `docker-entrypoint.sh`.
 
 ---
 
-## 🚀 Step 3: Deploy to Production Server
+## 2. Server requirements
 
-### 3.1 Prepare Server
+| Resource | Minimum | Recommended |
+|---|---|---|
+| OS | Ubuntu 22.04 LTS | Ubuntu 22.04 LTS |
+| CPU | 1 vCPU | 2 vCPU |
+| RAM | 2 GB | 4 GB |
+| Disk | 20 GB | 40 GB SSD |
+| Open ports | 22, 80, 443 | 22, 80, 443 |
 
-SSH into your production server:
+---
 
-```bash
-ssh user@your-server.com
-```
+## 3. Server setup
 
-Install Docker and Docker Compose if not already installed:
+### 3.1 Install Docker
 
 ```bash
 # Update system
 sudo apt update && sudo apt upgrade -y
 
-# Install Docker
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
+# Install Docker (official install script)
+curl -fsSL https://get.docker.com | sudo sh
 
-# Install Docker Compose
-sudo apt install docker-compose-plugin -y
-
-# Add user to docker group
+# Add your user to the docker group (so you don't need sudo)
 sudo usermod -aG docker $USER
 
-# Log out and back in for group changes to take effect
-exit
+# Log out and back in, then verify
+docker --version        # Docker 24+
+docker compose version  # Docker Compose 2.x
 ```
 
-### 3.2 Set Up Project Directory
+### 3.2 Configure the firewall
 
 ```bash
-# SSH back in
-ssh user@your-server.com
-
-# Create project directory
-mkdir -p ~/benocode-website
-cd ~/benocode-website
+sudo ufw allow ssh
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw enable
+sudo ufw status
 ```
 
-### 3.3 Transfer Files to Server
+---
 
-From your local machine:
+## 4. Clone and configure
+
+### 4.1 Get the code onto the server
 
 ```bash
-# Create deployment package (excludes node_modules, .git, etc.)
-tar -czf benocode-deploy.tar.gz \
-  --exclude='node_modules' \
-  --exclude='.git' \
-  --exclude='.next' \
-  --exclude='dist' \
-  --exclude='.env*' \
-  backend/ frontend/ docker/ shared/ \
-  docker-compose.prod.yml \
-  .env.production.example
+# Option A: clone with git (recommended — makes updates easy)
+git clone https://github.com/adambenovic/benocode-homepage.git
+cd benocode-homepage
 
-# Transfer to server
-scp benocode-deploy.tar.gz user@your-server.com:~/benocode-website/
-
-# Clean up local file
-rm benocode-deploy.tar.gz
+# Option B: copy a tarball (if the repo is private)
+# scp benocode-homepage.tar.gz user@server:~/ && tar -xzf benocode-homepage.tar.gz
 ```
 
-### 3.4 Extract and Configure on Server
-
-SSH back into server:
+### 4.2 Create the environment file
 
 ```bash
-ssh user@your-server.com
-cd ~/benocode-website
-
-# Extract files
-tar -xzf benocode-deploy.tar.gz
-
-# Copy and edit environment file
-cp .env.production.example .env.production
-nano .env.production
-
-# Set correct permissions
-chmod 600 .env.production
+cp env.production.example .env
+chmod 600 .env
 ```
 
-### 3.5 Set Up SSL Certificate
-
-#### Option A: Let's Encrypt (Recommended)
+Open `.env` and fill in every value:
 
 ```bash
-# Install Certbot
+nano .env
+```
+
+Generate secure random values for the secrets:
+
+```bash
+# Run these and paste the output into .env
+echo "DB_PASSWORD=$(openssl rand -base64 32)"
+echo "JWT_SECRET=$(openssl rand -base64 48)"
+```
+
+**Required variables** — the application will refuse to start without these:
+
+| Variable | Example | Notes |
+|---|---|---|
+| `DB_PASSWORD` | *(generated above)* | PostgreSQL password |
+| `JWT_SECRET` | *(generated above)* | Min 32 characters |
+| `BREVO_API_KEY` | `xkeysib-...` | From https://app.brevo.com |
+| `BREVO_SENDER_EMAIL` | `noreply@example.com` | Verified sender in Brevo |
+| `ADMIN_EMAIL` | `contact@example.com` | Receives lead notifications |
+| `CORS_ORIGIN` | `https://example.com` | Your production domain |
+| `NEXT_PUBLIC_API_URL` | `https://example.com/api/v1` | Public API URL |
+
+**Optional variables:**
+
+| Variable | Notes |
+|---|---|
+| `NEXT_PUBLIC_GA_ID` | Google Analytics 4 measurement ID |
+| `SENTRY_DSN` | Sentry error tracking DSN |
+
+> **Never commit `.env` to git.** It is already in `.gitignore`.
+
+---
+
+## 5. SSL certificates
+
+Skip this section if you already have a certificate.
+
+### 5.1 Install Certbot
+
+```bash
 sudo apt install certbot -y
+```
 
-# Generate certificate
-sudo certbot certonly --standalone -d benocode.sk -d www.benocode.sk
+### 5.2 Obtain a certificate
 
-# Create SSL directory
+Certbot's `--standalone` mode starts a temporary HTTP server on port 80. Make
+sure nothing is listening there yet (the Docker stack is not running yet).
+
+```bash
+sudo certbot certonly --standalone \
+  -d example.com \
+  -d www.example.com \
+  --agree-tos \
+  --email contact@example.com
+```
+
+### 5.3 Copy certificates into the project
+
+```bash
 mkdir -p docker/ssl
 
-# Copy certificates
-sudo cp /etc/letsencrypt/live/benocode.sk/fullchain.pem docker/ssl/
-sudo cp /etc/letsencrypt/live/benocode.sk/privkey.pem docker/ssl/
+sudo cp /etc/letsencrypt/live/example.com/fullchain.pem docker/ssl/
+sudo cp /etc/letsencrypt/live/example.com/privkey.pem   docker/ssl/
 sudo chown -R $USER:$USER docker/ssl
-```
-
-#### Option B: Use Existing Certificate
-
-```bash
-mkdir -p docker/ssl
-# Copy your certificate files to docker/ssl/
-# - fullchain.pem (certificate chain)
-# - privkey.pem (private key)
-```
-
-### 3.6 Update Nginx Configuration for SSL
-
-Edit `docker/nginx.conf`:
-
-```bash
-nano docker/nginx.conf
-```
-
-Add SSL configuration:
-
-```nginx
-server {
-    listen 80;
-    server_name benocode.sk www.benocode.sk;
-    return 301 https://$server_name$request_uri;
-}
-
-server {
-    listen 443 ssl http2;
-    server_name benocode.sk www.benocode.sk;
-
-    ssl_certificate /etc/nginx/ssl/fullchain.pem;
-    ssl_certificate_key /etc/nginx/ssl/privkey.pem;
-    
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers HIGH:!aNULL:!MD5;
-    ssl_prefer_server_ciphers on;
-
-    # Security headers
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header X-XSS-Protection "1; mode=block" always;
-
-    # ... rest of configuration (locations, proxy_pass, etc.)
-}
+chmod 600 docker/ssl/privkey.pem
 ```
 
 ---
 
-## 🎯 Step 4: Launch Production Services
+## 6. Configure Nginx for HTTPS
 
-### 4.1 Build Images
+The default `docker/nginx.conf` serves HTTP only (useful for local testing).
+For production, swap in the SSL configuration:
 
 ```bash
-cd ~/benocode-website
-docker-compose -f docker-compose.prod.yml build --no-cache
+# Replace your domain in the SSL config template
+sed 's/example.com/yourdomain.com/g' docker/nginx.ssl.conf > docker/nginx.conf
 ```
 
-### 4.2 Start Services
+Verify the substitution looks correct:
 
 ```bash
-docker-compose -f docker-compose.prod.yml --env-file .env.production up -d
-```
-
-### 4.3 Verify Services Are Running
-
-```bash
-# Check status
-docker-compose -f docker-compose.prod.yml ps
-
-# All services should show "Up" or "healthy"
-```
-
-### 4.4 Check Logs
-
-```bash
-# View all logs
-docker-compose -f docker-compose.prod.yml logs -f
-
-# View specific service logs
-docker logs benocode-backend-prod -f
-docker logs benocode-frontend-prod -f
-docker logs benocode-postgres-prod -f
-docker logs benocode-nginx-prod -f
-```
-
-### 4.5 Run Database Migrations
-
-```bash
-docker exec benocode-backend-prod npx prisma migrate deploy
-```
-
-### 4.6 Create Admin User (if needed)
-
-```bash
-docker exec -it benocode-backend-prod npm run create-admin
-```
-
-### 4.7 Verify Application
-
-```bash
-# Test backend health
-curl https://benocode.sk/api/v1/health
-
-# Test frontend
-curl https://benocode.sk
-
-# Open in browser
-# https://benocode.sk
+grep server_name docker/nginx.conf
 ```
 
 ---
 
-## 🔄 Step 5: Set Up Auto-Renewal for SSL
-
-If using Let's Encrypt:
+## 7. Build and start
 
 ```bash
-# Test renewal
-sudo certbot renew --dry-run
-
-# Set up automatic renewal (already done by default)
-sudo systemctl status certbot.timer
-
-# Create script to copy certificates after renewal
-sudo nano /etc/letsencrypt/renewal-hooks/deploy/copy-to-docker.sh
+docker compose -f docker-compose.prod.yml up -d --build
 ```
 
-Add this content:
+Or using Make:
+
+```bash
+make prod
+```
+
+Docker will:
+1. Build the backend image (compiles TypeScript, generates Prisma client)
+2. Build the frontend image (Next.js standalone build)
+3. Start PostgreSQL and Redis
+4. Start the backend — `docker-entrypoint.sh` runs `prisma migrate deploy`
+   automatically, then starts the Node.js server
+5. Start the frontend
+6. Start Nginx
+
+Check that everything came up:
+
+```bash
+docker compose -f docker-compose.prod.yml ps
+```
+
+All services should show `running` or `healthy`. The backend has a 30-second
+start-period for its health check to allow time for migrations.
+
+---
+
+## 8. First-run tasks
+
+### 8.1 Create the admin user
+
+The database seeder creates a default admin account:
+
+```bash
+docker compose -f docker-compose.prod.yml exec backend npm run prisma:seed
+```
+
+> Review `backend/prisma/seed.ts` to see what data is seeded, and change the
+> default admin password immediately after logging in.
+
+### 8.2 Import legal documents (optional)
+
+If you have legal documents to import:
+
+```bash
+docker compose -f docker-compose.prod.yml exec backend npm run import:legal
+```
+
+---
+
+## 9. Verify the deployment
+
+```bash
+# Backend health check
+curl https://example.com/health
+
+# Should return:
+# {"status":"ok","database":"connected","timestamp":"..."}
+
+# Frontend (should return 200)
+curl -o /dev/null -s -w "%{http_code}" https://example.com
+```
+
+Open `https://example.com` in a browser and confirm:
+- Public website loads
+- Admin panel accessible at `/admin`
+- Login works with seeded credentials
+- Contact form submits successfully (check email delivery via Brevo dashboard)
+
+---
+
+## 10. SSL auto-renewal
+
+Let's Encrypt certificates expire after 90 days. Certbot installs a systemd
+timer that renews automatically, but it needs to reload Nginx afterwards.
+
+Create a renewal hook:
+
+```bash
+sudo nano /etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh
+```
 
 ```bash
 #!/bin/bash
-cp /etc/letsencrypt/live/benocode.sk/fullchain.pem /home/user/benocode-website/docker/ssl/
-cp /etc/letsencrypt/live/benocode.sk/privkey.pem /home/user/benocode-website/docker/ssl/
-chown user:user /home/user/benocode-website/docker/ssl/*
+# Copy renewed certificates into the project and reload Nginx
+PROJECT_DIR="/home/$SUDO_USER/benocode-homepage"
+
+cp /etc/letsencrypt/live/example.com/fullchain.pem "$PROJECT_DIR/docker/ssl/"
+cp /etc/letsencrypt/live/example.com/privkey.pem   "$PROJECT_DIR/docker/ssl/"
+chown -R "$SUDO_USER:$SUDO_USER" "$PROJECT_DIR/docker/ssl"
+chmod 600 "$PROJECT_DIR/docker/ssl/privkey.pem"
+
 docker exec benocode-nginx-prod nginx -s reload
 ```
 
-Make it executable:
+```bash
+sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh
+```
+
+Test the renewal process end-to-end:
 
 ```bash
-sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/copy-to-docker.sh
+sudo certbot renew --dry-run
 ```
 
 ---
 
-## 📊 Step 6: Monitoring and Maintenance
+## 11. Backups
 
-### 6.1 View Service Status
+### 11.1 Database backup
 
 ```bash
-docker-compose -f docker-compose.prod.yml ps
+# Dump to a timestamped file
+docker exec benocode-postgres-prod \
+  pg_dump -U benocode benocode \
+  | gzip > ~/backups/benocode-$(date +%Y%m%d-%H%M%S).sql.gz
 ```
 
-### 6.2 View Logs
+### 11.2 Automated daily backups
 
 ```bash
-# Follow logs
-docker-compose -f docker-compose.prod.yml logs -f
-
-# Last 100 lines
-docker-compose -f docker-compose.prod.yml logs --tail=100
-
-# Specific service
-docker logs benocode-backend-prod --tail=50 -f
-```
-
-### 6.3 Restart Services
-
-```bash
-# Restart all services
-docker-compose -f docker-compose.prod.yml restart
-
-# Restart specific service
-docker-compose -f docker-compose.prod.yml restart backend
-```
-
-### 6.4 Database Backup
-
-```bash
-# Create backup directory
 mkdir -p ~/backups
 
-# Backup database
-docker exec benocode-postgres-prod pg_dump -U benocode benocode > ~/backups/benocode-$(date +%Y%m%d-%H%M%S).sql
-
-# Compress backup
-gzip ~/backups/benocode-*.sql
+crontab -e
+# Add this line (runs at 03:00 every day, keeps 30 days of backups):
+0 3 * * * docker exec benocode-postgres-prod pg_dump -U benocode benocode | gzip > ~/backups/benocode-$(date +\%Y\%m\%d-\%H\%M\%S).sql.gz && find ~/backups -name "*.sql.gz" -mtime +30 -delete
 ```
 
-### 6.5 Database Restore
+### 11.3 Restore from backup
 
 ```bash
-# Stop backend service
-docker-compose -f docker-compose.prod.yml stop backend
+# Stop the backend to prevent writes during restore
+docker compose -f docker-compose.prod.yml stop backend
 
-# Restore database
-gunzip -c ~/backups/benocode-20250101-120000.sql.gz | \
-  docker exec -i benocode-postgres-prod psql -U benocode benocode
+# Restore
+gunzip -c ~/backups/benocode-20260101-030000.sql.gz \
+  | docker exec -i benocode-postgres-prod psql -U benocode benocode
 
-# Start backend service
-docker-compose -f docker-compose.prod.yml start backend
-```
-
-### 6.6 Update Application
-
-```bash
-# Pull latest code (if using git on server)
-git pull
-
-# Or transfer new files
-# scp benocode-deploy.tar.gz user@your-server.com:~/benocode-website/
-# tar -xzf benocode-deploy.tar.gz
-
-# Rebuild and restart
-docker-compose -f docker-compose.prod.yml build
-docker-compose -f docker-compose.prod.yml up -d
-
-# Run migrations if needed
-docker exec benocode-backend-prod npx prisma migrate deploy
+# Restart
+docker compose -f docker-compose.prod.yml start backend
 ```
 
 ---
 
-## 🔧 Troubleshooting
-
-### Services Won't Start
+## 12. Updating the application
 
 ```bash
-# Check logs
-docker-compose -f docker-compose.prod.yml logs
+# Pull the latest code
+git pull origin main
 
-# Check individual service
-docker logs benocode-backend-prod
+# Rebuild images and restart (zero-downtime: Docker starts new containers
+# before stopping old ones when services are independent)
+docker compose -f docker-compose.prod.yml up -d --build
 
-# Check environment variables
-docker exec benocode-backend-prod env
+# The backend entrypoint automatically applies any new migrations.
+# Nothing else needs to be done manually.
 ```
 
-### Database Connection Issues
+To check that migrations ran during the new deployment:
 
 ```bash
-# Check database is running
+docker compose -f docker-compose.prod.yml logs backend | grep -i migrat
+```
+
+---
+
+## 13. Monitoring and logs
+
+```bash
+# All services
+docker compose -f docker-compose.prod.yml logs -f
+
+# Single service
+docker compose -f docker-compose.prod.yml logs -f backend
+docker compose -f docker-compose.prod.yml logs -f frontend
+docker compose -f docker-compose.prod.yml logs -f nginx
+
+# Last N lines
+docker compose -f docker-compose.prod.yml logs --tail=200 backend
+
+# Service status and health
+docker compose -f docker-compose.prod.yml ps
+```
+
+---
+
+## 14. Troubleshooting
+
+### Backend won't start
+
+```bash
+docker compose -f docker-compose.prod.yml logs backend
+```
+
+Common causes:
+- **Missing env variable** — the app validates all required env vars at startup
+  and exits with a clear error message if one is missing or invalid.
+- **Database not ready** — the backend depends on `postgres` being healthy.
+  Check `docker compose -f docker-compose.prod.yml ps postgres`.
+- **Migration failed** — the entrypoint runs `prisma migrate deploy`; check
+  for errors like schema conflicts in the logs.
+
+### Database connection error
+
+```bash
+# Is PostgreSQL accepting connections?
 docker exec benocode-postgres-prod pg_isready -U benocode
 
-# Connect to database
-docker exec -it benocode-postgres-prod psql -U benocode
-
-# Check DATABASE_URL format
-# Should be: postgresql://benocode:password@postgres:5432/benocode
+# Can the backend reach it?
+docker compose -f docker-compose.prod.yml exec backend \
+  node -e "const {PrismaClient}=require('@prisma/client'); new PrismaClient().\$connect().then(()=>console.log('ok')).catch(console.error)"
 ```
 
-### Port Already in Use
+Verify that `DATABASE_URL` in `.env` uses the Docker service name `postgres` as
+the host (not `localhost`):
+```
+DATABASE_URL=postgresql://benocode:<password>@postgres:5432/benocode
+```
+
+### Nginx 502 Bad Gateway
+
+The upstream service (frontend or backend) is not ready yet or has crashed:
 
 ```bash
-# Check what's using port 80/443
+docker compose -f docker-compose.prod.yml ps
+docker compose -f docker-compose.prod.yml logs frontend
+docker compose -f docker-compose.prod.yml logs backend
+```
+
+### Port 80/443 already in use
+
+Another web server is running on the host:
+
+```bash
 sudo lsof -i :80
 sudo lsof -i :443
 
-# Stop conflicting service
-sudo systemctl stop apache2  # or nginx, if installed separately
+# Disable and stop the conflicting service
+sudo systemctl disable --now apache2   # or nginx, caddy, etc.
 ```
 
-### SSL Certificate Issues
+### SSL certificate errors
 
 ```bash
-# Verify certificate files exist
+# Verify certificate files exist and are readable
 ls -la docker/ssl/
 
-# Check certificate validity
-openssl x509 -in docker/ssl/fullchain.pem -text -noout
+# Check certificate validity and expiry
+openssl x509 -in docker/ssl/fullchain.pem -noout -dates
 
-# Check Nginx configuration
+# Validate Nginx config
 docker exec benocode-nginx-prod nginx -t
 ```
 
-### Container Keeps Restarting
+### Container keeps restarting
 
 ```bash
-# Check logs for errors
-docker logs benocode-backend-prod --tail=100
+# Inspect recent exit reasons
+docker inspect benocode-backend-prod | grep -A 5 '"Status"'
 
-# Check health
-docker inspect benocode-backend-prod | grep -A 10 Health
-
-# Try running container manually
-docker-compose -f docker-compose.prod.yml run backend sh
+# View logs including previous run
+docker compose -f docker-compose.prod.yml logs --tail=200 backend
 ```
 
 ---
 
-## 🛡️ Security Checklist
+## 15. Security checklist
 
-- [ ] Changed all default passwords
-- [ ] JWT_SECRET is strong and unique
-- [ ] .env.production has restricted permissions (600)
-- [ ] SSL certificate is installed and valid
-- [ ] HTTPS is enforced (HTTP redirects to HTTPS)
-- [ ] Security headers are configured in Nginx
-- [ ] Database is not exposed to the internet
-- [ ] Regular backups are configured
-- [ ] Server firewall is configured (UFW)
-- [ ] SSH is secured (key-based auth, no root login)
-- [ ] System packages are up to date
+Before going live, verify:
 
----
-
-## 🔄 Regular Maintenance Tasks
-
-### Daily
-- Monitor application logs
-- Check service health
-
-### Weekly
-- Review error logs
-- Check disk space usage
-- Verify backups are working
-
-### Monthly
-- Update system packages
-- Review security updates
-- Test backup restoration
-- Review SSL certificate expiration
-
-### As Needed
-- Deploy application updates
-- Scale services if needed
-- Optimize database
-
----
-
-## 📞 Support
-
-If you encounter issues:
-
-1. Check the troubleshooting section above
-2. Review logs: `docker-compose -f docker-compose.prod.yml logs`
-3. Check GitHub issues
-4. Contact: contact@benocode.sk
-
----
-
-## 📚 Useful Commands Reference
-
-```bash
-# Start services
-docker-compose -f docker-compose.prod.yml up -d
-
-# Stop services
-docker-compose -f docker-compose.prod.yml down
-
-# Restart services
-docker-compose -f docker-compose.prod.yml restart
-
-# View logs
-docker-compose -f docker-compose.prod.yml logs -f
-
-# Rebuild images
-docker-compose -f docker-compose.prod.yml build --no-cache
-
-# Execute command in container
-docker exec benocode-backend-prod <command>
-
-# Open shell in container
-docker exec -it benocode-backend-prod sh
-
-# Check service health
-docker-compose -f docker-compose.prod.yml ps
-
-# Remove all (CAUTION - deletes data)
-docker-compose -f docker-compose.prod.yml down -v
-
-# Database backup
-docker exec benocode-postgres-prod pg_dump -U benocode benocode > backup.sql
-
-# Database restore
-docker exec -i benocode-postgres-prod psql -U benocode benocode < backup.sql
-```
-
----
-
-**Last Updated:** November 18, 2025  
-**Version:** 1.0
-
+- [ ] All default passwords changed (`DB_PASSWORD`, `JWT_SECRET`)
+- [ ] `.env` file permissions are `600` (`chmod 600 .env`)
+- [ ] `.env` is not committed to git
+- [ ] SSL certificate installed and HTTPS enforced
+- [ ] HTTP redirects to HTTPS (check `nginx.conf`)
+- [ ] HSTS header present (`Strict-Transport-Security`)
+- [ ] Default admin password changed after first login
+- [ ] UFW firewall enabled (only ports 22, 80, 443 open)
+- [ ] SSH configured with key-based auth, root login disabled
+- [ ] Automated database backups configured and tested
+- [ ] SSL auto-renewal hook installed and tested (`certbot renew --dry-run`)
+- [ ] `SENTRY_DSN` configured for error alerting (optional but recommended)
+- [ ] `NEXT_PUBLIC_GA_ID` configured for traffic monitoring (optional)
