@@ -6,8 +6,6 @@ const AUTH_STATE_FILE = path.join(__dirname, 'e2e/.auth/admin.json');
 
 export default defineConfig({
   testDir: './e2e',
-  // Exclude setup scripts from being run as regular tests
-  testIgnore: ['**/setup/**'],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
