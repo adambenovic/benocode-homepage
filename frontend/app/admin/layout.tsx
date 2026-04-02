@@ -1,7 +1,7 @@
 // app/admin/layout.tsx
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useQuery } from '@tanstack/react-query';
@@ -10,25 +10,29 @@ import { Spinner } from '@/components/ui/Spinner';
 import { ToastContainer } from '@/components/ui/Toast';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, user, setUser } = useAuthStore();
+  const { isAuthenticated, setUser } = useAuthStore();
   const pathname = usePathname();
   const router = useRouter();
   const isLoginPage = pathname === '/admin/login';
 
-  const { isLoading } = useQuery({
+  const { isLoading, data, isError } = useQuery({
     queryKey: ['currentUser'],
     queryFn: authApi.getCurrentUser,
     enabled: !isLoginPage && !isAuthenticated,
     retry: false,
-    onSuccess: (data) => {
-      setUser(data.data);
-    },
-    onError: () => {
-      if (!isLoginPage) {
-        router.push('/admin/login');
-      }
-    },
   });
+
+  useEffect(() => {
+    if (data) {
+      setUser(data.data);
+    }
+  }, [data, setUser]);
+
+  useEffect(() => {
+    if (isError && !isLoginPage) {
+      router.push('/admin/login');
+    }
+  }, [isError, isLoginPage, router]);
 
   if (isLoginPage) {
     return (

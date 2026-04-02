@@ -4,7 +4,7 @@ import { ZodSchema, ZodError } from 'zod';
 import { ValidationError } from '../utils/errors';
 
 export function validate(schema: ZodSchema) {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, _res: Response, next: NextFunction) => {
     try {
       req.body = schema.parse(req.body);
       next();
@@ -12,7 +12,7 @@ export function validate(schema: ZodSchema) {
       if (error instanceof ZodError) {
         // Create detailed error response
         const details: Record<string, string[]> = {};
-        error.errors.forEach((err) => {
+        error.issues.forEach((err) => {
           const path = err.path.join('.');
           if (!details[path]) {
             details[path] = [];
@@ -20,7 +20,7 @@ export function validate(schema: ZodSchema) {
           details[path].push(err.message);
         });
 
-        const errorMessage = error.errors.map((e) => e.message).join(', ');
+        const errorMessage = error.issues.map((e) => e.message).join(', ');
         const validationError = new ValidationError(errorMessage);
         (validationError as any).details = details;
         throw validationError;

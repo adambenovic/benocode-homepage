@@ -1,8 +1,10 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
+/* Class-based dark mode (toggle via `.dark` on <html>) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Custom design tokens */
+@theme {
   --color-primary: #001f3f;
   --color-primary-light: #003d7a;
   --color-primary-dark: #001529;
@@ -13,7 +15,10 @@
   --spacing-unit: 0.25rem;
 }
 
-* {
+/* Base resets */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
@@ -34,4 +39,3 @@ a {
   color: inherit;
   text-decoration: none;
 }
-

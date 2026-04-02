@@ -33,7 +33,8 @@
     "noFallthroughCasesInSwitch": true,
     "types": [
       "jest",
-      "node"
+      "node",
+      "@testing-library/jest-dom"
     ]
   },
   "include": [

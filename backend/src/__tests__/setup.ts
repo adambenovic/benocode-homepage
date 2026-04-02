@@ -1,7 +1,8 @@
-// __tests__/setup.ts
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg(process.env.DATABASE_URL ?? 'postgresql://benocode:benocode_dev_password@localhost:5432/benocode');
+const prisma = new PrismaClient({ adapter });
 
 beforeAll(async () => {
   // Setup test database if needed

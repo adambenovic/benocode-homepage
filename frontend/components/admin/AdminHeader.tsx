@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { DarkModeToggle } from '@/components/ui/DarkModeToggle';
 
 export const AdminHeader: React.FC = () => {
-  const { sidebarOpen, toggleSidebar } = useUIStore();
+  const { toggleSidebar } = useUIStore();
   const { user } = useAuthStore();
 
   return (

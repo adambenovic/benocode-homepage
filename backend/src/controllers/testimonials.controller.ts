@@ -43,7 +43,7 @@ export class TestimonialsController {
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const testimonial = await this.testimonialsService.getById(id);
+      const testimonial = await this.testimonialsService.getById(id as string);
       res.json({ data: testimonial });
     } catch (error) {
       next(error);
@@ -65,7 +65,7 @@ export class TestimonialsController {
     try {
       const { id } = req.params;
       const dto: UpdateTestimonialDto = req.body;
-      const testimonial = await this.testimonialsService.update(id, dto);
+      const testimonial = await this.testimonialsService.update(id as string, dto);
       await invalidateCache('/api/v1/testimonials*');
       res.json({ data: testimonial });
     } catch (error) {
@@ -76,7 +76,7 @@ export class TestimonialsController {
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      await this.testimonialsService.delete(id);
+      await this.testimonialsService.delete(id as string);
       await invalidateCache('/api/v1/testimonials*');
       res.status(204).send();
     } catch (error) {
@@ -88,7 +88,7 @@ export class TestimonialsController {
     try {
       const { id } = req.params;
       const { order } = req.body;
-      const testimonial = await this.testimonialsService.updateOrder(id, order);
+      const testimonial = await this.testimonialsService.updateOrder(id as string, order);
       await invalidateCache('/api/v1/testimonials*');
       res.json({ data: testimonial });
     } catch (error) {

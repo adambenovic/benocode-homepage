@@ -16,29 +16,31 @@ export class MeetingsController {
     }
   }
 
-  async getAvailability(req: Request, res: Response, next: NextFunction) {
+  async getAvailability(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { startDate, endDate } = req.query;
 
       if (!startDate || !endDate) {
-        return res.status(400).json({
+        res.status(400).json({
           error: {
             message: 'startDate and endDate query parameters are required',
             statusCode: 400,
           },
         });
+        return;
       }
 
       const start = new Date(startDate as string);
       const end = new Date(endDate as string);
 
       if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-        return res.status(400).json({
+        res.status(400).json({
           error: {
             message: 'Invalid date format. Use ISO 8601 format.',
             statusCode: 400,
           },
         });
+        return;
       }
 
       const slots = await this.meetingsService.getAvailability(start, end);
@@ -73,7 +75,7 @@ export class MeetingsController {
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const meeting = await this.meetingsService.getById(id);
+      const meeting = await this.meetingsService.getById(id as string);
       res.json({ data: meeting });
     } catch (error) {
       next(error);
@@ -84,7 +86,7 @@ export class MeetingsController {
     try {
       const { id } = req.params;
       const dto: UpdateMeetingDto = req.body;
-      const meeting = await this.meetingsService.update(id, dto);
+      const meeting = await this.meetingsService.update(id as string, dto);
       res.json({ data: meeting });
     } catch (error) {
       next(error);
@@ -94,14 +96,14 @@ export class MeetingsController {
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      await this.meetingsService.delete(id);
+      await this.meetingsService.delete(id as string);
       res.status(204).send();
     } catch (error) {
       next(error);
     }
   }
 
-  async getAvailabilityConfig(req: Request, res: Response, next: NextFunction) {
+  async getAvailabilityConfig(_req: Request, res: Response, next: NextFunction) {
     try {
       const availability = await this.meetingsService.getAvailabilityConfig();
       res.json({ data: availability });

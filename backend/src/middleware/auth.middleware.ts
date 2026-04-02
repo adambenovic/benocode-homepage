@@ -14,7 +14,7 @@ export interface AuthRequest extends Request {
 
 export function authMiddleware(
   req: AuthRequest,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) {
   // Try to get token from cookie first, then Authorization header

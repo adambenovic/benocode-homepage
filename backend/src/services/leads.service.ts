@@ -25,7 +25,7 @@ export class LeadsService {
     });
 
     // Send notification email (async, don't wait for it)
-    this.emailService.sendContactFormNotification(lead).catch((error) => {
+    this.emailService.sendContactFormNotification(lead).catch(() => {
       // Error is logged in email service, just prevent unhandled rejection
     });
 

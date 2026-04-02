@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { meetingsApi, AvailableSlot } from '@/lib/api/meetings';
+import { meetingsApi } from '@/lib/api/meetings';
 import { useUIStore } from '@/stores/uiStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
@@ -32,7 +32,7 @@ const meetingSchema = z.object({
   notes: z.string().optional(),
 });
 
-type MeetingFormData = z.infer<typeof meetingSchema>;
+type MeetingFormData = z.input<typeof meetingSchema>;
 
 export const MeetingBookingSection: React.FC = () => {
   const t = useTranslations('meeting');

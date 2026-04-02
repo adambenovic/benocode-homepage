@@ -27,7 +27,6 @@ export function initSentry() {
       dsn,
       environment: env.NODE_ENV,
       tracesSampleRate: env.NODE_ENV === 'production' ? 0.1 : 1.0,
-      profilesSampleRate: env.NODE_ENV === 'production' ? 0.1 : 1.0,
     });
     console.log('Sentry initialized');
   } catch (error) {

@@ -71,7 +71,6 @@ export const Header: React.FC = () => {
 
 const LanguageSwitcher: React.FC = () => {
   const locale = useLocale();
-  const pathname = usePathname();
 
   const languages = [
     { code: 'en', label: 'EN' },

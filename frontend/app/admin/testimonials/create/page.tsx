@@ -27,7 +27,7 @@ const testimonialSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
-type TestimonialFormData = z.infer<typeof testimonialSchema>;
+type TestimonialFormData = z.input<typeof testimonialSchema>;
 
 export default function CreateTestimonialPage() {
   const router = useRouter();

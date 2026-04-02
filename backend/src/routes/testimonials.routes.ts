@@ -2,8 +2,6 @@
 import { Router } from 'express';
 import { createTestimonialsController } from '../controllers/testimonials.controller';
 import { prisma } from '../config/database';
-import { authMiddleware } from '../middleware/auth.middleware';
-import { authorize } from '../middleware/authorize.middleware';
 import { cacheMiddleware } from '../middleware/cache.middleware';
 
 const router = Router();

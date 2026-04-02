@@ -17,7 +17,7 @@ const paginationSchema = z.object({
 
 export function paginationMiddleware(
   req: PaginatedRequest,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) {
   try {

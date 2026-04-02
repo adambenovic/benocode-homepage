@@ -75,7 +75,7 @@ class ApiClient {
       async (error: AxiosError) => {
         if (error.response?.status === 401) {
           // Token expired or invalid
-          this.clearToken();
+          this.clearAuth();
           if (typeof window !== 'undefined' && !window.location.pathname.includes('/admin/login')) {
             window.location.href = '/admin/login';
           }
@@ -83,12 +83,6 @@ class ApiClient {
         return Promise.reject(error);
       }
     );
-  }
-
-  private getToken(): string | null {
-    // Tokens are now in httpOnly cookies, so we don't need to read from localStorage
-    // The Authorization header will be set automatically by the browser with cookies
-    return null;
   }
 
   private getCsrfToken(): string | null {
@@ -102,7 +96,7 @@ class ApiClient {
     return token;
   }
 
-  setAuthToken(token: string): void {
+  setAuthToken(_token: string): void {
     // Tokens are now in httpOnly cookies, no need to store in localStorage
     // This method is kept for backward compatibility but does nothing
   }

@@ -1,10 +1,8 @@
 // routes/gdpr.routes.ts
-import { Router } from 'express';
+import { Router, Response } from 'express';
 import { authMiddleware } from '../middleware/auth.middleware';
-import { authorize } from '../middleware/authorize.middleware';
 import { prisma } from '../config/database';
 import { NotFoundError } from '../utils/errors';
-import { Request, Response } from 'express';
 
 const router = Router();
 
@@ -12,11 +10,12 @@ const router = Router();
  * Export user data (GDPR compliance)
  * GET /api/v1/gdpr/export
  */
-router.get('/export', authMiddleware, async (req: any, res: Response) => {
+router.get('/export', authMiddleware, async (req: any, res: Response): Promise<void> => {
   try {
     const userId = req.user?.userId;
     if (!userId) {
-      return res.status(401).json({ error: { message: 'Unauthorized', statusCode: 401 } });
+      res.status(401).json({ error: { message: 'Unauthorized', statusCode: 401 } });
+      return;
     }
 
     // Collect all user data
@@ -86,11 +85,12 @@ router.get('/export', authMiddleware, async (req: any, res: Response) => {
  * Delete user data (GDPR compliance)
  * DELETE /api/v1/gdpr/delete
  */
-router.delete('/delete', authMiddleware, async (req: any, res: Response) => {
+router.delete('/delete', authMiddleware, async (req: any, res: Response): Promise<void> => {
   try {
     const userId = req.user?.userId;
     if (!userId) {
-      return res.status(401).json({ error: { message: 'Unauthorized', statusCode: 401 } });
+      res.status(401).json({ error: { message: 'Unauthorized', statusCode: 401 } });
+      return;
     }
 
     const user = await prisma.user.findUnique({

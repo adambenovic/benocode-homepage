@@ -1,5 +1,5 @@
 // middleware/error.middleware.ts
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { AppError } from '../utils/errors';
 import { logger } from '../utils/logger';
 import { RequestWithId } from './requestId.middleware';
@@ -9,7 +9,7 @@ export function errorHandler(
   err: Error,
   req: RequestWithId,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) {
   const requestId = req.id || 'unknown';
 

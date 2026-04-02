@@ -3,14 +3,14 @@
 
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { meetingsApi, MeetingAvailability } from '@/lib/api/meetings';
+import { meetingsApi } from '@/lib/api/meetings';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Spinner } from '@/components/ui/Spinner';
 import { useUIStore } from '@/stores/uiStore';
-import { useForm } from 'react-hook-form';
+
 
 interface AvailabilitySlot {
   dayOfWeek: number;

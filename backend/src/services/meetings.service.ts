@@ -1,5 +1,5 @@
 // services/meetings.service.ts
-import { PrismaClient, MeetingStatus } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { NotFoundError, ValidationError } from '../utils/errors';
 import {
   CreateMeetingDto,

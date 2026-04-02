@@ -108,8 +108,8 @@ export default function AdminTestimonialsPage() {
           </span>
           <Button
             variant="outline"
-            onClick={() => setPage((p) => Math.min(data.meta.totalPages, p + 1))}
-            disabled={page === data.meta.totalPages}
+            onClick={() => setPage((p) => Math.min(data.meta!.totalPages, p + 1))}
+            disabled={page === data.meta!.totalPages}
           >
             Next
           </Button>

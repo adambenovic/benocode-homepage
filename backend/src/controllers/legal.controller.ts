@@ -5,19 +5,20 @@ import { LegalService } from '../services/legal.service';
 export class LegalController {
   constructor(private legalService: LegalService) {}
 
-  async getBySlug(req: Request, res: Response, next: NextFunction) {
+  async getBySlug(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { slug } = req.params;
       const { locale } = req.query;
-      const legalPage = await this.legalService.getBySlug(slug, locale as string | undefined);
+      const legalPage = await this.legalService.getBySlug(slug as string, locale as string | undefined);
 
       if (!legalPage) {
-        return res.status(404).json({
+        res.status(404).json({
           error: {
             message: 'Legal page not found',
             statusCode: 404,
           },
         });
+        return;
       }
 
       res.json({ data: legalPage });
@@ -26,7 +27,7 @@ export class LegalController {
     }
   }
 
-  async getAll(req: Request, res: Response, next: NextFunction) {
+  async getAll(_req: Request, res: Response, next: NextFunction) {
     try {
       const legalPages = await this.legalService.getAll();
       res.json({ data: legalPages });
@@ -47,7 +48,7 @@ export class LegalController {
   async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { slug } = req.params;
-      const legalPage = await this.legalService.update(slug, req.body);
+      const legalPage = await this.legalService.update(slug as string, req.body);
       res.json({ data: legalPage });
     } catch (error) {
       next(error);
@@ -57,7 +58,7 @@ export class LegalController {
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
       const { slug } = req.params;
-      await this.legalService.delete(slug);
+      await this.legalService.delete(slug as string);
       res.status(204).send();
     } catch (error) {
       next(error);

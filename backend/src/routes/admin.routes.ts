@@ -108,7 +108,7 @@ router.patch('/meetings/:id', authMiddleware, authorize('ADMIN'), validate(updat
 router.delete('/meetings/:id', authMiddleware, authorize('ADMIN'), meetingsController.delete.bind(meetingsController));
 
 // Metrics endpoint
-router.get('/metrics', authMiddleware, authorize('ADMIN'), (req, res) => {
+router.get('/metrics', authMiddleware, authorize('ADMIN'), (_req, res) => {
   res.json({ data: getMetrics() });
 });
 

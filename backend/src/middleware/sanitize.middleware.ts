@@ -8,7 +8,7 @@ import DOMPurify from 'isomorphic-dompurify';
  */
 export function sanitizeMiddleware(
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) {
   if (req.body && typeof req.body === 'object') {
