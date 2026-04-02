@@ -73,8 +73,6 @@ services:
       - backend
     networks:
       - benocode-network
-    ports:
-      - "3000:3000"
     restart: unless-stopped
 
   nginx:

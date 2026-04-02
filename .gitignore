@@ -46,8 +46,6 @@ Thumbs.db
 *.db
 *.db-journal
 
-# Docker
-.dockerignore
 
 # Misc
 .cache/

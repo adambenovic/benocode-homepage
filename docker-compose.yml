@@ -38,7 +38,6 @@ services:
       - ./backend:/app
       - ./docs:/docs
       - /app/node_modules
-      - /app/prisma
     ports:
       - "3001:3001"
     depends_on:

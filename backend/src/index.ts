@@ -4,6 +4,7 @@ import { initSentry } from './config/sentry';
 import { createApp } from './app';
 import { env } from './config/env';
 import { logger } from './utils/logger';
+import { closeRedisClient } from './config/redis';
 
 // Initialize Sentry before anything else
 initSentry();

@@ -1,16 +1,6 @@
 # Production Dockerfile for Backend
 FROM node:20-alpine AS base
-
-# Install dependencies only when needed
-FROM base AS deps
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-COPY prisma ./prisma/
-
-# Install dependencies
-RUN npm ci --only=production && npm cache clean --force
+RUN apk add --no-cache openssl
 
 # Build application
 FROM base AS builder
@@ -22,6 +12,7 @@ COPY prisma ./prisma/
 COPY src ./src/
 
 RUN npm ci
+RUN npx prisma generate
 RUN npm run build
 RUN npm prune --production
 
@@ -41,13 +32,17 @@ COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nodejs:nodejs /app/package*.json ./
 COPY --from=builder --chown=nodejs:nodejs /app/prisma ./prisma
 
+# Copy entrypoint script
+COPY --chown=nodejs:nodejs docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 USER nodejs
 
 EXPOSE 3001
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3001/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-CMD ["node", "dist/index.js"]
+ENTRYPOINT ["docker-entrypoint.sh"]
 
