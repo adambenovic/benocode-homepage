@@ -1,4 +1,4 @@
-.PHONY: help dev prod down logs migrate seed shell-be shell-fe test-be test-fe clean setup
+.PHONY: help dev prod down logs migrate seed shell-be shell-fe test-be test-fe test-integration test-e2e clean setup
 
 # Default target
 help:
@@ -19,8 +19,10 @@ help:
 	@echo "    make shell-fe    Open shell in frontend container"
 	@echo ""
 	@echo "  Testing"
-	@echo "    make test-be     Run backend unit tests"
-	@echo "    make test-fe     Run frontend unit tests"
+	@echo "    make test-be          Run backend unit tests"
+	@echo "    make test-fe          Run frontend unit tests"
+	@echo "    make test-integration Run backend HTTP integration tests (supertest)"
+	@echo "    make test-e2e         Run Playwright e2e tests (requires running dev stack)"
 	@echo ""
 	@echo "  Production"
 	@echo "    make prod        Build and start production stack"
@@ -74,6 +76,12 @@ test-be:
 
 test-fe:
 	docker compose exec frontend npm test
+
+test-integration:
+	docker compose exec backend npm run test:integration
+
+test-e2e:
+	cd frontend && npx playwright test --config=../playwright.config.ts --project=public-chromium --project=admin-unauth
 
 # Production
 prod:
