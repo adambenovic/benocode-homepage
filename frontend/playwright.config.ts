@@ -2,10 +2,10 @@
 import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
 
-const AUTH_STATE_FILE = path.join(__dirname, '../e2e/.auth/admin.json');
+const AUTH_STATE_FILE = path.join(__dirname, 'e2e/.auth/admin.json');
 
 export default defineConfig({
-  testDir: '../e2e',
+  testDir: './e2e',
   // Exclude setup scripts from being run as regular tests
   testIgnore: ['**/setup/**'],
   fullyParallel: true,
@@ -34,24 +34,24 @@ export default defineConfig({
     // ── Public pages: no auth required ─────────────────────────────────────
     {
       name: 'public-chromium',
-      testDir: '../e2e/public',
+      testDir: './e2e/public',
       use: { ...devices['Desktop Chrome'] },
     },
     {
       name: 'public-firefox',
-      testDir: '../e2e/public',
+      testDir: './e2e/public',
       use: { ...devices['Desktop Firefox'] },
     },
     {
       name: 'public-mobile',
-      testDir: '../e2e/public',
+      testDir: './e2e/public',
       use: { ...devices['Mobile Chrome'] },
     },
 
     // ── Admin: unauthenticated access tests ────────────────────────────────
     {
       name: 'admin-unauth',
-      testDir: '../e2e/admin',
+      testDir: './e2e/admin',
       testMatch: /admin\/auth\.spec\.ts/,
       use: { ...devices['Desktop Chrome'] },
     },
@@ -59,7 +59,7 @@ export default defineConfig({
     // ── Admin: authenticated tests (depend on setup project) ───────────────
     {
       name: 'admin-auth',
-      testDir: '../e2e/admin',
+      testDir: './e2e/admin',
       testMatch: /admin\/dashboard\.spec\.ts/,
       dependencies: ['setup'],
       use: {
