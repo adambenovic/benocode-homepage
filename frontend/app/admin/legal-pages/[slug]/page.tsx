@@ -1,7 +1,7 @@
 // app/admin/legal-pages/[slug]/page.tsx
 'use client';
+import { useEffect } from 'react';
 
-import React from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -57,7 +57,7 @@ export default function EditLegalPagePage() {
     resolver: zodResolver(legalPageSchema),
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (data?.data) {
       reset({
         translations: data.data.translations.map((t) => ({

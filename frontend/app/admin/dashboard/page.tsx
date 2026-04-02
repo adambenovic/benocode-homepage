@@ -1,7 +1,6 @@
 // app/admin/dashboard/page.tsx
 'use client';
 
-import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { leadsApi } from '@/lib/api/leads';
 import { meetingsApi } from '@/lib/api/meetings';

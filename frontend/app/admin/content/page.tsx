@@ -1,7 +1,7 @@
 // app/admin/content/page.tsx
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { contentApi } from '@/lib/api/content';
 import { Card, CardContent } from '@/components/ui/Card';

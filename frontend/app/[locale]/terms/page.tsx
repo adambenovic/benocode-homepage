@@ -1,7 +1,6 @@
 // app/[locale]/terms/page.tsx
 'use client';
 
-import React from 'react';
 import { useLocale } from 'next-intl';
 import { useQuery } from '@tanstack/react-query';
 import { legalApi } from '@/lib/api/legal';

@@ -1,7 +1,7 @@
 // app/admin/testimonials/[id]/page.tsx
 'use client';
+import { useEffect } from 'react';
 
-import React from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -53,7 +53,7 @@ export default function EditTestimonialPage() {
     resolver: zodResolver(testimonialSchema),
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (data?.data) {
       reset({
         translations: data.data.translations.map((t) => ({

@@ -1,7 +1,6 @@
 // components/admin/AdminHeader.tsx
 'use client';
 
-import React from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { Button } from '@/components/ui/Button';

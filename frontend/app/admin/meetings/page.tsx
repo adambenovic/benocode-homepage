@@ -1,7 +1,7 @@
 // app/admin/meetings/page.tsx
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { meetingsApi, Meeting } from '@/lib/api/meetings';
 import { Card, CardContent } from '@/components/ui/Card';
