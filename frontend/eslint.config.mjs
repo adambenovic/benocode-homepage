@@ -38,6 +38,6 @@ export default [
 
   // Ignore build output and test mocks
   {
-    ignores: ['.next/**', 'node_modules/**', 'coverage/**'],
+    ignores: ['.next/**', 'node_modules/**', 'coverage/**', 'e2e/**'],
   },
 ];
