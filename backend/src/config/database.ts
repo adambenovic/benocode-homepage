@@ -5,7 +5,10 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 
 const prismaClientSingleton = () => {
-  const adapter = new PrismaPg(process.env.DATABASE_URL!);
+  const adapter = new PrismaPg(process.env.DATABASE_URL!, {
+    // Connection pool: keep a reasonable number of connections open
+    max: process.env.NODE_ENV === 'production' ? 10 : 2,
+  });
   return new PrismaClient({
     adapter,
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],

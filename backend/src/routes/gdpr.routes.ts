@@ -1,5 +1,5 @@
 // routes/gdpr.routes.ts
-import { Router, Response } from 'express';
+import { Router, Response, NextFunction } from 'express';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { prisma } from '../config/database';
 import { NotFoundError } from '../utils/errors';
@@ -10,7 +10,7 @@ const router = Router();
  * Export user data (GDPR compliance)
  * GET /api/v1/gdpr/export
  */
-router.get('/export', authMiddleware, async (req: any, res: Response): Promise<void> => {
+router.get('/export', authMiddleware, async (req: any, res: Response, next: NextFunction): Promise<void> => {
   try {
     const userId = req.user?.userId;
     if (!userId) {
@@ -77,7 +77,7 @@ router.get('/export', authMiddleware, async (req: any, res: Response): Promise<v
 
     res.json({ data: exportData });
   } catch (error) {
-    res.status(500).json({ error: { message: 'Failed to export data', statusCode: 500 } });
+    next(error);
   }
 });
 
@@ -85,7 +85,7 @@ router.get('/export', authMiddleware, async (req: any, res: Response): Promise<v
  * Delete user data (GDPR compliance)
  * DELETE /api/v1/gdpr/delete
  */
-router.delete('/delete', authMiddleware, async (req: any, res: Response): Promise<void> => {
+router.delete('/delete', authMiddleware, async (req: any, res: Response, next: NextFunction): Promise<void> => {
   try {
     const userId = req.user?.userId;
     if (!userId) {
@@ -122,7 +122,7 @@ router.delete('/delete', authMiddleware, async (req: any, res: Response): Promis
 
     res.json({ data: { message: 'Data deleted successfully' } });
   } catch (error) {
-    res.status(500).json({ error: { message: 'Failed to delete data', statusCode: 500 } });
+    next(error);
   }
 });
 

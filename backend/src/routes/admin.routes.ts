@@ -78,7 +78,7 @@ router.delete('/leads/:id', authMiddleware, authorize('ADMIN'), leadsController.
 // Legal Pages admin routes
 const legalService = new LegalService(prisma);
 const legalController = new LegalController(legalService);
-router.get('/legal-pages', authMiddleware, authorize('ADMIN'), legalController.getAll.bind(legalController));
+router.get('/legal-pages', authMiddleware, authorize('ADMIN'), paginationMiddleware, legalController.getAll.bind(legalController));
 router.post('/legal-pages', authMiddleware, authorize('ADMIN'), validate(createLegalPageSchema), legalController.create.bind(legalController));
 router.put('/legal-pages/:slug', authMiddleware, authorize('ADMIN'), validate(updateLegalPageSchema), legalController.update.bind(legalController));
 router.delete('/legal-pages/:slug', authMiddleware, authorize('ADMIN'), legalController.delete.bind(legalController));
@@ -86,13 +86,13 @@ router.delete('/legal-pages/:slug', authMiddleware, authorize('ADMIN'), legalCon
 // Social Links admin routes
 const linksService = new LinksService(prisma);
 const linksController = new LinksController(linksService);
-router.get('/social-links', authMiddleware, authorize('ADMIN'), linksController.getAllSocialLinksAdmin.bind(linksController));
+router.get('/social-links', authMiddleware, authorize('ADMIN'), paginationMiddleware, linksController.getAllSocialLinksAdmin.bind(linksController));
 router.post('/social-links', authMiddleware, authorize('ADMIN'), validate(createSocialLinkSchema), linksController.createSocialLink.bind(linksController));
 router.put('/social-links/:id', authMiddleware, authorize('ADMIN'), validate(updateSocialLinkSchema), linksController.updateSocialLink.bind(linksController));
 router.delete('/social-links/:id', authMiddleware, authorize('ADMIN'), linksController.deleteSocialLink.bind(linksController));
 
 // External Links admin routes
-router.get('/external-links', authMiddleware, authorize('ADMIN'), linksController.getAllExternalLinksAdmin.bind(linksController));
+router.get('/external-links', authMiddleware, authorize('ADMIN'), paginationMiddleware, linksController.getAllExternalLinksAdmin.bind(linksController));
 router.post('/external-links', authMiddleware, authorize('ADMIN'), validate(createExternalLinkSchema), linksController.createExternalLink.bind(linksController));
 router.put('/external-links/:id', authMiddleware, authorize('ADMIN'), validate(updateExternalLinkSchema), linksController.updateExternalLink.bind(linksController));
 router.delete('/external-links/:id', authMiddleware, authorize('ADMIN'), linksController.deleteExternalLink.bind(linksController));

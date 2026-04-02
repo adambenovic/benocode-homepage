@@ -9,6 +9,17 @@ import { closeRedisClient } from './config/redis';
 // Initialize Sentry before anything else
 initSentry();
 
+// Handle unhandled promise rejections and uncaught exceptions
+process.on('unhandledRejection', (reason: unknown) => {
+  logger.error('Unhandled Rejection', { reason });
+  process.exit(1);
+});
+
+process.on('uncaughtException', (error: Error) => {
+  logger.error('Uncaught Exception', { message: error.message, stack: error.stack });
+  process.exit(1);
+});
+
 const app = createApp();
 
 const server = app.listen(env.PORT, () => {

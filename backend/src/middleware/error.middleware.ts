@@ -43,6 +43,16 @@ export function errorHandler(
   const Sentry = getSentry();
   if (Sentry && process.env.NODE_ENV === 'production') {
     try {
+      const SENSITIVE_FIELDS = ['password', 'token', 'secret', 'authorization', 'creditCard', 'ssn'];
+      const sanitizeForSentry = (obj: any): any => {
+        if (!obj || typeof obj !== 'object') return obj;
+        const result: any = {};
+        for (const key of Object.keys(obj)) {
+          result[key] = SENSITIVE_FIELDS.some(f => key.toLowerCase().includes(f)) ? '[REDACTED]' : obj[key];
+        }
+        return result;
+      };
+
       Sentry.captureException(err, {
         tags: {
           requestId,
@@ -50,8 +60,8 @@ export function errorHandler(
         },
         extra: {
           method: req.method,
-          body: req.body,
-          query: req.query,
+          body: sanitizeForSentry(req.body),
+          query: sanitizeForSentry(req.query),
         },
       });
     } catch (sentryError) {

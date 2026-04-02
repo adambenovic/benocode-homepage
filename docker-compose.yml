@@ -29,6 +29,7 @@ services:
       DATABASE_URL: postgresql://benocode:${DB_PASSWORD:-benocode_dev_password}@postgres:5432/benocode
       JWT_SECRET: ${JWT_SECRET:-dev-jwt-secret-min-32-characters-long}
       JWT_EXPIRES_IN: 7d
+      CSRF_SECRET: ${CSRF_SECRET:-dev-csrf-secret-min-32-characters-long}
       BREVO_API_KEY: ${BREVO_API_KEY:-placeholder-api-key-for-development}
       BREVO_SENDER_EMAIL: ${BREVO_SENDER_EMAIL:-noreply@benocode.sk}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@benocode.sk}
