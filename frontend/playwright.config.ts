@@ -80,7 +80,7 @@ export default defineConfig({
     },
     {
       command: 'npm run dev',
-      url: 'http://localhost:3000',
+      url: 'http://localhost:3000/en',
       reuseExistingServer: true,
       timeout: 60000,
     },
