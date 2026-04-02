@@ -2,10 +2,10 @@
 import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
 
-const AUTH_STATE_FILE = path.join(__dirname, 'e2e/.auth/admin.json');
+const AUTH_STATE_FILE = path.join(__dirname, '../e2e/.auth/admin.json');
 
 export default defineConfig({
-  testDir: './e2e',
+  testDir: '../e2e',
   // Exclude setup scripts from being run as regular tests
   testIgnore: ['**/setup/**'],
   fullyParallel: true,
@@ -34,24 +34,24 @@ export default defineConfig({
     // ── Public pages: no auth required ─────────────────────────────────────
     {
       name: 'public-chromium',
-      testDir: './e2e/public',
+      testDir: '../e2e/public',
       use: { ...devices['Desktop Chrome'] },
     },
     {
       name: 'public-firefox',
-      testDir: './e2e/public',
+      testDir: '../e2e/public',
       use: { ...devices['Desktop Firefox'] },
     },
     {
       name: 'public-mobile',
-      testDir: './e2e/public',
+      testDir: '../e2e/public',
       use: { ...devices['Mobile Chrome'] },
     },
 
     // ── Admin: unauthenticated access tests ────────────────────────────────
     {
       name: 'admin-unauth',
-      testDir: './e2e/admin',
+      testDir: '../e2e/admin',
       testMatch: /admin\/auth\.spec\.ts/,
       use: { ...devices['Desktop Chrome'] },
     },
@@ -59,7 +59,7 @@ export default defineConfig({
     // ── Admin: authenticated tests (depend on setup project) ───────────────
     {
       name: 'admin-auth',
-      testDir: './e2e/admin',
+      testDir: '../e2e/admin',
       testMatch: /admin\/dashboard\.spec\.ts/,
       dependencies: ['setup'],
       use: {
@@ -71,7 +71,7 @@ export default defineConfig({
 
   webServer: [
     {
-      command: 'cd backend && npm run dev',
+      command: 'cd ../backend && npm run dev',
       url: 'http://localhost:3001/health',
       // Always reuse an already-running server; start via command only if not up.
       // In CI the servers are started manually before playwright runs.
@@ -79,7 +79,7 @@ export default defineConfig({
       timeout: 30000,
     },
     {
-      command: 'cd frontend && npm run dev',
+      command: 'npm run dev',
       url: 'http://localhost:3000',
       reuseExistingServer: true,
       timeout: 60000,
