@@ -1,5 +1,6 @@
 // prisma/seed.ts
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import bcrypt from 'bcrypt';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -10,7 +11,8 @@ async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, SALT_ROUNDS);
 }
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log('🌱 Seeding database...\n');
