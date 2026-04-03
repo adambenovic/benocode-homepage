@@ -5,32 +5,34 @@ A modern, multi-language website with admin panel for BenoCode software solution
 ## Architecture
 
 This project follows a **three-tier architecture**:
-- **Frontend**: Next.js 15 SPA (Public Website + Admin Panel)
+- **Frontend**: Next.js 16 SPA (Public Website + Admin Panel)
 - **Backend**: Express.js REST API
-- **Database**: PostgreSQL 15+
+- **Database**: PostgreSQL 17
 
 ## Technology Stack
 
 ### Frontend
-- Next.js 15.x (App Router)
-- TypeScript 5.x
-- React 18.x
-- Tailwind CSS 3.x
-- Zustand + React Query
+- Next.js 16.x (App Router)
+- TypeScript 6.x
+- React 19.x
+- Tailwind CSS 4.x
+- Zustand 5 + React Query 5
 - React Hook Form + Zod
 - next-intl (EN, SK, DE, CZ)
+- Tiptap (rich text editor)
 
 ### Backend
-- Node.js 20.x LTS
-- Express.js 4.x
-- TypeScript 5.x
-- Prisma ORM
-- JWT Authentication
+- Node.js 22 (Docker)
+- Express.js 5.x
+- TypeScript 6.x
+- Prisma 7 (PostgreSQL adapter)
+- JWT Authentication (httpOnly cookies)
 - Brevo Email Service
-- Redis (caching)
+- Redis 7 (caching)
+- Winston (logging), Sentry (error tracking)
 
 ### Infrastructure
-- PostgreSQL 15+
+- PostgreSQL 17
 - Redis 7
 - Docker & Docker Compose
 - Nginx (production reverse proxy)
@@ -38,7 +40,7 @@ This project follows a **three-tier architecture**:
 ## Prerequisites
 
 - Docker & Docker Compose (recommended)
-- Node.js 20.x LTS (for local development without Docker)
+- Node.js 22.x (for local development without Docker)
 
 ## Quick Start with Docker
 
@@ -56,10 +58,11 @@ This project follows a **three-tier architecture**:
    cp frontend/.env.example frontend/.env.local
    ```
 
-   Edit `.env` with your values (at minimum: `DB_PASSWORD`, `JWT_SECRET`, `BREVO_API_KEY`):
+   Edit `.env` with your values (at minimum: `DB_PASSWORD`, `JWT_SECRET`, `CSRF_SECRET`, `BREVO_API_KEY`):
    ```env
    DB_PASSWORD=your_secure_password
    JWT_SECRET=your-secret-key-min-32-characters-long
+   CSRF_SECRET=another-secret-key-min-32-characters
    BREVO_API_KEY=your-brevo-api-key
    BREVO_SENDER_EMAIL=noreply@benocode.sk
    ADMIN_EMAIL=admin@benocode.sk
@@ -157,9 +160,10 @@ make clean       # Remove containers, volumes, and images
 
 ```
 benocode-homepage/
-├── frontend/                 # Next.js 15 frontend
+├── frontend/                 # Next.js 16 frontend
 │   ├── app/                  # App Router pages
 │   ├── components/           # React components
+│   ├── hooks/                # Custom React hooks
 │   ├── lib/                  # Utilities and helpers
 │   ├── stores/               # Zustand state stores
 │   └── messages/             # i18n translation files
@@ -178,6 +182,7 @@ benocode-homepage/
 ├── docker-compose.yml        # Development stack
 ├── docker-compose.prod.yml   # Production stack
 ├── Makefile                  # Convenience commands
+├── CLAUDE.md                 # AI assistant project context
 └── env.production.example    # Production env reference
 ```
 
@@ -210,6 +215,8 @@ benocode-homepage/
 |---|---|---|
 | `DB_PASSWORD` | Yes | PostgreSQL password |
 | `JWT_SECRET` | Yes | JWT signing secret (min 32 chars) |
+| `CSRF_SECRET` | Yes | CSRF token secret (min 32 chars, different from JWT) |
+| `REDIS_PASSWORD` | Prod | Redis password (production only) |
 | `BREVO_API_KEY` | Yes | Brevo email service API key |
 | `BREVO_SENDER_EMAIL` | Yes | From address for emails |
 | `ADMIN_EMAIL` | Yes | Admin notification email |
@@ -223,6 +230,7 @@ benocode-homepage/
 | `DATABASE_URL` | Yes | PostgreSQL connection string |
 | `JWT_SECRET` | Yes | JWT signing secret (min 32 chars) |
 | `JWT_EXPIRES_IN` | No | Token expiry (default: `7d`) |
+| `CSRF_SECRET` | Yes | CSRF token secret (min 32 chars) |
 | `BREVO_API_KEY` | Yes | Brevo API key |
 | `BREVO_SENDER_EMAIL` | Yes | From address for emails |
 | `ADMIN_EMAIL` | Yes | Admin notification email |

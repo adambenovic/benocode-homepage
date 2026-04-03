@@ -34,7 +34,7 @@ Nginx (ports 80 / 443)    ← only public-facing container
   ├── /api     → backend:3001    (Express)
   └── /health  → backend:3001
          │
-         ├── postgres:5432  (PostgreSQL 15)
+         ├── postgres:5432  (PostgreSQL 17)
          └── redis:6379     (Redis 7)
 ```
 
