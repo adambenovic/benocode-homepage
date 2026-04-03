@@ -35,6 +35,9 @@ export function LegalPageContent({ slug, fallbackTitle }: LegalPageContentProps)
     (t) => t.locale === locale.toUpperCase()
   ) || data?.data?.translations[0];
 
+  // Strip leading # heading from markdown since we show the title separately
+  const content = translation?.content?.replace(/^#\s+.+\n+/, '') || '';
+
   return (
     <div className="container mx-auto px-4 py-12">
       <Card>
@@ -42,8 +45,8 @@ export function LegalPageContent({ slug, fallbackTitle }: LegalPageContentProps)
           <CardTitle className="text-3xl">{translation?.title || fallbackTitle}</CardTitle>
         </CardHeader>
         <CardContent>
-          {translation?.content ? (
-            <MarkdownRenderer content={translation.content} />
+          {content ? (
+            <MarkdownRenderer content={content} />
           ) : (
             <p className="text-text-light dark:text-gray-400">
               {fallbackTitle} content will be managed through the admin panel and displayed here.
