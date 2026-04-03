@@ -53,6 +53,10 @@
         "consulting": {
           "title": "Beratung",
           "description": "Expertenberatung zu Softwarearchitektur und Best Practices"
+        },
+        "aiSolutions": {
+          "title": "KI-Lösungen",
+          "description": "Individuelle KI-Integrationen, Chatbots und intelligente Automatisierung für Ihr Unternehmen"
         }
       }
     },
@@ -256,4 +260,3 @@
     }
   }
 }
-

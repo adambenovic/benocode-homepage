@@ -53,6 +53,10 @@
         "consulting": {
           "title": "Konzultácie",
           "description": "Odborné rady ohľadom softvérovej architektúry a najlepších postupov"
+        },
+        "aiSolutions": {
+          "title": "AI riešenia",
+          "description": "Vlastné AI integrácie, chatboty a inteligentná automatizácia pre váš biznis"
         }
       }
     },
@@ -256,4 +260,3 @@
     }
   }
 }
-

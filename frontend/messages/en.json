@@ -53,6 +53,10 @@
         "consulting": {
           "title": "Consulting",
           "description": "Expert advice on software architecture and best practices"
+        },
+        "aiSolutions": {
+          "title": "AI Solutions",
+          "description": "Custom AI integrations, chatbots, and intelligent automation for your business"
         }
       }
     },
@@ -256,4 +260,3 @@
     "error": "Failed to book meeting. Please try again."
   }
 }
-
