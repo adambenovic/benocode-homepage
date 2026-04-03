@@ -42,6 +42,7 @@ services:
       dockerfile: Dockerfile
     container_name: benocode-backend-prod
     environment:
+      TZ: Europe/Bratislava
       NODE_ENV: production
       PORT: 3001
       DATABASE_URL: postgresql://benocode:${DB_PASSWORD}@postgres:5432/benocode

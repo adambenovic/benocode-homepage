@@ -1,6 +1,6 @@
 # Production Dockerfile for Backend
 FROM node:22-alpine AS base
-RUN apk add --no-cache openssl
+RUN apk add --no-cache openssl tzdata
 
 # Build application
 FROM base AS builder
