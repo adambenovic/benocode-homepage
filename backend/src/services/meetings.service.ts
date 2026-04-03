@@ -123,9 +123,11 @@ export class MeetingsService {
           });
 
           if (!hasConflict && currentSlot >= new Date()) {
+            // Use local date (not UTC) to match the day-of-week check
+            const localDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
             slots.push({
-              date: currentDate.toISOString().split('T')[0],
-              time: currentSlot.toISOString(), // Return full ISO timestamp instead of just HH:mm
+              date: localDate,
+              time: currentSlot.toISOString(),
               available: true,
             });
           }
