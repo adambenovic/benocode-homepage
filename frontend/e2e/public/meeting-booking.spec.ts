@@ -32,7 +32,8 @@ test.describe('Meeting booking section', () => {
 
   test('book button is disabled until a time slot is selected', async () => {
     // The submit button should be disabled when no date/time slot is chosen
-    const button = homePage.page.locator('#book-meeting button:has-text("Book")').first();
+    const section = homePage.page.locator('#book-meeting');
+    const button = section.locator('button[type="submit"]');
     await expect(button).toBeDisabled({ timeout: 8000 });
   });
 });

@@ -14,27 +14,29 @@ test.describe('Contact form', () => {
   test('shows validation errors when form is submitted empty', async () => {
     await homePage.page.locator('#contact button[type="submit"]').click();
     // At least one validation error should appear
-    const errors = homePage.page.locator('[role="alert"], .text-red-500, p:has-text("required"), p:has-text("invalid")');
+    const errors = homePage.page.locator('#contact [role="alert"], #contact .text-red-500');
     await expect(errors.first()).toBeVisible({ timeout: 5000 });
   });
 
   test('shows error for invalid email', async () => {
-    await homePage.fillByLabel('Name', 'Test User');
-    await homePage.fillByLabel('Email', 'not-an-email');
-    await homePage.page.getByLabel('Message', { exact: false }).fill('Test message content long enough');
-    await homePage.page.locator('#contact button[type="submit"]').click();
+    const section = homePage.page.locator('#contact');
+    await section.getByLabel('Name', { exact: false }).fill('Test User');
+    await section.getByLabel('Email', { exact: false }).fill('not-an-email');
+    await section.getByLabel('Message', { exact: false }).fill('Test message content long enough');
+    await section.locator('button[type="submit"]').click();
 
-    const error = homePage.page.locator('p:has-text("Invalid"), p:has-text("email"), [role="alert"]').first();
+    const error = section.locator('[role="alert"], .text-red-500').first();
     await expect(error).toBeVisible({ timeout: 5000 });
   });
 
   test('shows error for message that is too short', async () => {
-    await homePage.fillByLabel('Name', 'Test User');
-    await homePage.fillByLabel('Email', 'test@example.com');
-    await homePage.page.getByLabel('Message', { exact: false }).fill('Short');
-    await homePage.page.locator('#contact button[type="submit"]').click();
+    const section = homePage.page.locator('#contact');
+    await section.getByLabel('Name', { exact: false }).fill('Test User');
+    await section.getByLabel('Email', { exact: false }).fill('test@example.com');
+    await section.getByLabel('Message', { exact: false }).fill('Short');
+    await section.locator('button[type="submit"]').click();
 
-    const error = homePage.page.locator('[role="alert"], .text-red-500').first();
+    const error = section.locator('[role="alert"], .text-red-500').first();
     await expect(error).toBeVisible({ timeout: 5000 });
   });
 

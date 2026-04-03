@@ -26,7 +26,8 @@ export class LoginPage extends BasePage {
 
   async expectError() {
     // Wait for error notification toast (role="alert") or inline error text
-    const errorLocator = this.page.locator('[role="alert"], text=/invalid|error|incorrect/i');
+    const errorLocator = this.page.locator('[role="alert"]')
+      .or(this.page.getByText(/invalid|error|incorrect/i));
     await expect(errorLocator.first()).toBeVisible({ timeout: 10000 });
   }
 
