@@ -53,6 +53,14 @@
         "consulting": {
           "title": "Consulting",
           "description": "Expert advice on software architecture and best practices"
+        },
+        "aiSolutions": {
+          "title": "AI Solutions",
+          "description": "Custom AI integrations, chatbots, and intelligent automation for your business"
+        },
+        "printing3d": {
+          "title": "3D Printing",
+          "description": "Custom 3D printing services for prototyping, product design, and small-batch manufacturing"
         }
       }
     },
@@ -256,4 +264,3 @@
     "error": "Failed to book meeting. Please try again."
   }
 }
-

@@ -53,6 +53,14 @@
         "consulting": {
           "title": "Beratung",
           "description": "Expertenberatung zu Softwarearchitektur und Best Practices"
+        },
+        "aiSolutions": {
+          "title": "KI-Lösungen",
+          "description": "Individuelle KI-Integrationen, Chatbots und intelligente Automatisierung für Ihr Unternehmen"
+        },
+        "printing3d": {
+          "title": "3D-Druck",
+          "description": "Individuelle 3D-Druckdienste für Prototyping, Produktdesign und Kleinserienfertigung"
         }
       }
     },
@@ -256,4 +264,3 @@
     }
   }
 }
-

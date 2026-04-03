@@ -1,5 +1,6 @@
 import '../styles/globals.css';
 import { QueryProvider } from '@/providers/QueryProvider';
+import { getLocale } from 'next-intl/server';
 import type { Metadata } from 'next';
 
 // All pages are dynamic (backend API dependent) — skip static prerendering
@@ -13,13 +14,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang={locale} className="dark" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{

@@ -6,15 +6,15 @@ import { NextRequest, NextResponse } from 'next/server';
 const intlMiddleware = createMiddleware({
   locales,
   defaultLocale,
-  localePrefix: 'always',
+  localePrefix: 'never',
 });
 
 export default function middleware(request: NextRequest) {
-  // Skip locale prefix for admin routes - let them pass through
+  // Skip locale handling for admin routes
   if (request.nextUrl.pathname.startsWith('/admin')) {
     return NextResponse.next();
   }
-  
+
   return intlMiddleware(request);
 }
 

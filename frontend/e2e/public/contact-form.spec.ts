@@ -7,7 +7,7 @@ test.describe('Contact form', () => {
 
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page);
-    await homePage.goto('en');
+    await homePage.goto();
     await homePage.scrollToContact();
   });
 
