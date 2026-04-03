@@ -6,6 +6,7 @@ import { EmailService } from '../services/email.service';
 import { prisma } from '../config/database';
 import { validate } from '../middleware/validation.middleware';
 import { createMeetingSchema } from '../types/meetings.types';
+import { contactRateLimit } from '../middleware/rateLimit.middleware';
 
 const router = Router();
 
@@ -14,7 +15,7 @@ const meetingsService = new MeetingsService(prisma, emailService);
 const meetingsController = new MeetingsController(meetingsService);
 
 // Public routes
-router.post('/', validate(createMeetingSchema), meetingsController.create.bind(meetingsController));
+router.post('/', contactRateLimit, validate(createMeetingSchema), meetingsController.create.bind(meetingsController));
 router.get('/availability', meetingsController.getAvailability.bind(meetingsController));
 
 export default router;

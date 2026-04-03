@@ -32,13 +32,6 @@ class ApiClient {
             config.headers['X-CSRF-Token'] = csrfToken;
             // Also try lowercase header name (some servers expect lowercase)
             config.headers['x-csrf-token'] = csrfToken;
-          } else {
-            // If no CSRF token available, log warning (but don't block - let backend handle it)
-            console.warn('CSRF token not available for', config.method, config.url);
-            console.warn('SessionStorage contents:', {
-              csrf_token: sessionStorage.getItem('csrf_token'),
-              allKeys: Object.keys(sessionStorage),
-            });
           }
         }
 
@@ -59,23 +52,13 @@ class ApiClient {
           
         if (csrfToken && typeof window !== 'undefined') {
           sessionStorage.setItem('csrf_token', csrfToken);
-          console.log('CSRF token stored:', csrfToken.substring(0, 20) + '...');
-        } else if (typeof window !== 'undefined') {
-          // Log available headers for debugging
-          const allHeaders = Object.keys(response.headers);
-          const csrfHeaders = allHeaders.filter(h => h.toLowerCase().includes('csrf'));
-          console.log('No CSRF token found. Response headers:', {
-            allHeaders: allHeaders.slice(0, 10),
-            csrfHeaders,
-            responseHeaders: response.headers,
-          });
         }
         return response;
       },
       async (error: AxiosError) => {
         if (error.response?.status === 401) {
           // Token expired or invalid
-          this.clearToken();
+          this.clearAuth();
           if (typeof window !== 'undefined' && !window.location.pathname.includes('/admin/login')) {
             window.location.href = '/admin/login';
           }
@@ -85,24 +68,14 @@ class ApiClient {
     );
   }
 
-  private getToken(): string | null {
-    // Tokens are now in httpOnly cookies, so we don't need to read from localStorage
-    // The Authorization header will be set automatically by the browser with cookies
-    return null;
-  }
-
   private getCsrfToken(): string | null {
     if (typeof window === 'undefined') return null;
     // CSRF token comes from server response header X-CSRF-Token
     // Store it temporarily for the request
-    const token = sessionStorage.getItem('csrf_token');
-    if (!token) {
-      console.warn('CSRF token not found in sessionStorage');
-    }
-    return token;
+    return sessionStorage.getItem('csrf_token');
   }
 
-  setAuthToken(token: string): void {
+  setAuthToken(_token: string): void {
     // Tokens are now in httpOnly cookies, no need to store in localStorage
     // This method is kept for backward compatibility but does nothing
   }

@@ -46,10 +46,14 @@ Thumbs.db
 *.db
 *.db-journal
 
-# Docker
-.dockerignore
 
 # Misc
 .cache/
 .turbo/
 
+# Playwright
+frontend/test-results/
+frontend/playwright-report/
+frontend/e2e/.auth/
+
+frontend/tsconfig.tsbuildinfo

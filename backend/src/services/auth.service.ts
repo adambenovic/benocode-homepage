@@ -1,7 +1,7 @@
 // services/auth.service.ts
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { prisma } from '../config/database';
-import { hashPassword, verifyPassword } from '../utils/password';
+import { verifyPassword } from '../utils/password';
 import { UnauthorizedError, NotFoundError } from '../utils/errors';
 import { env } from '../config/env';
 import { LoginDto, LoginResponse, JwtPayload } from '../types/auth.types';

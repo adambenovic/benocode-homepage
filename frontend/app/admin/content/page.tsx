@@ -1,19 +1,16 @@
 // app/admin/content/page.tsx
 'use client';
 
-import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { contentApi, Content } from '@/lib/api/content';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { contentApi } from '@/lib/api/content';
+import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
-import { useUIStore } from '@/stores/uiStore';
 import Link from 'next/link';
 
 export default function AdminContentPage() {
   const [page, setPage] = useState(1);
-  const queryClient = useQueryClient();
-  const addNotification = useUIStore((state) => state.addNotification);
 
   const { data, isLoading } = useQuery({
     queryKey: ['content', 'admin', page],
@@ -92,7 +89,7 @@ export default function AdminContentPage() {
           </span>
           <Button
             variant="outline"
-            onClick={() => setPage((p) => Math.min(data.meta.totalPages, p + 1))}
+            onClick={() => setPage((p) => Math.min(data.meta!.totalPages, p + 1))}
             disabled={page === data.meta.totalPages}
           >
             Next

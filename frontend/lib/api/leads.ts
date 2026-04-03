@@ -19,6 +19,7 @@ export interface CreateLeadRequest {
   email: string;
   phone?: string;
   message: string;
+  locale?: string;
 }
 
 export interface UpdateLeadRequest {

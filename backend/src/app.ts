@@ -18,22 +18,37 @@ import { metricsMiddleware } from './middleware/metrics.middleware';
 export function createApp(): Express {
   const app = express();
 
-  // Sentry request handler (must be first) - only if Sentry is initialized
-  const Sentry = getSentry();
-  if (Sentry && process.env.SENTRY_DSN) {
-    try {
-      app.use(Sentry.Handlers.requestHandler());
-      app.use(Sentry.Handlers.tracingHandler());
-    } catch (error) {
-      logger.warn('Sentry handlers not available', { error });
-    }
-  }
+  // Sentry is initialized before app creation in index.ts.
+  // In Sentry SDK v8+, request tracking is automatic — no middleware needed.
 
   // Security middleware
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          imgSrc: ["'self'", 'data:', 'https:'],
+          connectSrc: ["'self'"],
+          fontSrc: ["'self'", 'https:'],
+          objectSrc: ["'none'"],
+          frameAncestors: ["'none'"],
+          upgradeInsecureRequests: [],
+        },
+      },
+    })
+  );
+
+  const allowedOrigins = env.CORS_ORIGIN.split(',').map((o) => o.trim());
   app.use(
     cors({
-      origin: env.CORS_ORIGIN,
+      origin: (origin, callback) => {
+        // Allow requests with no origin (server-to-server, curl, etc.)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        callback(new Error(`CORS: origin ${origin} not allowed`));
+      },
       credentials: true,
       exposedHeaders: ['X-CSRF-Token'], // Expose CSRF token header so frontend can read it
     })
@@ -46,8 +61,8 @@ export function createApp(): Express {
   app.use(cookieParser());
 
   // Body parsing middleware
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json({ limit: '1mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
   // Input sanitization
   app.use(sanitizeMiddleware);
@@ -62,14 +77,14 @@ export function createApp(): Express {
   app.use(metricsMiddleware);
 
   // Request logging
-  app.use((req, res, next) => {
+  app.use((req, _res, next) => {
     const requestId = (req as any).id || 'unknown';
     logger.info(`${req.method} ${req.path}`, { requestId });
     next();
   });
 
   // Health check endpoint with database verification
-  app.get('/health', async (req, res) => {
+  app.get('/health', async (_req, res) => {
     try {
       const { prisma } = await import('./config/database');
       await prisma.$queryRaw`SELECT 1`;
@@ -93,10 +108,11 @@ export function createApp(): Express {
   // API routes with rate limiting
   app.use('/api/v1', publicRateLimit, apiRoutes);
 
-  // Sentry error handler (before custom error handler) - only if Sentry is initialized
+  // Sentry error handler (v8+ API) — must be registered after routes
+  const Sentry = getSentry();
   if (Sentry && process.env.SENTRY_DSN) {
     try {
-      app.use(Sentry.Handlers.errorHandler());
+      Sentry.setupExpressErrorHandler(app);
     } catch (error) {
       logger.warn('Sentry error handler not available', { error });
     }

@@ -41,7 +41,7 @@ export class LeadsController {
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const lead = await this.leadsService.getById(id);
+      const lead = await this.leadsService.getById(id as string);
       res.json({ data: lead });
     } catch (error) {
       next(error);
@@ -52,7 +52,7 @@ export class LeadsController {
     try {
       const { id } = req.params;
       const dto: UpdateLeadDto = req.body;
-      const lead = await this.leadsService.update(id, dto);
+      const lead = await this.leadsService.update(id as string, dto);
       res.json({ data: lead });
     } catch (error) {
       next(error);
@@ -62,14 +62,14 @@ export class LeadsController {
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      await this.leadsService.delete(id);
+      await this.leadsService.delete(id as string);
       res.status(204).send();
     } catch (error) {
       next(error);
     }
   }
 
-  async export(req: Request, res: Response, next: NextFunction) {
+  async export(_req: Request, res: Response, next: NextFunction) {
     try {
       const csv = await this.leadsService.exportToCSV();
       res.setHeader('Content-Type', 'text/csv');

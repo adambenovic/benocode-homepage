@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { randomBytes, createHmac } from 'crypto';
 import { env } from '../config/env';
 
-const CSRF_SECRET = env.JWT_SECRET; // Reuse JWT secret for CSRF token signing
+const CSRF_SECRET = env.CSRF_SECRET;
 
 interface RequestWithCsrf extends Request {
   csrfToken?: () => string;
@@ -40,16 +40,6 @@ export function csrfMiddleware(req: RequestWithCsrf, res: Response, next: NextFu
 
   if (req.path.startsWith('/api/v1/admin')) {
     if (!token || !cookieSecret) {
-      // Log for debugging
-      console.log('CSRF validation failed:', {
-        path: req.path,
-        method: req.method,
-        hasToken: !!token,
-        hasCookieSecret: !!cookieSecret,
-        cookies: Object.keys(req.cookies || {}),
-        headers: Object.keys(req.headers).filter(h => h.toLowerCase().includes('csrf')),
-      });
-      
       return res.status(403).json({
         error: {
           message: 'CSRF token missing',
@@ -59,13 +49,6 @@ export function csrfMiddleware(req: RequestWithCsrf, res: Response, next: NextFu
     }
 
     if (!validateToken(token, cookieSecret)) {
-      console.log('CSRF token validation failed:', {
-        path: req.path,
-        method: req.method,
-        tokenLength: token?.length,
-        cookieSecretLength: cookieSecret?.length,
-      });
-      
       return res.status(403).json({
         error: {
           message: 'Invalid CSRF token',

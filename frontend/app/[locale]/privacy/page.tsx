@@ -1,52 +1,8 @@
 // app/[locale]/privacy/page.tsx
-'use client';
+import { LegalPageContent } from '@/components/legal/LegalPageContent';
 
-import React from 'react';
-import { useLocale } from 'next-intl';
-import { useQuery } from '@tanstack/react-query';
-import { legalApi } from '@/lib/api/legal';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Spinner } from '@/components/ui/Spinner';
-import { MarkdownRenderer } from '@/components/ui/MarkdownRenderer';
+export const dynamic = 'force-dynamic';
 
 export default function PrivacyPage() {
-  const locale = useLocale();
-
-  const { data, isLoading } = useQuery({
-    queryKey: ['legal', 'privacy', locale],
-    queryFn: () => legalApi.getBySlug('privacy', locale.toUpperCase() as 'EN' | 'SK' | 'DE' | 'CZ'),
-  });
-
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-12">
-        <div className="flex justify-center">
-          <Spinner size="lg" />
-        </div>
-      </div>
-    );
-  }
-
-  const translation = data?.data?.translations.find(
-    (t) => t.locale === locale.toUpperCase()
-  ) || data?.data?.translations[0];
-
-  return (
-    <div className="container mx-auto px-4 py-12">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-3xl">{translation?.title || 'Privacy Policy'}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {translation?.content ? (
-            <MarkdownRenderer content={translation.content} />
-          ) : (
-            <p className="text-text-light dark:text-gray-400">
-              Privacy Policy content will be managed through the admin panel and displayed here.
-            </p>
-          )}
-        </CardContent>
-      </Card>
-    </div>
-  );
+  return <LegalPageContent slug="privacy" fallbackTitle="Privacy Policy" />;
 }

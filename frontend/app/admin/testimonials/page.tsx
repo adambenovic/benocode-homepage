@@ -1,7 +1,7 @@
 // app/admin/testimonials/page.tsx
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { testimonialsApi } from '@/lib/api/testimonials';
 import { Card, CardContent } from '@/components/ui/Card';
@@ -108,8 +108,8 @@ export default function AdminTestimonialsPage() {
           </span>
           <Button
             variant="outline"
-            onClick={() => setPage((p) => Math.min(data.meta.totalPages, p + 1))}
-            disabled={page === data.meta.totalPages}
+            onClick={() => setPage((p) => Math.min(data.meta!.totalPages, p + 1))}
+            disabled={page === data.meta!.totalPages}
           >
             Next
           </Button>

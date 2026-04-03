@@ -8,16 +8,15 @@ import DOMPurify from 'isomorphic-dompurify';
  */
 export function sanitizeMiddleware(
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) {
   if (req.body && typeof req.body === 'object') {
     req.body = sanitizeObject(req.body);
   }
 
-  if (req.query && typeof req.query === 'object') {
-    req.query = sanitizeObject(req.query) as any;
-  }
+  // Note: req.query is read-only in Express 5; query params are URL-encoded
+  // and validated via Zod schemas, so in-place sanitization is not needed.
 
   next();
 }

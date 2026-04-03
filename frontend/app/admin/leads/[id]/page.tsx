@@ -1,7 +1,6 @@
 // app/admin/leads/[id]/page.tsx
 'use client';
 
-import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { leadsApi, Lead } from '@/lib/api/leads';

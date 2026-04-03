@@ -1,14 +1,12 @@
 // components/layout/Footer.tsx
 'use client';
 
-import React from 'react';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 
 export const Footer: React.FC = () => {
   const t = useTranslations();
   const tFooter = useTranslations('footer');
-  const locale = useLocale();
 
   return (
     <footer className="bg-primary-dark text-white mt-auto">

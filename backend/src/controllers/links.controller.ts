@@ -12,7 +12,7 @@ export class LinksController {
   constructor(private linksService: LinksService) {}
 
   // Social Links - Public
-  async getAllSocialLinks(req: Request, res: Response, next: NextFunction) {
+  async getAllSocialLinks(_req: Request, res: Response, next: NextFunction) {
     try {
       const links = await this.linksService.getAllSocialLinks();
       res.json({ data: links });
@@ -22,7 +22,7 @@ export class LinksController {
   }
 
   // Social Links - Admin
-  async getAllSocialLinksAdmin(req: Request, res: Response, next: NextFunction) {
+  async getAllSocialLinksAdmin(_req: Request, res: Response, next: NextFunction) {
     try {
       const links = await this.linksService.getAllSocialLinksAdmin();
       res.json({ data: links });
@@ -45,7 +45,7 @@ export class LinksController {
     try {
       const { id } = req.params;
       const dto: UpdateSocialLinkDto = req.body;
-      const link = await this.linksService.updateSocialLink(id, dto);
+      const link = await this.linksService.updateSocialLink(id as string, dto);
       res.json({ data: link });
     } catch (error) {
       next(error);
@@ -55,7 +55,7 @@ export class LinksController {
   async deleteSocialLink(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      await this.linksService.deleteSocialLink(id);
+      await this.linksService.deleteSocialLink(id as string);
       res.status(204).send();
     } catch (error) {
       next(error);
@@ -63,7 +63,7 @@ export class LinksController {
   }
 
   // External Links - Public
-  async getAllExternalLinks(req: Request, res: Response, next: NextFunction) {
+  async getAllExternalLinks(_req: Request, res: Response, next: NextFunction) {
     try {
       const links = await this.linksService.getAllExternalLinks();
       res.json({ data: links });
@@ -73,7 +73,7 @@ export class LinksController {
   }
 
   // External Links - Admin
-  async getAllExternalLinksAdmin(req: Request, res: Response, next: NextFunction) {
+  async getAllExternalLinksAdmin(_req: Request, res: Response, next: NextFunction) {
     try {
       const links = await this.linksService.getAllExternalLinksAdmin();
       res.json({ data: links });
@@ -96,7 +96,7 @@ export class LinksController {
     try {
       const { id } = req.params;
       const dto: UpdateExternalLinkDto = req.body;
-      const link = await this.linksService.updateExternalLink(id, dto);
+      const link = await this.linksService.updateExternalLink(id as string, dto);
       res.json({ data: link });
     } catch (error) {
       next(error);
@@ -106,7 +106,7 @@ export class LinksController {
   async deleteExternalLink(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      await this.linksService.deleteExternalLink(id);
+      await this.linksService.deleteExternalLink(id as string);
       res.status(204).send();
     } catch (error) {
       next(error);

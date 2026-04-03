@@ -1,5 +1,4 @@
 // lib/api/upload.ts
-import { apiClient } from './client';
 import { API_CONSTANTS } from '@/lib/constants';
 
 export interface UploadResponse {

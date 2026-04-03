@@ -1,7 +1,6 @@
 // app/admin/leads/[id]/layout.tsx
 'use client';
 
-import React from 'react';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 

@@ -5,20 +5,20 @@ A modern, multi-language website with admin panel for BenoCode software solution
 ## Architecture
 
 This project follows a **three-tier architecture**:
-- **Frontend**: Next.js 14 SPA (Public Website + Admin Panel)
+- **Frontend**: Next.js 15 SPA (Public Website + Admin Panel)
 - **Backend**: Express.js REST API
 - **Database**: PostgreSQL 15+
 
 ## Technology Stack
 
 ### Frontend
-- Next.js 14.x (App Router)
+- Next.js 15.x (App Router)
 - TypeScript 5.x
 - React 18.x
 - Tailwind CSS 3.x
 - Zustand + React Query
 - React Hook Form + Zod
-- next-intl
+- next-intl (EN, SK, DE, CZ)
 
 ### Backend
 - Node.js 20.x LTS
@@ -27,65 +27,60 @@ This project follows a **three-tier architecture**:
 - Prisma ORM
 - JWT Authentication
 - Brevo Email Service
+- Redis (caching)
 
 ### Infrastructure
 - PostgreSQL 15+
+- Redis 7
 - Docker & Docker Compose
-- Nginx (production)
+- Nginx (production reverse proxy)
 
 ## Prerequisites
 
-- Docker & Docker Compose
+- Docker & Docker Compose (recommended)
 - Node.js 20.x LTS (for local development without Docker)
-- PostgreSQL 15+ (for local development without Docker)
 
 ## Quick Start with Docker
 
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd benocode-website
+   cd benocode-homepage
    ```
 
 2. **Set up environment variables**
-   
-   Create `.env` file in the root directory:
+
+   ```bash
+   cp .env.example .env
+   cp backend/.env.example backend/.env
+   cp frontend/.env.example frontend/.env.local
+   ```
+
+   Edit `.env` with your values (at minimum: `DB_PASSWORD`, `JWT_SECRET`, `BREVO_API_KEY`):
    ```env
    DB_PASSWORD=your_secure_password
    JWT_SECRET=your-secret-key-min-32-characters-long
    BREVO_API_KEY=your-brevo-api-key
    BREVO_SENDER_EMAIL=noreply@benocode.sk
    ADMIN_EMAIL=admin@benocode.sk
-   NEXT_PUBLIC_GA_ID=your-google-analytics-id
-   ```
-
-   Create `backend/.env` file:
-   ```env
-   NODE_ENV=development
-   PORT=3001
-   DATABASE_URL=postgresql://benocode:your_secure_password@postgres:5432/benocode
-   JWT_SECRET=your-secret-key-min-32-characters-long
-   JWT_EXPIRES_IN=7d
-   BREVO_API_KEY=your-brevo-api-key
-   BREVO_SENDER_EMAIL=noreply@benocode.sk
-   ADMIN_EMAIL=admin@benocode.sk
-   CORS_ORIGIN=http://localhost:3000
-   ```
-
-   Create `frontend/.env.local` file:
-   ```env
-   NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
-   NEXT_PUBLIC_GA_ID=your-google-analytics-id
    ```
 
 3. **Start the development stack**
    ```bash
-   docker-compose up -d
+   docker compose up -d
+   ```
+   Or using Make:
+   ```bash
+   make dev
    ```
 
 4. **Run database migrations**
    ```bash
-   docker-compose exec backend npm run prisma:migrate
+   docker compose exec backend npx prisma migrate dev
+   ```
+   Or:
+   ```bash
+   make migrate
    ```
 
 5. **Access the application**
@@ -97,177 +92,194 @@ This project follows a **three-tier architecture**:
 
 ### Backend Setup
 
-1. **Navigate to backend directory**
-   ```bash
+1. ```bash
    cd backend
-   ```
-
-2. **Install dependencies**
-   ```bash
    npm install
-   ```
-
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
-
-4. **Set up database**
-   ```bash
+   cp .env.example .env   # Edit with your local values
    npx prisma migrate dev
-   npx prisma generate
-   ```
-
-5. **Start development server**
-   ```bash
    npm run dev
    ```
 
 ### Frontend Setup
 
-1. **Navigate to frontend directory**
-   ```bash
+1. ```bash
    cd frontend
-   ```
-
-2. **Install dependencies**
-   ```bash
    npm install
-   ```
-
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env.local
-   # Edit .env.local with your configuration
-   ```
-
-4. **Start development server**
-   ```bash
+   cp .env.example .env.local   # Edit with your local values
    npm run dev
    ```
+
+## Production Deployment
+
+1. **Set up environment variables**
+   ```bash
+   cp env.production.example .env
+   # Edit .env with real production values
+   ```
+
+2. **Start the production stack**
+   ```bash
+   docker compose -f docker-compose.prod.yml up -d --build
+   ```
+   Or:
+   ```bash
+   make prod
+   ```
+
+   The backend container automatically runs `prisma migrate deploy` on startup before serving requests.
+
+3. **SSL/TLS**: Place your certificate and key in `docker/ssl/`:
+   - `docker/ssl/cert.pem`
+   - `docker/ssl/key.pem`
+
+   For Let's Encrypt (recommended), see `docs/DEPLOYMENT.md`.
+
+## Using Make
+
+A `Makefile` is provided for common operations:
+
+```bash
+make help        # Show all available commands
+make dev         # Start development stack
+make prod        # Start production stack (builds images)
+make down        # Stop all containers
+make logs        # Follow logs (all services)
+make migrate     # Run DB migrations (dev)
+make seed        # Seed the database
+make shell-be    # Open shell in backend container
+make shell-fe    # Open shell in frontend container
+make test-be     # Run backend tests
+make test-fe     # Run frontend tests
+make clean       # Remove containers, volumes, and images
+```
 
 ## Project Structure
 
 ```
-benocode-website/
-├── frontend/                 # Next.js frontend application
-│   ├── app/                  # Next.js 14 App Router
+benocode-homepage/
+├── frontend/                 # Next.js 15 frontend
+│   ├── app/                  # App Router pages
 │   ├── components/           # React components
 │   ├── lib/                  # Utilities and helpers
-│   ├── hooks/                # Custom React hooks
-│   ├── stores/               # State management stores
-│   ├── types/                # TypeScript type definitions
-│   └── styles/               # Global styles
-├── backend/                  # Express.js backend API
+│   ├── stores/               # Zustand state stores
+│   └── messages/             # i18n translation files
+├── backend/                  # Express.js REST API
 │   ├── src/
 │   │   ├── controllers/      # Request handlers
 │   │   ├── services/         # Business logic
 │   │   ├── middleware/       # Express middleware
 │   │   ├── routes/           # API routes
-│   │   ├── utils/            # Utility functions
-│   │   └── config/           # Configuration files
+│   │   ├── config/           # Configuration files
+│   │   └── utils/            # Utility functions
 │   └── prisma/               # Prisma schema and migrations
-├── shared/                   # Shared code between frontend/backend
-│   ├── types/                # Shared TypeScript types
-│   └── schemas/              # Shared Zod validation schemas
-├── docker/                   # Docker configuration files
-├── docs/                     # Documentation
-└── docker-compose.yml        # Local development environment
+├── shared/                   # Shared TypeScript types & Zod schemas
+├── docker/                   # Nginx config and SSL directory
+├── docs/                     # Extended documentation
+├── docker-compose.yml        # Development stack
+├── docker-compose.prod.yml   # Production stack
+├── Makefile                  # Convenience commands
+└── env.production.example    # Production env reference
 ```
 
 ## Available Scripts
 
 ### Backend
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
+- `npm run dev` - Start development server (tsx watch)
+- `npm run build` - Compile TypeScript
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
 - `npm run type-check` - TypeScript type checking
-- `npm run prisma:migrate` - Run database migrations
-- `npm run prisma:studio` - Open Prisma Studio
+- `npm run prisma:migrate` - Run migrations (dev)
+- `npm run prisma:studio` - Open Prisma Studio GUI
+- `npm run prisma:seed` - Seed the database
 - `npm test` - Run tests
 
 ### Frontend
-- `npm run dev` - Start development server
+- `npm run dev` - Start development server (Turbo)
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
 - `npm run type-check` - TypeScript type checking
-
-## Database Management
-
-### Prisma Commands
-
-```bash
-# Generate Prisma Client
-npx prisma generate
-
-# Create a new migration
-npx prisma migrate dev --name migration_name
-
-# Apply migrations in production
-npx prisma migrate deploy
-
-# Open Prisma Studio (database GUI)
-npx prisma studio
-```
-
-## Development Guidelines
-
-Please refer to `technical-specification.md` for detailed development guidelines, including:
-
-- Coding standards and best practices
-- API design conventions
-- Database schema design
-- Security requirements
-- Testing strategy
-- Deployment process
+- `npm test` - Run unit tests
+- `npm run test:e2e` - Run Playwright E2E tests
 
 ## Environment Variables
 
-### Backend (.env)
-- `NODE_ENV` - Environment (development/production/test)
-- `PORT` - Server port (default: 3001)
-- `DATABASE_URL` - PostgreSQL connection string
-- `JWT_SECRET` - Secret key for JWT tokens (min 32 characters)
-- `JWT_EXPIRES_IN` - JWT expiration time (default: 7d)
-- `BREVO_API_KEY` - Brevo API key for email service
-- `BREVO_SENDER_EMAIL` - Email address for sending emails
-- `ADMIN_EMAIL` - Admin email address
-- `CORS_ORIGIN` - Allowed CORS origin
+### Root `.env` (Docker Compose)
+| Variable | Required | Description |
+|---|---|---|
+| `DB_PASSWORD` | Yes | PostgreSQL password |
+| `JWT_SECRET` | Yes | JWT signing secret (min 32 chars) |
+| `BREVO_API_KEY` | Yes | Brevo email service API key |
+| `BREVO_SENDER_EMAIL` | Yes | From address for emails |
+| `ADMIN_EMAIL` | Yes | Admin notification email |
+| `NEXT_PUBLIC_GA_ID` | No | Google Analytics ID |
 
-### Frontend (.env.local)
-- `NEXT_PUBLIC_API_URL` - Backend API URL
-- `NEXT_PUBLIC_GA_ID` - Google Analytics ID
+### Backend `backend/.env`
+| Variable | Required | Description |
+|---|---|---|
+| `NODE_ENV` | Yes | `development` / `production` / `test` |
+| `PORT` | No | Server port (default: `3001`) |
+| `DATABASE_URL` | Yes | PostgreSQL connection string |
+| `JWT_SECRET` | Yes | JWT signing secret (min 32 chars) |
+| `JWT_EXPIRES_IN` | No | Token expiry (default: `7d`) |
+| `BREVO_API_KEY` | Yes | Brevo API key |
+| `BREVO_SENDER_EMAIL` | Yes | From address for emails |
+| `ADMIN_EMAIL` | Yes | Admin notification email |
+| `CORS_ORIGIN` | Yes | Frontend URL for CORS |
+| `REDIS_URL` | No | Redis connection URL |
+| `SENTRY_DSN` | No | Sentry error tracking DSN |
+
+### Frontend `frontend/.env.local`
+| Variable | Required | Description |
+|---|---|---|
+| `NEXT_PUBLIC_API_URL` | Yes | Backend API base URL |
+| `NEXT_PUBLIC_GA_ID` | No | Google Analytics ID |
+
+## Database Management
+
+```bash
+# Create a new migration
+cd backend && npx prisma migrate dev --name migration_name
+
+# Apply migrations in production
+cd backend && npx prisma migrate deploy
+
+# Open Prisma Studio (database GUI)
+cd backend && npx prisma studio
+
+# Seed the database
+cd backend && npm run prisma:seed
+```
 
 ## Docker Commands
 
 ```bash
 # Start all services
-docker-compose up -d
+docker compose up -d
 
 # Stop all services
-docker-compose down
+docker compose down
 
-# View logs
-docker-compose logs -f
+# Follow logs
+docker compose logs -f
 
-# View logs for specific service
-docker-compose logs -f backend
+# Follow logs for specific service
+docker compose logs -f backend
 
 # Rebuild containers
-docker-compose build
+docker compose build
 
 # Execute command in container
-docker-compose exec backend npm run prisma:migrate
+docker compose exec backend npx prisma migrate dev
 ```
+
+## Further Documentation
+
+- `docs/DEPLOYMENT.md` - Detailed production deployment guide
+- `docs/QUICK-DEPLOY.md` - Quick start deployment checklist
+- `docs/technical-specification.md` - Architecture and API specification
 
 ## License
 
 ISC
-
-## Support
-
-For questions or issues, please refer to the technical specification document or contact the development team.
-

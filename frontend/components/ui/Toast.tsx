@@ -1,7 +1,6 @@
 // components/ui/Toast.tsx
 'use client';
 
-import React from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import { cn } from '@/lib/utils';
 

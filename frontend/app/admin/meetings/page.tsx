@@ -1,10 +1,10 @@
 // app/admin/meetings/page.tsx
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { meetingsApi, Meeting } from '@/lib/api/meetings';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/Select';
 import { Spinner } from '@/components/ui/Spinner';
@@ -151,8 +151,8 @@ export default function AdminMeetingsPage() {
           </span>
           <Button
             variant="outline"
-            onClick={() => setPage((p) => Math.min(data.meta.totalPages, p + 1))}
-            disabled={page === data.meta.totalPages}
+            onClick={() => setPage((p) => Math.min(data.meta!.totalPages, p + 1))}
+            disabled={page === data.meta!.totalPages}
           >
             Next
           </Button>

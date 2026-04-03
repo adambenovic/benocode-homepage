@@ -2,6 +2,9 @@ import '../styles/globals.css';
 import { QueryProvider } from '@/providers/QueryProvider';
 import type { Metadata } from 'next';
 
+// All pages are dynamic (backend API dependent) — skip static prerendering
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   icons: {
     icon: '/favicon.svg',

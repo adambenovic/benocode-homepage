@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:15-alpine
+    image: postgres:17-alpine
     container_name: benocode-postgres
     environment:
       POSTGRES_DB: benocode
@@ -29,6 +29,7 @@ services:
       DATABASE_URL: postgresql://benocode:${DB_PASSWORD:-benocode_dev_password}@postgres:5432/benocode
       JWT_SECRET: ${JWT_SECRET:-dev-jwt-secret-min-32-characters-long}
       JWT_EXPIRES_IN: 7d
+      CSRF_SECRET: ${CSRF_SECRET:-dev-csrf-secret-min-32-characters-long}
       BREVO_API_KEY: ${BREVO_API_KEY:-placeholder-api-key-for-development}
       BREVO_SENDER_EMAIL: ${BREVO_SENDER_EMAIL:-noreply@benocode.sk}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@benocode.sk}
@@ -38,7 +39,6 @@ services:
       - ./backend:/app
       - ./docs:/docs
       - /app/node_modules
-      - /app/prisma
     ports:
       - "3001:3001"
     depends_on:

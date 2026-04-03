@@ -1,7 +1,6 @@
 // app/admin/testimonials/create/page.tsx
 'use client';
 
-import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -27,7 +26,7 @@ const testimonialSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
-type TestimonialFormData = z.infer<typeof testimonialSchema>;
+type TestimonialFormData = z.input<typeof testimonialSchema>;
 
 export default function CreateTestimonialPage() {
   const router = useRouter();

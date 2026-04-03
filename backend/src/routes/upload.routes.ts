@@ -16,7 +16,7 @@ router.post(
   (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!req.file) {
-        throw new AppError('No file uploaded', 400);
+        throw new AppError(400, 'No file uploaded');
       }
 
       res.json({

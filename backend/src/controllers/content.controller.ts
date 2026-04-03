@@ -35,7 +35,7 @@ export class ContentController {
     try {
       const { key } = req.params;
       const { locale } = req.query;
-      const content = await this.contentService.getByKey(key, locale as string | undefined);
+      const content = await this.contentService.getByKey(key as string, locale as string | undefined);
 
       if (!content) {
         return res.status(404).json({
@@ -67,7 +67,7 @@ export class ContentController {
     try {
       const { key } = req.params;
       const dto: UpdateContentDto = req.body;
-      const content = await this.contentService.update(key, dto);
+      const content = await this.contentService.update(key as string, dto);
       await invalidateCache('/api/v1/content*');
       res.json({ data: content });
     } catch (error) {

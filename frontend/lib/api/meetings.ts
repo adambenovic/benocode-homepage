@@ -25,6 +25,7 @@ export interface CreateMeetingRequest {
   duration?: number;
   timezone?: string;
   notes?: string;
+  locale?: string;
 }
 
 export interface UpdateMeetingRequest {

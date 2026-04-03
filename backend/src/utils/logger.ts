@@ -6,8 +6,17 @@ export const logger = winston.createLogger({
   format: winston.format.json(),
   defaultMeta: { service: 'benocode-api' },
   transports: [
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' }),
+    new winston.transports.File({
+      filename: 'logs/error.log',
+      level: 'error',
+      maxsize: 10 * 1024 * 1024, // 10 MB
+      maxFiles: 5,
+    }),
+    new winston.transports.File({
+      filename: 'logs/combined.log',
+      maxsize: 20 * 1024 * 1024, // 20 MB
+      maxFiles: 5,
+    }),
   ],
 });
 

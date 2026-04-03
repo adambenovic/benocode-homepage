@@ -4,7 +4,7 @@ import { AuthRequest } from './auth.middleware';
 import { UnauthorizedError, ForbiddenError } from '../utils/errors';
 
 export function authorize(...roles: string[]) {
-  return (req: AuthRequest, res: Response, next: NextFunction) => {
+  return (req: AuthRequest, _res: Response, next: NextFunction) => {
     if (!req.user) {
       throw new UnauthorizedError();
     }

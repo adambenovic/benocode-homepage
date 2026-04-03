@@ -7,9 +7,11 @@ export type Locale = (typeof locales)[number];
 
 export const defaultLocale: Locale = 'en';
 
-export default getRequestConfig(async ({ locale }) => {
-  // Validate that the incoming `locale` parameter is valid
-  if (!locales.includes(locale as Locale)) {
+export default getRequestConfig(async ({ requestLocale }) => {
+  // next-intl v4: requestLocale is a Promise<string | undefined>
+  const locale = await requestLocale;
+
+  if (!locale || !locales.includes(locale as Locale)) {
     notFound();
   }
 
@@ -18,4 +20,3 @@ export default getRequestConfig(async ({ locale }) => {
     messages: (await import(`./messages/${locale}.json`)).default,
   };
 });
-

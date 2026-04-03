@@ -1,7 +1,6 @@
 // components/layout/Header.tsx
 'use client';
 
-import React from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -71,7 +70,6 @@ export const Header: React.FC = () => {
 
 const LanguageSwitcher: React.FC = () => {
   const locale = useLocale();
-  const pathname = usePathname();
 
   const languages = [
     { code: 'en', label: 'EN' },

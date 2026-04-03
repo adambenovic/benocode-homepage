@@ -2,14 +2,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
 import { Button } from './Button';
 import Link from 'next/link';
-import { useLocale } from 'next-intl';
 
 export const CookieConsent: React.FC = () => {
-  const t = useTranslations();
-  const locale = useLocale();
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {

@@ -1,7 +1,6 @@
 // app/admin/legal-pages/page.tsx
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { legalApi } from '@/lib/api/legal';

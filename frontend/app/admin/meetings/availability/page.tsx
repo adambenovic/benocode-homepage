@@ -1,16 +1,17 @@
 // app/admin/meetings/availability/page.tsx
 'use client';
+import { useEffect, type FormEvent } from 'react';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { meetingsApi, MeetingAvailability } from '@/lib/api/meetings';
+import { meetingsApi } from '@/lib/api/meetings';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Spinner } from '@/components/ui/Spinner';
 import { useUIStore } from '@/stores/uiStore';
-import { useForm } from 'react-hook-form';
+
 
 interface AvailabilitySlot {
   dayOfWeek: number;
@@ -45,7 +46,7 @@ export default function MeetingsAvailabilityPage() {
     },
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (data?.data) {
       setSlots(
         data.data.map((a) => ({
@@ -98,7 +99,7 @@ export default function MeetingsAvailabilityPage() {
     setSlots(updated);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     mutation.mutate(slots);
   };
