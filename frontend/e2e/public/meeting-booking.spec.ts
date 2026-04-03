@@ -7,7 +7,7 @@ test.describe('Meeting booking section', () => {
 
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page);
-    await homePage.goto('en');
+    await homePage.goto();
     await homePage.scrollToBooking();
   });
 

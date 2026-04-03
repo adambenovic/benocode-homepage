@@ -7,8 +7,8 @@ export class HomePage extends BasePage {
     super(page);
   }
 
-  async goto(locale = 'en') {
-    await this.navigate(`/${locale}`);
+  async goto() {
+    await this.navigate('/');
     await this.page.waitForLoadState('domcontentloaded');
   }
 
