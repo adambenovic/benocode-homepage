@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { randomBytes, createHmac } from 'crypto';
 import { env } from '../config/env';
 
-const CSRF_SECRET = env.JWT_SECRET;
+const CSRF_SECRET = env.CSRF_SECRET;
 
 /**
  * Middleware to generate and set CSRF token cookie
