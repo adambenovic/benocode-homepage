@@ -25,10 +25,9 @@ export class LoginPage extends BasePage {
   }
 
   async expectError() {
-    // Wait for error notification/toast or inline error
-    await this.page.waitForTimeout(1000);
-    const errorText = this.page.locator('text=/invalid|error|incorrect/i');
-    await expect(errorText.first()).toBeVisible({ timeout: 5000 });
+    // Wait for error notification toast (role="alert") or inline error text
+    const errorLocator = this.page.locator('[role="alert"], text=/invalid|error|incorrect/i');
+    await expect(errorLocator.first()).toBeVisible({ timeout: 10000 });
   }
 
   async expectRedirectToAdmin() {

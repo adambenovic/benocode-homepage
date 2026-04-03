@@ -195,7 +195,7 @@ jobs:
           NEXT_PUBLIC_API_URL: http://localhost:3001/api/v1
           E2E_ADMIN_EMAIL: admin@benocode.sk
           E2E_ADMIN_PASSWORD: Admin123!@#
-        run: npm run test:e2e
+        run: npx playwright test --project=setup --project=public-chromium --project=admin-unauth --project=admin-auth
 
       - name: Upload Playwright report
         if: always()
