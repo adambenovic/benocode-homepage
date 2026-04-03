@@ -1,0 +1,56 @@
+// components/legal/LegalPageContent.tsx
+'use client';
+
+import { useLocale } from 'next-intl';
+import { useQuery } from '@tanstack/react-query';
+import { legalApi } from '@/lib/api/legal';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Spinner } from '@/components/ui/Spinner';
+import { MarkdownRenderer } from '@/components/ui/MarkdownRenderer';
+
+interface LegalPageContentProps {
+  slug: string;
+  fallbackTitle: string;
+}
+
+export function LegalPageContent({ slug, fallbackTitle }: LegalPageContentProps) {
+  const locale = useLocale();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['legal', slug, locale],
+    queryFn: () => legalApi.getBySlug(slug, locale.toUpperCase() as 'EN' | 'SK' | 'DE' | 'CZ'),
+  });
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex justify-center">
+          <Spinner size="lg" />
+        </div>
+      </div>
+    );
+  }
+
+  const translation = data?.data?.translations.find(
+    (t) => t.locale === locale.toUpperCase()
+  ) || data?.data?.translations[0];
+
+  return (
+    <div className="container mx-auto px-4 py-12">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-3xl">{translation?.title || fallbackTitle}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {translation?.content ? (
+            <MarkdownRenderer content={translation.content} />
+          ) : (
+            <p className="text-text-light dark:text-gray-400">
+              {fallbackTitle} content will be managed through the admin panel and displayed here.
+            </p>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

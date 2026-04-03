@@ -81,7 +81,7 @@ test-integration:
 	docker compose exec backend npm run test:integration
 
 test-e2e:
-	cd frontend && npx playwright test --config=../playwright.config.ts --project=public-chromium --project=admin-unauth
+	cd frontend && npx playwright test --project=public-chromium --project=admin-unauth
 
 # Production
 prod:
