@@ -14,6 +14,10 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
+# NEXT_PUBLIC_* vars must be present at build time
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 

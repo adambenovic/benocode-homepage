@@ -8,13 +8,14 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY tsconfig.json ./
+COPY prisma.config.ts ./
 COPY prisma ./prisma/
+COPY scripts ./scripts/
 COPY src ./src/
 
 RUN npm ci
 RUN npx prisma generate
 RUN npm run build
-RUN npm prune --production
 
 # Production image
 FROM base AS runner
@@ -31,6 +32,12 @@ COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
 COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nodejs:nodejs /app/package*.json ./
 COPY --from=builder --chown=nodejs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nodejs:nodejs /app/prisma.config.ts ./
+COPY --from=builder --chown=nodejs:nodejs /app/tsconfig.json ./
+COPY --from=builder --chown=nodejs:nodejs /app/scripts ./scripts
+
+# Create writable directories
+RUN mkdir -p /app/logs /app/uploads && chown -R nodejs:nodejs /app/logs /app/uploads
 
 # Copy entrypoint script
 COPY --chown=nodejs:nodejs docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
