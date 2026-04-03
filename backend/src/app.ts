@@ -18,6 +18,9 @@ import { metricsMiddleware } from './middleware/metrics.middleware';
 export function createApp(): Express {
   const app = express();
 
+  // Trust proxy (nginx / Cloudflare) so X-Forwarded-For is used for rate limiting
+  app.set('trust proxy', 1);
+
   // Sentry is initialized before app creation in index.ts.
   // In Sentry SDK v8+, request tracking is automatic — no middleware needed.
 
