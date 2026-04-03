@@ -9,12 +9,22 @@ const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL || 'admin@benocode.sk';
 const ADMIN_PASSWORD = process.env.E2E_ADMIN_PASSWORD || 'Admin123!@#';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
 
-setup('authenticate as admin', async ({ browser, request }) => {
+setup('authenticate as admin', async ({ page }) => {
   const dir = path.dirname(AUTH_STATE_FILE);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
-  // ── Step 1: login via APIRequestContext (no CORS, no browser) ──────────────
-  const loginResponse = await request.post(`${API_URL}/auth/login`, {
+  // Navigate to the frontend origin first.
+  // This establishes http://localhost:3000 as the page's origin, which is
+  // required before we make the login request so the page context is set up.
+  await page.goto('/admin/login');
+  await page.waitForLoadState('load');
+
+  // Use page.request (browser-context-bound APIRequestContext) to call the
+  // login API.  Unlike the standalone `request` fixture, page.request shares
+  // its cookie jar with the browser context — Set-Cookie headers from the
+  // response are automatically stored in the browser's cookie jar and are
+  // therefore sent by subsequent page requests (withCredentials:true).
+  const loginResponse = await page.request.post(`${API_URL}/auth/login`, {
     data: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD },
   });
   if (!loginResponse.ok()) {
@@ -22,36 +32,21 @@ setup('authenticate as admin', async ({ browser, request }) => {
   }
   const { data } = await loginResponse.json();
 
-  // ── Step 2: create a browser context pre-seeded with the auth cookies ───────
-  // Passing the API request context's storageState directly to newContext()
-  // means the browser context already has the backend cookies in its jar before
-  // any navigation — no addCookies() call required.
-  const apiState = await request.storageState();
-  const context = await browser.newContext({ storageState: apiState });
-  const page = await context.newPage();
+  // Pre-populate Zustand auth state so the admin layout skips its /auth/me
+  // query on first render (the _hasHydrated guard also protects against the
+  // race, but this is belt-and-suspenders).
+  await page.evaluate((user) => {
+    localStorage.setItem(
+      'auth-storage',
+      JSON.stringify({ state: { user, isAuthenticated: true }, version: 0 }),
+    );
+  }, data.user);
 
-  try {
-    // ── Step 3: navigate to frontend and write Zustand auth state ─────────────
-    // Navigate to /admin/login so localStorage is scoped to http://localhost:3000.
-    await page.goto('/admin/login');
-    await page.waitForLoadState('load');
+  // Verify the auth state end-to-end: navigate to the dashboard and confirm
+  // the page does not redirect to /admin/login.
+  await page.goto('/admin/dashboard');
+  await expect(page).not.toHaveURL(/\/admin\/login/, { timeout: 15000 });
 
-    await page.evaluate((user) => {
-      localStorage.setItem(
-        'auth-storage',
-        JSON.stringify({ state: { user, isAuthenticated: true }, version: 0 }),
-      );
-    }, data.user);
-
-    // ── Step 4: verify the auth state end-to-end ───────────────────────────────
-    // Navigate to the dashboard. With cookies + Zustand state in place the admin
-    // layout should render without redirecting to /admin/login.
-    await page.goto('/admin/dashboard');
-    await expect(page).not.toHaveURL(/\/admin\/login/, { timeout: 15000 });
-
-    // ── Step 5: persist the verified browser state for admin tests ─────────────
-    await context.storageState({ path: AUTH_STATE_FILE });
-  } finally {
-    await context.close();
-  }
+  // Persist the verified browser state (cookies + localStorage) for admin tests.
+  await page.context().storageState({ path: AUTH_STATE_FILE });
 });
