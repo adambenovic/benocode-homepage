@@ -32,7 +32,14 @@
       "title": "Profesionálne softvérové riešenia",
       "description": "Poskytujeme kvalitné softvérové riešenia šité na mieru vašim potrebám",
       "getStarted": "Začať",
-      "learnMore": "Dozvedieť sa viac"
+      "learnMore": "Dozvedieť sa viac",
+      "tagline": {
+        "webApps": "Vytváram webové aplikácie.",
+        "apis": "Navrhujem robustné API.",
+        "ai": "Integrujem AI do vášho workflow.",
+        "consulting": "Konzultujem architektúru.",
+        "printing3d": "3D tlačím prototypy."
+      }
     },
     "services": {
       "title": "Naše služby",

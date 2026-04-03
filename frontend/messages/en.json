@@ -32,7 +32,14 @@
       "title": "Professional Software Solutions",
       "description": "We deliver high-quality software solutions tailored to your needs",
       "getStarted": "Get Started",
-      "learnMore": "Learn More"
+      "learnMore": "Learn More",
+      "tagline": {
+        "webApps": "I build web applications.",
+        "apis": "I design robust APIs.",
+        "ai": "I integrate AI into your workflow.",
+        "consulting": "I consult on architecture.",
+        "printing3d": "I 3D print prototypes."
+      }
     },
     "services": {
       "title": "Our Services",

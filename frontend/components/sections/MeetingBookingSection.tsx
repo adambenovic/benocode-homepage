@@ -21,6 +21,7 @@ import {
   ERROR_MESSAGES,
 } from '@/lib/constants';
 import { useLocale } from 'next-intl';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 const meetingSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -38,6 +39,8 @@ export const MeetingBookingSection: React.FC = () => {
   const t = useTranslations('meeting');
   const locale = useLocale();
   const addNotification = useUIStore((state) => state.addNotification);
+  const headerRef = useScrollReveal();
+  const cardRef = useScrollReveal(0.1);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState<string>('');
 
@@ -174,11 +177,11 @@ export const MeetingBookingSection: React.FC = () => {
   return (
     <section id="book-meeting" className="py-20 bg-gray-50 dark:bg-gray-800 transition-colors">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div ref={headerRef} className="scroll-reveal text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-text dark:text-white mb-4">{t('title')}</h2>
           <p className="text-lg text-text-light dark:text-gray-300">{t('description')}</p>
         </div>
-        <div className="max-w-4xl mx-auto">
+        <div ref={cardRef} className="scroll-reveal max-w-4xl mx-auto">
           <Card>
             <CardHeader>
               <CardTitle>{t('selectDateTime')}</CardTitle>

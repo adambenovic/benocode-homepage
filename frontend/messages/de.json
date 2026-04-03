@@ -32,7 +32,14 @@
       "title": "Professionelle Softwarelösungen",
       "description": "Wir liefern hochwertige Softwarelösungen, die auf Ihre Bedürfnisse zugeschnitten sind",
       "getStarted": "Loslegen",
-      "learnMore": "Mehr erfahren"
+      "learnMore": "Mehr erfahren",
+      "tagline": {
+        "webApps": "Ich baue Webanwendungen.",
+        "apis": "Ich entwerfe robuste APIs.",
+        "ai": "Ich integriere KI in Ihren Workflow.",
+        "consulting": "Ich berate zu Architektur.",
+        "printing3d": "Ich drucke Prototypen in 3D."
+      }
     },
     "services": {
       "title": "Unsere Dienstleistungen",
