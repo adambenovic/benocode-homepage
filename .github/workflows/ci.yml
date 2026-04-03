@@ -167,7 +167,7 @@ jobs:
         working-directory: ./backend
         env:
           DATABASE_URL: postgresql://benocode:test_password@localhost:5432/benocode_test
-          NODE_ENV: production
+          NODE_ENV: test
           PORT: 3001
           JWT_SECRET: test-jwt-secret-min-32-characters-long-for-testing-!!
           CSRF_SECRET: test-csrf-secret-min-32-characters-long-for-testing!!
