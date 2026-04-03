@@ -33,6 +33,11 @@ export const ServicesSection: React.FC = () => {
       description: t('items.consulting.description'),
       icon: '💡',
     },
+    {
+      title: t('items.printing3d.title'),
+      description: t('items.printing3d.description'),
+      icon: '🖨️',
+    },
   ];
 
   return (
@@ -42,7 +47,7 @@ export const ServicesSection: React.FC = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-text dark:text-white mb-4">{t('title')}</h2>
           <p className="text-lg text-text-light dark:text-gray-300">{t('description')}</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service, index) => (
             <Card key={index} className="text-center">
               <CardHeader>

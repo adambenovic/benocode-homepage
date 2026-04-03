@@ -57,6 +57,10 @@
         "aiSolutions": {
           "title": "AI riešenia",
           "description": "Vlastné AI integrácie, chatboty a inteligentná automatizácia pre váš biznis"
+        },
+        "printing3d": {
+          "title": "3D tlač",
+          "description": "Služby 3D tlače pre prototypovanie, dizajn produktov a malosériovú výrobu"
         }
       }
     },
