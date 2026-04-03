@@ -222,10 +222,13 @@ jobs:
         working-directory: ./backend
         run: |
           npm ci
+          npm run prisma:generate
           npm run build
-      
+
       - name: Build frontend
         working-directory: ./frontend
+        env:
+          NEXT_PUBLIC_API_URL: https://api.benocode.sk/api/v1
         run: |
           npm ci
           npm run build
