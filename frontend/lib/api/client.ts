@@ -7,6 +7,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || API_CONSTANTS.DEFAULT_API_URL
 
 class ApiClient {
   private client: AxiosInstance;
+  private isRefreshing = false;
+  private refreshSubscribers: Array<() => void> = [];
 
   constructor() {
     this.client = axios.create({
@@ -18,6 +20,15 @@ class ApiClient {
     });
 
     this.setupInterceptors();
+  }
+
+  private onRefreshed() {
+    this.refreshSubscribers.forEach((callback) => callback());
+    this.refreshSubscribers = [];
+  }
+
+  private addRefreshSubscriber(callback: () => void) {
+    this.refreshSubscribers.push(callback);
   }
 
   private setupInterceptors() {
@@ -46,23 +57,53 @@ class ApiClient {
         // Store CSRF token from response header
         // Axios normalizes headers to lowercase, so check 'x-csrf-token'
         // But also check the raw headers object which might have original case
-        const csrfToken = response.headers['x-csrf-token'] 
+        const csrfToken = response.headers['x-csrf-token']
           || (response.headers as any)['X-CSRF-Token']
           || (response.headers as any).get?.('X-CSRF-Token');
-          
+
         if (csrfToken && typeof window !== 'undefined') {
           sessionStorage.setItem('csrf_token', csrfToken);
         }
         return response;
       },
       async (error: AxiosError) => {
-        if (error.response?.status === 401) {
-          // Token expired or invalid
-          this.clearAuth();
-          if (typeof window !== 'undefined' && !window.location.pathname.includes('/admin/login')) {
-            window.location.href = '/admin/login';
+        const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          // Don't attempt refresh for the refresh endpoint itself or the login endpoint
+          const url = originalRequest.url || '';
+          if (url.includes('/auth/refresh') || url.includes('/auth/login')) {
+            this.clearAuth();
+            this.redirectToLogin();
+            return Promise.reject(error);
+          }
+
+          if (this.isRefreshing) {
+            // Queue this request until the refresh completes
+            return new Promise((resolve) => {
+              this.addRefreshSubscriber(() => {
+                resolve(this.client(originalRequest));
+              });
+            });
+          }
+
+          originalRequest._retry = true;
+          this.isRefreshing = true;
+
+          try {
+            await this.client.post('/auth/refresh', {});
+            this.isRefreshing = false;
+            this.onRefreshed();
+            return this.client(originalRequest);
+          } catch {
+            this.isRefreshing = false;
+            this.refreshSubscribers = [];
+            this.clearAuth();
+            this.redirectToLogin();
+            return Promise.reject(error);
           }
         }
+
         return Promise.reject(error);
       }
     );
@@ -85,6 +126,14 @@ class ApiClient {
     // Clear any client-side storage if needed
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('csrf_token');
+      // Clear persisted auth state so stale localStorage doesn't cause redirect loops
+      localStorage.removeItem('auth-storage');
+    }
+  }
+
+  private redirectToLogin(): void {
+    if (typeof window !== 'undefined' && !window.location.pathname.includes('/admin/login')) {
+      window.location.href = '/admin/login';
     }
   }
 

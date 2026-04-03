@@ -17,16 +17,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const isLoginPage = pathname === '/admin/login';
 
-  // Only query /auth/me after Zustand has rehydrated from localStorage.
-  // Without this guard the query fires on the very first render (before
-  // rehydration) when isAuthenticated is still false, causing a race where
-  // a fast 401 response triggers the axios redirect interceptor before the
-  // persisted auth state has been restored.
+  // Validate session against the server after Zustand has rehydrated.
+  // This fires both when unauthenticated (initial visit) and when
+  // authenticated (returning visit) to verify cookies are still valid.
+  // staleTime prevents re-fetching on every render when already validated.
   const { isLoading, data, isError } = useQuery({
     queryKey: ['currentUser'],
     queryFn: authApi.getCurrentUser,
-    enabled: !isLoginPage && _hasHydrated && !isAuthenticated,
+    enabled: !isLoginPage && _hasHydrated,
     retry: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   useEffect(() => {
