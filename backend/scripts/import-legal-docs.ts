@@ -128,10 +128,10 @@ async function importLegalDocuments() {
 
   // Try multiple possible paths
   const possiblePaths = [
-    '/docs/legal-documents.md', // Docker mounted volume
-    path.join(process.cwd(), '../docs/legal-documents.md'), // From backend dir
-    path.join(process.cwd(), '../../docs/legal-documents.md'), // From scripts dir
-    path.join(__dirname, '../../../docs/legal-documents.md'), // Relative to __dirname
+    path.join(process.cwd(), 'docs/legal-documents.md'), // /app/docs/ (Docker volume)
+    path.join(process.cwd(), '../docs/legal-documents.md'), // From backend dir (local dev)
+    path.join(__dirname, '../../docs/legal-documents.md'), // Relative to scripts dir
+    path.join(__dirname, '../docs/legal-documents.md'), // Compiled dist path
   ];
 
   let markdownPath = '';

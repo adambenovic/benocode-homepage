@@ -56,6 +56,7 @@ services:
       SENTRY_DSN: ${SENTRY_DSN:-}
     volumes:
       - ./uploads:/app/uploads
+      - ./docs:/app/docs:ro
     depends_on:
       postgres:
         condition: service_healthy
