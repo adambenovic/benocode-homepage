@@ -13,6 +13,7 @@ const envSchema = z.object({
   ADMIN_EMAIL: z.string().email(),
   // Supports comma-separated list of allowed origins
   CORS_ORIGIN: z.string(),
+  FRONTEND_URL: z.string().url().default('http://localhost:3000'),
 });
 
 export const env = envSchema.parse(process.env);
