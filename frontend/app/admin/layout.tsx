@@ -11,22 +11,20 @@ import { ToastContainer } from '@/components/ui/Toast';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 
+const PUBLIC_PATHS = ['/admin/login', '/admin/accept-invite'];
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, _hasHydrated, setUser } = useAuthStore();
+  const { isAuthenticated, user, _hasHydrated, setUser } = useAuthStore();
   const pathname = usePathname();
   const router = useRouter();
-  const isLoginPage = pathname === '/admin/login';
+  const isPublicPage = PUBLIC_PATHS.some((p) => pathname === p);
 
-  // Validate session against the server after Zustand has rehydrated.
-  // This fires both when unauthenticated (initial visit) and when
-  // authenticated (returning visit) to verify cookies are still valid.
-  // staleTime prevents re-fetching on every render when already validated.
   const { isLoading, data, isError } = useQuery({
     queryKey: ['currentUser'],
     queryFn: authApi.getCurrentUser,
-    enabled: !isLoginPage && _hasHydrated,
+    enabled: !isPublicPage && _hasHydrated,
     retry: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 
   useEffect(() => {
@@ -36,12 +34,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [data, setUser]);
 
   useEffect(() => {
-    if (isError && !isLoginPage) {
+    if (isError && !isPublicPage) {
       router.push('/admin/login');
     }
-  }, [isError, isLoginPage, router]);
+  }, [isError, isPublicPage, router]);
 
-  if (isLoginPage) {
+  // Force password change redirect
+  useEffect(() => {
+    if (
+      user?.forcePasswordChange &&
+      isAuthenticated &&
+      pathname !== '/admin/change-password' &&
+      !isPublicPage
+    ) {
+      router.push('/admin/change-password');
+    }
+  }, [user, isAuthenticated, pathname, isPublicPage, router]);
+
+  if (isPublicPage) {
     return (
       <>
         {children}
@@ -50,8 +60,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  // Show spinner while Zustand is rehydrating (very brief — localStorage read)
-  // or while the /auth/me query is in flight.
   if (!_hasHydrated || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -62,6 +70,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (!isAuthenticated) {
     return null;
+  }
+
+  // Force password change — show page without sidebar/header
+  if (user?.forcePasswordChange && pathname === '/admin/change-password') {
+    return (
+      <>
+        {children}
+        <ToastContainer />
+      </>
+    );
   }
 
   return (

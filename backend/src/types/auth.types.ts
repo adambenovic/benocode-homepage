@@ -9,6 +9,7 @@ export interface LoginResponse {
     id: string;
     email: string;
     role: string;
+    forcePasswordChange: boolean;
   };
   accessToken: string;
   refreshToken: string;
@@ -19,5 +20,5 @@ export interface JwtPayload {
   userId: string;
   email: string;
   role: string;
+  forcePasswordChange: boolean;
 }
-

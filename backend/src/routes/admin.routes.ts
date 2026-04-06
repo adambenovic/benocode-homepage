@@ -42,6 +42,9 @@ import {
   updateAvailabilitySchema,
 } from '../types/meetings.types';
 import { getMetrics } from '../middleware/metrics.middleware';
+import { UsersController } from '../controllers/users.controller';
+import { UsersService } from '../services/users.service';
+import { createUserSchema, updateUserSchema } from '../types/users.types';
 
 const updateLeadSchema = z.object({
   status: z.enum(['NEW', 'CONTACTED', 'QUALIFIED', 'CLOSED']).optional(),
@@ -106,6 +109,16 @@ router.put('/meetings/availability', authMiddleware, authorize('ADMIN'), validat
 router.get('/meetings/:id', authMiddleware, authorize('ADMIN'), meetingsController.getById.bind(meetingsController));
 router.patch('/meetings/:id', authMiddleware, authorize('ADMIN'), validate(updateMeetingSchema), meetingsController.update.bind(meetingsController));
 router.delete('/meetings/:id', authMiddleware, authorize('ADMIN'), meetingsController.delete.bind(meetingsController));
+
+// Users admin routes
+const usersService = new UsersService(prisma, emailService);
+const usersController = new UsersController(usersService);
+router.get('/users', authMiddleware, authorize('ADMIN'), paginationMiddleware, usersController.getAll.bind(usersController));
+router.get('/users/:id', authMiddleware, authorize('ADMIN'), usersController.getById.bind(usersController));
+router.post('/users', authMiddleware, authorize('ADMIN'), validate(createUserSchema), usersController.create.bind(usersController));
+router.put('/users/:id', authMiddleware, authorize('ADMIN'), validate(updateUserSchema), usersController.update.bind(usersController));
+router.patch('/users/:id/deactivate', authMiddleware, authorize('ADMIN'), usersController.deactivate.bind(usersController));
+router.post('/users/:id/resend-invite', authMiddleware, authorize('ADMIN'), usersController.resendInvite.bind(usersController));
 
 // Metrics endpoint
 router.get('/metrics', authMiddleware, authorize('ADMIN'), (_req, res) => {

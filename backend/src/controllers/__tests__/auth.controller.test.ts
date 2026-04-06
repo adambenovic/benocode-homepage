@@ -39,7 +39,7 @@ describe('AuthController', () => {
         accessToken: 'access-token',
         refreshToken: 'refresh-token',
         expiresIn: 604800,
-        user: { id: '1', email: 'test@example.com', role: 'ADMIN' },
+        user: { id: '1', email: 'test@example.com', role: 'ADMIN', forcePasswordChange: false },
       };
 
       mockAuthService.login.mockResolvedValue(mockTokens);

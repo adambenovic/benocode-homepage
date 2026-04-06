@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 
 export const AdminSidebar: React.FC = () => {
   const pathname = usePathname();
-  const { logout } = useAuthStore();
+  const { logout, user } = useAuthStore();
   const { sidebarOpen, setSidebarOpen } = useUIStore();
   const router = useRouter();
 
@@ -21,8 +21,9 @@ export const AdminSidebar: React.FC = () => {
     router.push('/admin/login');
   };
 
-  const navItems = [
+  const allNavItems = [
     { href: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
+    { href: '/admin/users', label: 'Users', icon: '👥', adminOnly: true },
     { href: '/admin/leads', label: 'Leads', icon: '📧' },
     { href: '/admin/testimonials', label: 'Testimonials', icon: '💬' },
     { href: '/admin/meetings', label: 'Meetings', icon: '📅' },
@@ -30,6 +31,10 @@ export const AdminSidebar: React.FC = () => {
     { href: '/admin/content', label: 'Content', icon: '📝' },
     { href: '/admin/legal-pages', label: 'Legal Pages', icon: '⚖️' },
   ];
+
+  const navItems = allNavItems.filter(
+    (item) => !item.adminOnly || user?.role === 'ADMIN'
+  );
 
   return (
     <>

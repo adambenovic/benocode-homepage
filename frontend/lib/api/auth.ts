@@ -14,6 +14,7 @@ export interface LoginResponse {
       id: string;
       email: string;
       role: string;
+      forcePasswordChange: boolean;
     };
   };
 }
@@ -33,6 +34,7 @@ export interface User {
   id: string;
   email: string;
   role: string;
+  forcePasswordChange: boolean;
 }
 
 export interface CurrentUserResponse {
@@ -66,6 +68,18 @@ export const authApi = {
 
   getCurrentUser: async (): Promise<CurrentUserResponse> => {
     return apiClient.get<CurrentUserResponse>('/auth/me');
+  },
+
+  changePassword: async (currentPassword: string, newPassword: string): Promise<{ data: { message: string } }> => {
+    return apiClient.post('/auth/change-password', { currentPassword, newPassword });
+  },
+
+  forceChangePassword: async (newPassword: string): Promise<{ data: { message: string } }> => {
+    return apiClient.post('/auth/force-change-password', { newPassword });
+  },
+
+  acceptInvite: async (token: string, password: string): Promise<{ data: { message: string } }> => {
+    return apiClient.post('/auth/accept-invite', { token, password });
   },
 };
 

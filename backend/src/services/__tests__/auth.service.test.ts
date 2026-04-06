@@ -43,6 +43,8 @@ describe('AuthService', () => {
         email: 'test@example.com',
         passwordHash: 'hashed-password',
         role: 'ADMIN' as const,
+        isActive: true,
+        forcePasswordChange: false,
         createdAt: new Date(),
         updatedAt: new Date(),
         lastLoginAt: null,

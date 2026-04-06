@@ -156,6 +156,26 @@ export class EmailService {
     });
   }
 
+  async sendInviteEmail(email: string, rawToken: string): Promise<void> {
+    const inviteUrl = `${env.FRONTEND_URL}/admin/accept-invite?token=${rawToken}`;
+
+    const htmlContent = `
+      <h2>You've been invited to BenoCode Admin</h2>
+      <p>You've been invited to join the BenoCode admin panel.</p>
+      <p>Click the link below to set your password and activate your account:</p>
+      <p><a href="${this.escapeHtml(inviteUrl)}" style="display:inline-block;padding:12px 24px;background-color:#2563eb;color:#ffffff;text-decoration:none;border-radius:6px;">Set Your Password</a></p>
+      <p>Or copy this link: ${this.escapeHtml(inviteUrl)}</p>
+      <p>This link expires in 48 hours.</p>
+      <p>If you didn't expect this invitation, you can safely ignore this email.</p>
+    `;
+
+    await this.sendEmail({
+      to: email,
+      subject: "You've been invited to BenoCode Admin",
+      htmlContent,
+    });
+  }
+
   private escapeHtml(text: string): string {
     const map: Record<string, string> = {
       '&': '&amp;',
