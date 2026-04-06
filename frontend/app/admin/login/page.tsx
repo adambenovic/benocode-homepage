@@ -41,7 +41,11 @@ export default function AdminLoginPage() {
         type: 'success',
         message: 'Login successful',
       });
-      router.push('/admin/dashboard');
+      if (data.data.user.forcePasswordChange) {
+        router.push('/admin/change-password');
+      } else {
+        router.push('/admin/dashboard');
+      }
     },
     onError: () => {
       addNotification({

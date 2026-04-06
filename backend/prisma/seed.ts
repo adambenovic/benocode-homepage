@@ -32,6 +32,8 @@ async function main() {
         email: adminEmail,
         passwordHash,
         role: 'ADMIN',
+        isActive: true,
+        forcePasswordChange: false,
       },
     });
     console.log(`✅ Admin user created: ${adminEmail}\n`);
