@@ -23,19 +23,27 @@ const createUserSchema = z
   })
   .superRefine((data, ctx) => {
     if (data.method === 'password') {
-      if (!data.password || data.password.length < 8) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Password must be at least 8 characters',
-          path: ['password'],
-        });
+      if (!data.password) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Password is required', path: ['password'] });
+        return;
+      }
+      if (data.password.length < 12) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Password must be at least 12 characters', path: ['password'] });
+      }
+      if (!/[A-Z]/.test(data.password)) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Must contain an uppercase letter', path: ['password'] });
+      }
+      if (!/[a-z]/.test(data.password)) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Must contain a lowercase letter', path: ['password'] });
+      }
+      if (!/[0-9]/.test(data.password)) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Must contain a number', path: ['password'] });
+      }
+      if (!/[^A-Za-z0-9]/.test(data.password)) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Must contain a special character', path: ['password'] });
       }
       if (data.password !== data.confirmPassword) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Passwords do not match',
-          path: ['confirmPassword'],
-        });
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Passwords do not match', path: ['confirmPassword'] });
       }
     }
   });
@@ -158,7 +166,7 @@ export default function CreateUserPage() {
                   type="password"
                   {...register('password')}
                   error={errors.password?.message}
-                  helperText="Minimum 8 characters"
+                  helperText="Min 12 chars, uppercase, lowercase, number, special character"
                   required
                 />
                 <Input

@@ -85,30 +85,17 @@ export class AuthController {
         return res.status(401).json({ error: { message: 'Unauthorized', statusCode: 401 } });
       }
       const { newPassword } = req.body;
-      await this.authService.forceChangePassword(req.user.userId, newPassword);
+      const result = await this.authService.forceChangePassword(req.user.userId, newPassword);
 
-      // Issue new tokens with forcePasswordChange: false
-      const user = await this.authService.getCurrentUser(req.user.userId);
-      const jwt = require('jsonwebtoken');
-      const { env } = require('../config/env');
-      const payload = {
-        userId: user.id,
-        email: user.email,
-        role: user.role,
-        forcePasswordChange: false,
-      };
-
-      const accessToken = jwt.sign(payload, env.JWT_SECRET, { expiresIn: env.JWT_EXPIRES_IN });
-      const refreshToken = jwt.sign(payload, env.JWT_SECRET, { expiresIn: '30d' });
-
-      res.cookie('access_token', accessToken, {
+      // Set new cookies with updated tokens
+      res.cookie('access_token', result.accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      res.cookie('refresh_token', refreshToken, {
+      res.cookie('refresh_token', result.refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',

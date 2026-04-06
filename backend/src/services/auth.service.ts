@@ -117,7 +117,11 @@ export class AuthService {
       throw new NotFoundError('User');
     }
 
-    const isValid = await verifyPassword(currentPassword, user.passwordHash!);
+    if (!user.passwordHash) {
+      throw new ValidationError('Password not set. Please use your invite link to set a password.');
+    }
+
+    const isValid = await verifyPassword(currentPassword, user.passwordHash);
     if (!isValid) {
       throw new ValidationError('Current password is incorrect');
     }
@@ -129,10 +133,14 @@ export class AuthService {
     });
   }
 
-  async forceChangePassword(userId: string, newPassword: string): Promise<void> {
+  async forceChangePassword(userId: string, newPassword: string): Promise<LoginResponse> {
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
       throw new NotFoundError('User');
+    }
+
+    if (!user.forcePasswordChange) {
+      throw new ValidationError('Password change is not required. Use the regular change password endpoint.');
     }
 
     const newHash = await hashPassword(newPassword);
@@ -140,6 +148,26 @@ export class AuthService {
       where: { id: userId },
       data: { passwordHash: newHash, forcePasswordChange: false },
     });
+
+    // Return new tokens with forcePasswordChange: false
+    const payload: JwtPayload = {
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      forcePasswordChange: false,
+    };
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        forcePasswordChange: false,
+      },
+      accessToken: this.generateAccessToken(payload),
+      refreshToken: this.generateRefreshToken(payload),
+      expiresIn: 7 * 24 * 60 * 60,
+    };
   }
 
   async acceptInvite(rawToken: string, password: string): Promise<void> {

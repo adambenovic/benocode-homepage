@@ -33,7 +33,7 @@ export interface User {
   id: string;
   email: string;
   role: string;
-  forcePasswordChange?: boolean;
+  forcePasswordChange: boolean;
 }
 
 export interface CurrentUserResponse {

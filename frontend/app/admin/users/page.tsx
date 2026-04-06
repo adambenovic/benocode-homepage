@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
 import { useUIStore } from '@/stores/uiStore';
+import { useAuthStore } from '@/stores/authStore';
 
 function StatusBadge({ isActive, invitePending }: { isActive: boolean; invitePending: boolean }) {
   if (invitePending) {
@@ -60,6 +61,7 @@ export default function AdminUsersPage() {
   const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
   const addNotification = useUIStore((state) => state.addNotification);
+  const { user: currentUser } = useAuthStore();
 
   const { data, isLoading } = useQuery({
     queryKey: ['users', 'admin', page],
@@ -74,6 +76,17 @@ export default function AdminUsersPage() {
     },
     onError: () => {
       addNotification({ type: 'error', message: 'Failed to deactivate user' });
+    },
+  });
+
+  const activateMutation = useMutation({
+    mutationFn: (id: string) => usersApi.update(id, { isActive: true }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      addNotification({ type: 'success', message: 'User activated successfully' });
+    },
+    onError: () => {
+      addNotification({ type: 'error', message: 'Failed to activate user' });
     },
   });
 
@@ -209,7 +222,7 @@ export default function AdminUsersPage() {
                               Resend Invite
                             </Button>
                           )}
-                          {user.isActive && !user.invitePending && (
+                          {user.id !== currentUser?.id && user.isActive && !user.invitePending && (
                             <Button
                               variant="danger"
                               size="sm"
@@ -217,6 +230,16 @@ export default function AdminUsersPage() {
                               isLoading={deactivateMutation.isPending && deactivateMutation.variables === user.id}
                             >
                               Deactivate
+                            </Button>
+                          )}
+                          {!user.isActive && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => activateMutation.mutate(user.id)}
+                              isLoading={activateMutation.isPending && activateMutation.variables === user.id}
+                            >
+                              Activate
                             </Button>
                           )}
                         </div>

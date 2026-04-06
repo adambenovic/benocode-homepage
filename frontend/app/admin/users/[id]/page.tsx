@@ -28,19 +28,27 @@ const editUserSchema = z
   })
   .superRefine((data, ctx) => {
     if (data.resetPassword) {
-      if (!data.newPassword || data.newPassword.length < 8) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Password must be at least 8 characters',
-          path: ['newPassword'],
-        });
+      if (!data.newPassword) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Password is required', path: ['newPassword'] });
+        return;
+      }
+      if (data.newPassword.length < 12) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Password must be at least 12 characters', path: ['newPassword'] });
+      }
+      if (!/[A-Z]/.test(data.newPassword)) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Must contain an uppercase letter', path: ['newPassword'] });
+      }
+      if (!/[a-z]/.test(data.newPassword)) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Must contain a lowercase letter', path: ['newPassword'] });
+      }
+      if (!/[0-9]/.test(data.newPassword)) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Must contain a number', path: ['newPassword'] });
+      }
+      if (!/[^A-Za-z0-9]/.test(data.newPassword)) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Must contain a special character', path: ['newPassword'] });
       }
       if (data.newPassword !== data.confirmPassword) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Passwords do not match',
-          path: ['confirmPassword'],
-        });
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Passwords do not match', path: ['confirmPassword'] });
       }
     }
   });
@@ -230,7 +238,7 @@ export default function EditUserPage() {
                     type="password"
                     {...register('newPassword')}
                     error={errors.newPassword?.message}
-                    helperText="Minimum 8 characters"
+                    helperText="Min 12 chars, uppercase, lowercase, number, special character"
                     required
                   />
                   <Input

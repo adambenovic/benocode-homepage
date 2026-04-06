@@ -99,7 +99,7 @@ describe('AuthService — changePassword / forceChangePassword / acceptInvite / 
       (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
       (prisma.user.update as jest.Mock).mockResolvedValue({ ...mockUser, forcePasswordChange: false });
 
-      await authService.forceChangePassword('user-1', 'new-password');
+      const result = await authService.forceChangePassword('user-1', 'new-password');
 
       expect(verifyPassword).not.toHaveBeenCalled();
       expect(hashPassword).toHaveBeenCalledWith('new-password');
@@ -107,6 +107,26 @@ describe('AuthService — changePassword / forceChangePassword / acceptInvite / 
         where: { id: 'user-1' },
         data: { passwordHash: 'new-hashed-password', forcePasswordChange: false },
       });
+      expect(result).toHaveProperty('accessToken');
+      expect(result).toHaveProperty('refreshToken');
+      expect(result.user.forcePasswordChange).toBe(false);
+    });
+
+    it('should throw ValidationError when forcePasswordChange is false', async () => {
+      const mockUser = {
+        id: 'user-1',
+        email: 'test@example.com',
+        passwordHash: 'old-hashed-password',
+        role: 'ADMIN' as const,
+        isActive: true,
+        forcePasswordChange: false,
+      };
+
+      (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
+
+      await expect(
+        authService.forceChangePassword('user-1', 'new-password')
+      ).rejects.toThrow(ValidationError);
     });
   });
 
