@@ -33,7 +33,7 @@ export class UsersController {
   async getById(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const user = await this.usersService.getById(id);
+      const user = await this.usersService.getById(id as string);
       res.json({ data: user });
     } catch (error) {
       next(error);
@@ -54,7 +54,7 @@ export class UsersController {
     try {
       const { id } = req.params;
       const dto: UpdateUserDto = req.body;
-      const user = await this.usersService.update(id, dto, req.user!.userId);
+      const user = await this.usersService.update(id as string, dto, req.user!.userId);
       res.json({ data: user });
     } catch (error) {
       next(error);
@@ -64,7 +64,7 @@ export class UsersController {
   async deactivate(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const user = await this.usersService.deactivate(id, req.user!.userId);
+      const user = await this.usersService.deactivate(id as string, req.user!.userId);
       res.json({ data: user });
     } catch (error) {
       next(error);
@@ -74,7 +74,7 @@ export class UsersController {
   async resendInvite(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      await this.usersService.resendInvite(id);
+      await this.usersService.resendInvite(id as string);
       res.json({ data: { message: 'Invite sent successfully' } });
     } catch (error) {
       next(error);
