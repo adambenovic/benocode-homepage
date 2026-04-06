@@ -272,7 +272,7 @@ export const MeetingBookingSection: React.FC = () => {
                 {selectedDate && selectedTime && (
                   <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                     <p className="text-sm text-text-light dark:text-gray-300">
-                      {t('selected')}: {new Date(selectedDate).toLocaleDateString(locale)} {selectedTime}
+                      {t('selected')}: {new Date(selectedDate).toLocaleDateString('de-DE')} {selectedTime}
                     </p>
                   </div>
                 )}
