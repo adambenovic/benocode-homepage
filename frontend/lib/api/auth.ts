@@ -14,6 +14,7 @@ export interface LoginResponse {
       id: string;
       email: string;
       role: string;
+      forcePasswordChange: boolean;
     };
   };
 }

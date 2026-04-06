@@ -150,7 +150,10 @@ describe('UsersService', () => {
 
   describe('update', () => {
     it('should update user fields', async () => {
-      mockPrisma.user.findUnique.mockResolvedValue(mockUser);
+      // First call: find by id (returns existing user), second call: email uniqueness check (returns null = available)
+      mockPrisma.user.findUnique
+        .mockResolvedValueOnce(mockUser)
+        .mockResolvedValueOnce(null);
       const updatedUser = { ...mockUser, email: 'new@example.com' };
       mockPrisma.user.update.mockResolvedValue(updatedUser);
 
